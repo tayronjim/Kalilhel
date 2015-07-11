@@ -3,54 +3,85 @@
 <meta charset="UTF-8">
 <head>
 	<title></title>
-	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript">
-	$(document).ready(function(){
-		$.ajax({
- 			type: "POST",
- 			url: "../control/control.php",
- 			data: { "funcion" :  "cargaTipoCliente" },
- 			success: function(data){
- 				alert(data);
- 				obj = JSON.parse(data);
- 				$v1=0;
- 				while(obj.Customer[$v1]){
-					alert(obj.Customer[$v1].nombre);
-					$v1++;
- 				}
- 					
- 			}
- 		});
-	});
-	</script>
+	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	 <script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaTipoContacto" },
+	 			success: function(data){
+	 				// alert(data);
+	 				obj = JSON.parse(data);
+	 				$v1=0;
+	 				while(obj.Contacto[$v1]){
+	 					agregaFilaContactos(obj.Contacto[$v1]);
+						// alert(obj.Contacto[$v1].nombre);
+						$v1++;
+	 				}
+	 			}
+	 		});
+	 		$("#listadoClientes").on("dblclick", "tr", function(){
+	 			alert("doble");
+	 		});
+		});
+		function agregaFilaContactos(reg){
+		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+')"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
+		}
+		function muestraContacto(clave){
+				// alert(clave);
+				$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "recuperaUnContacto", "clave": clave },
+	 			success: function(data){
+	 				// alert(data);
+	 				obj = JSON.parse(data);
+	 				// obj.Contacto[$v1];
+	 				$("#txtContactoNombre").val(obj.Contacto[0].nombre);
+	 				$("#txtContactoEmail").val(obj.Contacto[0].email);
+	 				$("#txtContactoTelefono").val(obj.Contacto[0].telefono);
+	 				
+	 			}
+	 		});
+				
+		}
+	 </script>
+	
 </head>
 <body>
-<iframe src="listado.html"></iframe>
+<table border="1" id="listadoClientes">
+	<tr>
+		<td>Nombre</td>
+		<td>Email</td>
+		<td>Telefono</td>
+	</tr>
+</table>
 <br>
 Tipo de Cliente: <select id="SlcTipoCliente"><option>Arrendatario</option><option>Contacto</option><option>Fiador</option> </select><br>
-Clave: <input type="text" id="txtContactoClave"> <br><!-- autonumerico -->
-Nombre: <input type="text" id="txtContactoNombre"><br>
-Email: <input type="text" id="txtContactoEmail"><br>
-Telefono: <input type="text" id="txtContactoTelefono1"> <select id="SlcTipoTelefono"><option>Casa</option><option>Celular</option><option>Trabajo</option> </select><br>
-RFC: <input type="text" id="txtContactoRfc"><br>
-Dirección: <input type="text" id="txtContactoDireccion"> Numero Ext: <input type="text" id="txtContactoNE"> Int: <input type="text" id="txtContactoNI"><br>
-Codigo Postal: <input type="text" id="txtContactoCP"><br>
-Ciudad / Municipio: <input type="text" id="txtContactoCiudad">
+Clave: <input type="text" id="txtContactoClave" disabled> <br><!-- autonumerico -->
+Nombre: <input type="text" id="txtContactoNombre" disabled><br>
+Email: <input type="text" id="txtContactoEmail" disabled><br>
+Telefono: <input type="text" id="txtContactoTelefono" disabled> <select id="SlcTipoTelefono"><option>Casa</option><option>Celular</option><option>Trabajo</option> </select><br>
+RFC: <input type="text" id="txtContactoRfc" disabled><br>
+Dirección: <input type="text" id="txtContactoDireccion" disabled> Numero Ext: <input type="text" id="txtContactoNE" disabled> Int: <input type="text" id="txtContactoNI" disabled><br>
+Codigo Postal: <input type="text" id="txtContactoCP" disabled><br>
+Ciudad / Municipio: <input type="text" id="txtContactoCiudad" disabled>
 Estado: <select id="SlcContactoEstado"><option value="1">Distrito Federal</option><option value="2">Aguascalientes</option> </select>
 <br>
 <h5>Datos Facturacion</h5>
-Razon Social: <input type="text" id="txtFacturacionRS"><br>
-Dirección Fiscal: <input type="text" id="txtFacturacionDF">
-Numero Ext: <input type="text" id="txtFacturacionNE"> Int: <input type="text" id="txtFacturacionNI"><br>
-Colonia: <input type="text" id="txtFacturacionColonia"><br>
-Codigo Postal: <input type="text" id="txtFacturacionCP"><br>
-Municipio / Delegación: <input type="text" id="txtFacturacionMunicipio"><br>
-Ciudad: <input type="text" id="txtFacturacionCiudad">
+Razon Social: <input type="text" id="txtFacturacionRS" disabled><br>
+Dirección Fiscal: <input type="text" id="txtFacturacionDF" disabled>
+Numero Ext: <input type="text" id="txtFacturacionNE" disabled> Int: <input type="text" id="txtFacturacionNI" disabled><br>
+Colonia: <input type="text" id="txtFacturacionColonia" disabled><br>
+Codigo Postal: <input type="text" id="txtFacturacionCP" disabled><br>
+Municipio / Delegación: <input type="text" id="txtFacturacionMunicipio" disabled><br>
+Ciudad: <input type="text" id="txtFacturacionCiudad" disabled>
 Estado: <select id="SlcFacturacionEstado"><option value="1">Distrito Federal</option><option value="2">Aguascalientes</option> </select>
 <br>
-<input type="button" value="Guardar"> <br>
-<input type="button" value="Eliminar"><br>
-<input type="button" value="Limpiar"><br>
+<!-- <input type="button" value="Guardar"> <br> -->
+<!-- <input type="button" value="Eliminar"><br> -->
+<!-- <input type="button" value="Limpiar"><br> -->
 <input type="button" value="Agregar Documentos">
 <br>
 </body>

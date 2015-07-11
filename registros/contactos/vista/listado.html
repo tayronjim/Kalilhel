@@ -3,9 +3,38 @@
 <html>
 <head>
 	<title></title>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaTipoContacto" },
+	 			success: function(data){
+	 				alert(data);
+	 				obj = JSON.parse(data);
+	 				$v1=0;
+	 				while(obj.Customer[$v1]){
+	 					agregaFilaContactos(obj.Customer[$v1]);
+						// alert(obj.Customer[$v1].nombre);
+						$v1++;
+						
+						
+	 				}
+	 					
+	 			}
+	 		});
+		});
+		function agregaFilaContactos(reg){
+		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+')"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
+		}
+		function muestraContacto(clave){
+				alert(clave);
+			}
+	</script>
 </head>
 <body>
-<table border="1">
+<table border="1" id="listadoClientes">
 	<tr>
 		<td>Nombre</td>
 		<td>Email</td>

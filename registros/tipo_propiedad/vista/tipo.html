@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title></title>
+	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	 <script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaTipoPropiedad" },
+	 			success: function(data){
+	 				// alert(data);
+	 				obj = JSON.parse(data);
+	 				$v1=0;
+	 				while(obj.Propiedad[$v1]){
+	 					agregaFilaTipoPropiedad(obj.Propiedad[$v1]);
+						// alert(obj.Propiedad[$v1].nombre);
+						$v1++;
+	 				}
+	 			}
+	 		});
+		});
+		function agregaFilaTipoPropiedad(reg){
+		$('#listadoTipoPropiedad tr:last').after('<tr onclick="muestraTipoPropiedad('+reg.clave_propiedad+')"><td>'+reg.clave_propiedad+'</td><td>'+reg.descripcion+'</td><td>'+reg.activo+'</td><td>'+reg.alta+'</td></tr>');
+		}
+		function muestraTipoPropiedad(clave){
+				// alert(clave);
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "recuperaUnTipoPropiedad", "clave": clave },
+	 			success: function(data){
+	 				// alert(data);
+	 				obj = JSON.parse(data);
+	 				// obj.Propiedad[$v1];
+	 				$("#txtTipoPropClave").val(obj.Propiedad[0].clave_propiedad);
+	 				$("#txtTipoPropDescr").val(obj.Propiedad[0].descripcion);
+	 				$("#txtTipoPropAlta").val(obj.Propiedad[0].alta);
+	 				if(obj.Propiedad[0].activo==1){
+	 					$("#txtTipoPropActivo").prop('checked', true);
+	 				}
+	 				if(obj.Propiedad[0].activo==0){
+	 					$("#txtTipoPropActivo").prop('checked', false);
+	 				}
+	 				
+	 				
+	 			}
+	 		});
+				
+		}
+	 </script>
+	
+</head>
+<body>
+<table border="1" id="listadoTipoPropiedad">
+	<tr>
+		<td>Clave</td>
+		<td>Descripción</td>
+		<td>Activo</td>
+		<td>Fecha Alta</td>
+		
+	</tr>
+</table>
+<br>
+Clave: <input type="text" id="txtTipoPropClave"><br>
+Descripción: <input type="text" id="txtTipoPropDescr"><br>
+Fecha Alta: <input type="text" id="txtTipoPropAlta"><br>
+Activo: <input type="checkbox" id="txtTipoPropActivo">
+
+<br>
+<!-- <input type="button" value="Guardar"> <br> -->
+<!-- <input type="button" value="Eliminar"><br> -->
+<!-- <input type="button" value="Limpiar"><br> -->
+<!-- <input type="button" value="Agregar Documentos"> -->
+<br>
+</body>
+</html>

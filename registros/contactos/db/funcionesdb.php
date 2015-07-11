@@ -12,9 +12,15 @@
 		unconnectdb($mysqli);
 		return $resultado;
 	}
-	function recuperaClientes(){
+	function recuperaContactos(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT * FROM contactos");
+		$resultado = $mysqli->query("SELECT clave, nombre, email, telefono FROM contactos");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function unContacto($clave){
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT nombre, email, telefono FROM contactos WHERE clave=".$clave);
 		unconnectdb($mysqli);
 		return $resultado;
 	}
