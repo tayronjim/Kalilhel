@@ -1,9 +1,126 @@
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
 <head>
 	<title></title>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	 <script type="text/javascript">
+		$(document).ready(function(){
+			$("#areaRegCaracteriticas").css('visibility', 'hidden');
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaListadoPropiedad" },
+	 			success: function(data){
+	 				obj = JSON.parse(data);
+	 				$v1=0;
+	 				while(obj.Propiedad[$v1]){
+	 					agregaFilaPropiedades(obj.Propiedad[$v1]);
+						$v1++;
+	 				}
+	 			}
+	 		});
+	 		caracteristicas();
+	 		$("#btnAgregaCaract").click(function(){
+	 			
+	 			$clavePropiedad = $("#txtPropiedadesClave").val();
+	 			$valueCaract = $("#slcPropiedadesCaracteristicas").val();
+	 			$textCaract = $("#slcPropiedadesCaracteristicas option:selected").text();
+	 			$valorCaract = $("#txtPropiedadesCaracteristicaValor").val();
+	 			
+	 			$campos = $clavePropiedad+"@"+$valueCaract+"@"+$valorCaract;
+
+	 			$.ajax({
+		 			type: "POST",
+		 			url: "../control/control.php",
+		 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
+		 			success: function(data){
+		 				$('#listadoCaracteristicas tr:last').after("<tr><td>"+$textCaract+"</td><td>"+$valorCaract+"</td></tr>");
+		 			}
+	 			});
+
+	 		});
+		});
+		function agregaFilaPropiedades(reg){
+		$('#listadoPropiedades tr:last').after('<tr onclick="muestraPropiedad('+reg.clave+')"><td>'+reg.clave+'</td><td>'+reg.nombre+'</td><td></td><td>'+reg.monto_inquilino+'</td></tr>');
+		}
+		function muestraPropiedad(clave){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "recuperaUnaPropiedad", "clave": clave },
+	 			success: function(data){
+	 				$("#listadoCaracteristicas").html("<tr><td>Caracteristica</td><td>Valor</td></tr>");
+	 				
+	 				cargaCaracteristicas(clave);
+	 				obj = JSON.parse(data);
+	 				$("#txtPropiedadesClave").val(obj.Propiedad[0].clave);
+	 				$("#txtPropiedadesNombre").val(obj.Propiedad[0].nombre);
+	 				$("#txtPropiedadesMontoInquilino").val(obj.Propiedad[0].monto_inquilino);
+	 				$("#areaRegCaracteriticas").css('visibility', 'visible');
+	 			}
+	 		});
+		}
+		function caracteristicas(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "listaCaracteristicas" },
+	 			success: function(data){
+	 				$("#slcPropiedadesCaracteristicas").append(data);
+	 			}
+	 		});
+		}
+		function cargaCaracteristicas(clave){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "buscaCaracteristicas", "clavePropiedad": clave},
+	 			success: function(data){
+	 				$('#listadoCaracteristicas tr:last').after(data);
+	 			}
+	 		});
+		}
+	 </script>
 </head>
 <body>
+<br>
+<h1>Propiedades</h1>
+<table border="1" id="listadoPropiedades">
+	<tr>
+		<td>Clave</td><td>Propiedad</td><td>Propietario</td><td>Monto Generado</td>
+	</tr>
+</table>
+<br><br>
+Clave: <input type="text" id="txtPropiedadesClave"> <br>
+Nombre Propiedad <input type="text" id="txtPropiedadesNombre"> <br>
+Tipo Propiedad <select id="slcPropiedadesTipo"><option>opc1</option></select><br>
+Propietario <select id="slcPropiedadesPropietario"><option>opc1</option></select><br>
+Paga Mantenimiento <select id="slcPropiedadesMantenimiento"><option>SI</option><option>NO</option></select><br>
+Direccion: <input type="text" id="txtPropiedadesDireccion"> 
+Numero Ext: <input type="text" id="txtPropiedadesNE"> Int: <input type="text" id="txtPropiedadesNI"> <br>
+CP<input type="text" id="txtPropiedadesCP"> <br>
+Ciudad<input type="text" id="txtPropiedadesCiudad"> <br>
+Estado<input type="text" id="txtPropiedadesEstado"> <br>
+Valor Generado Inicial $<input type="text" id="txtPropiedadesValorInicial"> <br>
+Tipo de Moneda <input type="text" id="txtPropiedadesMoneda"> <br>
+Valor Tipo Cambio: <input type="text" id="txtPropiedadesCambio"> <br>
+Fecha Adquisición: <input type="text" id="txtPropiedadesAdquisicion"> <br>
+Valor Real Actual: <input type="text" id="txtPropiedadesValorActual"> <br>
+Monto Generado por Inquilino Actual: <input type="text" id="txtPropiedadesMontoInquilino"> <br>
 
+<div id="areaRegCaracteriticas">
+	<h3>Registro de Caracteristicas</h3>
+
+	Caracteristica: <select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select>    Valor:<input type="text" id="txtPropiedadesCaracteristicaValor"> <br>
+	<input type="button" value="Agregar" id="btnAgregaCaract">
+	<br>
+	<table id="listadoCaracteristicas" border="1">
+		<tr>
+			<td>Caracteristica</td><td>Valor</td>
+		</tr>
+	</table>
+</div>
+	
 </body>
 </html>
