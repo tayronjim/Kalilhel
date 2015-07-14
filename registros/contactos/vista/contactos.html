@@ -5,7 +5,20 @@
 	<title></title>
 	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	 <script type="text/javascript">
+	 	$cadena="";
 		$(document).ready(function(){
+			$("#SlcTipoCliente").change(function(){
+				$tipo = $("#SlcTipoCliente").val();
+				$(":input[type='text']").val('');
+				try{
+					$("#txtContactoNombre").val(obj.Contacto[$tipo].nombre);
+	 				$("#txtContactoEmail").val(obj.Contacto[$tipo].email);
+	 				$("#txtContactoTelefono").val(obj.Contacto[$tipo].telefono);
+				}
+				catch(err){}
+					
+			});
+
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -29,7 +42,7 @@
 		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+')"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
 		}
 		function muestraContacto(clave){
-				// alert(clave);
+				 // alert(clave);
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -37,14 +50,18 @@
 	 			success: function(data){
 	 				// alert(data);
 	 				obj = JSON.parse(data);
-	 				// obj.Contacto[$v1];
-	 				$("#txtContactoNombre").val(obj.Contacto[0].nombre);
-	 				$("#txtContactoEmail").val(obj.Contacto[0].email);
-	 				$("#txtContactoTelefono").val(obj.Contacto[0].telefono);
+	 				// alert(obj.ContactoΩ);
+	 				$cadena = obj;
+	 				$("#txtContactoNombre").val(obj.Contacto[1].nombre);
+	 				$("#txtContactoEmail").val(obj.Contacto[1].email);
+	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefono);
 	 				
 	 			}
 	 		});
 				
+		}
+		function cambiaInfoContacto(){
+			alert($cadena);
 		}
 	 </script>
 	
@@ -58,7 +75,7 @@
 	</tr>
 </table>
 <br>
-Tipo de Cliente: <select id="SlcTipoCliente"><option>Arrendatario</option><option>Contacto</option><option>Fiador</option> </select><br>
+Tipo de Cliente: <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select><br>
 Clave: <input type="text" id="txtContactoClave" disabled> <br><!-- autonumerico -->
 Nombre: <input type="text" id="txtContactoNombre" disabled><br>
 Email: <input type="text" id="txtContactoEmail" disabled><br>

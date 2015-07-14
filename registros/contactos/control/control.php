@@ -20,7 +20,7 @@
 	function recuperaUnContacto($clave){
 		$unContacto = unContacto($clave);
 		while($row = mysqli_fetch_assoc($unContacto)){
-			$contacto[] = $row;
+			$contacto[$row["tipoCliente"]] = $row;
 		}
 		$struct = array("Contacto" => $contacto);
 		print json_encode($struct);

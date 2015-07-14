@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaListadoPropiedades" },
+	 			success: function(data){
+	 				obj = JSON.parse(data);
+	 				$v1=0;
+	 				while(obj.Propiedades[$v1]){
+	 					$reg = obj.Propiedades[$v1];
+	 					
+	 					$('#listaPropiedades tr:last').after("<tr><td>"+$reg.propiedad+"</td><td>"+$reg.arrendatario+"</td><td>"+$reg.inicioContrato+"</td><td>Fin de Contrato</td><td>"+$reg.montoActual+"</td></tr>");
+	 					
+						$v1++;
+	 				}
+	 			}
+	 		});
+		});
+	</script>
+</head>
+<body>
+	<table border="1" id="listaPropiedades">
+		<tr>
+			<td>Propiedad</td><td>Arrendatario</td><td>Inicio de Contrato</td><td>Fin de Contrato</td><td>Renta Actual</td>
+		</tr>
+	</table>
+	<br><br>
+	Propiedad: <input type="text" ><br>
+	Arrendatario:<input type="text" ><br>
+	Inicio de Contrato: <input type="text" ><br>
+	Duración: <input type="text" ><br>
+	Monto Actual: <input type="text" ><br>
+	Deposito: <input type="text" ><br>
+	Se Regresa Desposito: []
+	Tiempo de Gracia: <input type="text" ><br>
+	Mantenimeinto: [SI,NO]
+	Monto del Mantenimiento: <input type="text" ><br>
+	Consepto: <input type="text" ><br>
+	Observaciones: <input type="text" ><br>
+	Estatus: []
+
+</body>
+</html>
