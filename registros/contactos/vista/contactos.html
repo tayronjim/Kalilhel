@@ -4,16 +4,65 @@
 <head>
 	<title></title>
 	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	 <script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	 <script type="text/javascript">
 	 	$cadena="";
 		$(document).ready(function(){
+			// inicio carga de archivos
+			var options = { 
+			    beforeSend: function() 
+			    {
+			        $("#progress").show();
+			        //clear everything
+			        $("#bar").width('0%');
+			        $("#message").html("");
+			        $("#percent").html("0%");
+			    },
+			    uploadProgress: function(event, position, total, percentComplete) 
+			    {
+			        $("#bar").width(percentComplete+'%');
+			        $("#percent").html(percentComplete+'%');
+			 
+			    },
+			    success: function() 
+			    {
+			        $("#bar").width('100%');
+			        $("#percent").html('100%');
+			 
+			    },
+			    complete: function(response) 
+			    {
+			        $("#message").html("<font color='green'>"+response.responseText+"</font>");
+			        $clave_cliente = $("#claveNombreFile").val();
+			        $tipo_documento = $("#tipoDocumentoFile").val();
+			        $archivo = $("#myfile").val();
+			        $descripcion = $("#descripcionFile").val();
+			        $cadena = $clave_cliente+"///"+$tipo_documento+"///"+$archivo+"///"+$descripcion+"///";
+			        almacenaArchivos($cadena);
+			        $('#listadoArchivos tr:last').after('<tr><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td></tr>');
+			    },
+			    error: function()
+			    {
+			        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+			 
+			    }
+			}; 
+ 
+    		$("#myForm").ajaxForm(options);
+			// fin carga de archivos
+
 			$("#SlcTipoCliente").change(function(){
 				$tipo = $("#SlcTipoCliente").val();
+
 				$(":input[type='text']").val('');
+				$("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
 				try{
+					$("#claveNombreFile").val(obj.Contacto[$tipo].clave);
+	 				$("#txtContactoClave").val(obj.Contacto[$tipo].clave);
 					$("#txtContactoNombre").val(obj.Contacto[$tipo].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[$tipo].email);
 	 				$("#txtContactoTelefono").val(obj.Contacto[$tipo].telefono);
+	 				muestraArchivos(obj.Contacto[$tipo].clave);
 				}
 				catch(err){}
 					
@@ -39,10 +88,12 @@
 	 		});
 		});
 		function agregaFilaContactos(reg){
-		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+')"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
+		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+');muestraArchivos('+reg.clave+');"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
 		}
 		function muestraContacto(clave){
 				 // alert(clave);
+				 listadoArchivos
+				 $("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -51,7 +102,10 @@
 	 				// alert(data);
 	 				obj = JSON.parse(data);
 	 				// alert(obj.ContactoΩ);
-	 				$cadena = obj;
+	 				// $cadena = obj;
+	 				$("#SlcTipoCliente").val('1');
+	 				$("#claveNombreFile").val(obj.Contacto[1].clave);
+	 				$("#txtContactoClave").val(obj.Contacto[1].clave);
 	 				$("#txtContactoNombre").val(obj.Contacto[1].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[1].email);
 	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefono);
@@ -60,13 +114,60 @@
 	 		});
 				
 		}
+		function muestraArchivos(clave){
+				// alert("muestra");
+				$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
+	 			success: function(data){
+	 				// alert(data);
+	 				// $objFile = JSON.stringify(data);
+	 				// alert($objFile);
+	 				$('#listadoArchivos tr:last').after(data);
+	 				  // objFile = JSON.parse(data);
+	 				// alert(objFile);
+	 				// $cadena = obj;
+	 				// $("#SlcTipoCliente").val('1');
+	 				// $("#claveNombreFile").val(obj.Contacto[1].clave);
+	 				// $("#txtContactoClave").val(obj.Contacto[1].clave);
+	 				// $("#txtContactoNombre").val(obj.Contacto[1].nombre);
+	 				// $("#txtContactoEmail").val(obj.Contacto[1].email);
+	 				// $("#txtContactoTelefono").val(obj.Contacto[1].telefono);
+	 				
+	 			}
+	 		});
+		}
+		function almacenaArchivos($cadena){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" : "almacenaArchivos", "cadena": $cadena },
+	 			success: function(data){
+	 				alert(data);
+	 				
+	 				
+	 			}
+	 		});
+		}
 		function cambiaInfoContacto(){
 			alert($cadena);
 		}
 	 </script>
+	 <style>
+		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
+		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
+	</style>
 	
 </head>
 <body>
+
+
+ 
+
+<br><br>
 <table border="1" id="listadoClientes">
 	<tr>
 		<td>Nombre</td>
@@ -85,7 +186,7 @@ Dirección: <input type="text" id="txtContactoDireccion" disabled> Numero Ext: <
 Codigo Postal: <input type="text" id="txtContactoCP" disabled><br>
 Ciudad / Municipio: <input type="text" id="txtContactoCiudad" disabled>
 Estado: <select id="SlcContactoEstado"><option value="1">Distrito Federal</option><option value="2">Aguascalientes</option> </select>
-<br>
+<!-- <br>
 <h5>Datos Facturacion</h5>
 Razon Social: <input type="text" id="txtFacturacionRS" disabled><br>
 Dirección Fiscal: <input type="text" id="txtFacturacionDF" disabled>
@@ -95,11 +196,40 @@ Codigo Postal: <input type="text" id="txtFacturacionCP" disabled><br>
 Municipio / Delegación: <input type="text" id="txtFacturacionMunicipio" disabled><br>
 Ciudad: <input type="text" id="txtFacturacionCiudad" disabled>
 Estado: <select id="SlcFacturacionEstado"><option value="1">Distrito Federal</option><option value="2">Aguascalientes</option> </select>
-<br>
+<br> -->
 <!-- <input type="button" value="Guardar"> <br> -->
 <!-- <input type="button" value="Eliminar"><br> -->
 <!-- <input type="button" value="Limpiar"><br> -->
-<input type="button" value="Agregar Documentos">
+<!-- <input type="button" value="Agregar Documentos"> -->
 <br>
+<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
+	
+	<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select>
+	<br><br>
+	<input type="file" size="60" name="myfile" id="myfile">
+	<br><br>
+	Descripción:<br> <textarea id="descripcionFile"></textarea>
+	<br><br>
+	<input type="submit" value="Cargar Archivo">
+	
+	<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
+	<input type="hidden" value="contactos" name="subdir">
+	
+ </form>
+ 
+ <br>
+  <div id="progress">
+        <div id="bar"></div>
+        <div id="percent">0%</div >
+</div>
+<br/>
+ 
+<div id="message"></div>
+ <br>
+<table border="1" id="listadoArchivos">
+	<tr>
+		<td>Tipo Documento</td><td>Descripción</td>
+	</tr>
+</table>
 </body>
 </html>
