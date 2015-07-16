@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
 <head>
 	<title></title>
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$("#tablaFiltroPropiedad").parent('div').hide();
+			$("#tablaFiltroArrendatario").parent('div').hide();
+			$("#pagaMantenimiento").change(function(){
+				if($(this).val()==0){
+					$("#montoMantenimiento").prop('disabled', true);
+				}
+				if($(this).val()==1){
+					$("#montoMantenimiento").prop('disabled', false);
+				}
+			});
+			
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -21,29 +33,164 @@
 	 				}
 	 			}
 	 		});
+	 		$(".txtBuscaPropiedad").keyup(function(){
+	 			$txtfiltronombre = $("#txtBuscaPropiedadNombre").val();
+	 			$txtfiltrotipo = $("#txtBuscaPropiedadTipo").val();
+	 			// alert($txtfiltronombre);
+	 			if($txtfiltronombre != "" || $txtfiltrotipo != ""){
+	 				$.ajax({
+			 			type: "POST",
+			 			url: "../control/control.php",
+			 			data: { "funcion" :  "filtraPropiedades", "txtfiltronombre": $txtfiltronombre, "txtfiltrotipo": $txtfiltrotipo},
+			 			success: function(data){
+			 				$("#tablaFiltroPropiedad").parent('div').show();
+			 				$("#tablaFiltroPropiedad").html('<tr><th>Nombre</th><th>Tipo</th><th>Direccion</th></tr>');
+			 				$("#tablaFiltroPropiedad tr:last").after(data);
+			 			}
+			 		});
+	 			}
+	 			else{$("#tablaFiltroPropiedad").parent('div').hide();} 
+		 			
+	 		});
+	 		$(".txtBuscaCliente").keyup(function(){
+	 			$txtFiltroNombre = $("#txtBuscaClienteNombre").val();
+	 			if($txtFiltroNombre != ""){
+	 				$.ajax({
+			 			type: "POST",
+			 			url: "../control/control.php",
+			 			data: { "funcion" :  "filtraArrendatario", "txtfiltronombre": $txtFiltroNombre},
+			 			success: function(data){
+			 				$("#tablaFiltroArrendatario").parent('div').show();
+			 				$("#tablaFiltroArrendatario").html('<tr><th>Nombre</th><th>RFC</th></tr>');
+			 				$("#tablaFiltroArrendatario tr:last").after(data);
+			 			}
+			 		});
+	 			}
+
+	 		});
+
 		});
+		function propiedadSeleccionada(clave,nombre){
+			$("#lblPropiedad").text(nombre);
+			$("#hideClavePropiedad").val(clave);
+			$("#tablaFiltroPropiedad").parent('div').hide();
+			$("#txtBuscaPropiedadNombre").val('');
+	 		$("#txtBuscaPropiedadTipo").val('');
+		}
+		function arrendatarioSeleccionado(clave,nombre){
+			$("#lblArrendatario").text(nombre);
+			$("#hideClaveArrendatario").val(clave);
+			$("#tablaFiltroArrendatario").parent('div').hide();
+			$("#txtBuscaClienteNombre").val('');
+	 		
+		}
+		function guardaRenta(){
+			$clavePropiedad = $("#hideClavePropiedad").val();
+			$claveArrendatario = $("#hideClaveArrendatario").val();
+			$inicioContrato = $("#inicioContrato").val();
+			$duracionContrato = $("#duracionContrato").val();
+			$montoInicial = $("#montoInicial").val();
+			$montoDeposito = $("#montoDeposito").val();
+			$tiempoGracia = $("#tiempoGracia").val();
+			$regresaDeposito = $("#regresaDeposito").val();
+			$pagaMantenimiento = $("#pagaMantenimiento").val();
+			$montoMantenimiento = $("#montoMantenimiento").val();
+			$areaConcepto = $("#areaConcepto").val();
+			$areaObservaciones = $("#areaObservaciones").val();
+			$fechaArr = $("#inicioContrato").val().split('-');
+			$fechaArrMes = parseInt($fechaArr[1]) + parseInt($duracionContrato);
+			$fechaArrAnio = $fechaArr[0];
+			if($fechaArrMes>12){$fechaArrAnio = parseInt($fechaArr[0])+1; $fechaArrMes = $fechaArrMes-12;}
+			if($fechaArrMes<=9){$fechaArrMes=""+0+$fechaArrMes;}
+			$nuevaFecha = $fechaArrAnio+"-"+$fechaArrMes+"-"+$fechaArr[2];
+			$("#fechaRenovacion").val($nuevaFecha);
+			alert($nuevaFecha);
+			$cadena = "";
+			$cadena += $clavePropiedad+").("+$claveArrendatario+").("+$inicioContrato+").("+$duracionContrato+").(";
+			$cadena += $montoInicial+").("+$montoDeposito+").("+$tiempoGracia+").("+$regresaDeposito+").(";
+			$cadena += $pagaMantenimiento+").("+$montoMantenimiento+").("+$areaConcepto+").("+$areaObservaciones;
+			// $.ajax({
+	 	// 		type: "POST",
+	 	// 		url: "../control/control.php",
+	 	// 		data: { "funcion" :  "guardaRenta", "cadena": $cadena},
+	 	// 		success: function(data){
+	 	// 			alert(data);
+	 	// 		}
+	 	// 	});
+		}
+/*
+hideClavePropiedad
+hideClaveArrendatario
+inicioContrato
+duracionContrato
+montoInicial
+montoActual
+montoDeposito
+tiempoGracia
+regresaDeposito
+pagaMantenimiento
+montoMantenimiento
+areaConcepto
+areaObservaciones
+btnGuardaRenta
+*/
+		
 	</script>
 </head>
 <body>
+
 	<table border="1" id="listaPropiedades">
 		<tr>
 			<td>Propiedad</td><td>Arrendatario</td><td>Inicio de Contrato</td><td>Fin de Contrato</td><td>Renta Actual</td>
 		</tr>
 	</table>
-	<br><br>
-	Propiedad: <input type="text" ><br>
-	Arrendatario:<input type="text" ><br>
-	Inicio de Contrato: <input type="text" ><br>
-	Duración: <input type="text" ><br>
-	Monto Actual: <input type="text" ><br>
-	Deposito: <input type="text" ><br>
-	Se Regresa Desposito: []
-	Tiempo de Gracia: <input type="text" ><br>
-	Mantenimeinto: [SI,NO]
-	Monto del Mantenimiento: <input type="text" ><br>
-	Consepto: <input type="text" ><br>
-	Observaciones: <input type="text" ><br>
-	Estatus: []
 
+	<br><br>
+
+	Buscar Propiedad: 
+	<input id="txtBuscaPropiedadNombre" class="txtBuscaPropiedad" placeholder="Nombre de Propiedad" type="text" > 
+	<input id="txtBuscaPropiedadTipo" class="txtBuscaPropiedad" placeholder="Tipo de Propiedad" type="text" >
+	<br>
+	<div>
+		<table id="tablaFiltroPropiedad" border="1">
+			<tr><th>Nombre</th><th>Tipo</th><th>Direccion</th></tr>
+		</table>
+	</div>
+	<br>
+	Propiedad:<label id="lblPropiedad"></label>
+	<input type="hidden" id="hideClavePropiedad" value="">
+	<br><br>
+
+	Buscar Arrendatario:
+	<input id="txtBuscaClienteNombre" class="txtBuscaCliente" placeholder="Nombre de Cliente" type="text" > 
+	<br>
+	<div>
+		<table id="tablaFiltroArrendatario" border="1">
+			<tr><th>Nombre</th><th>RFC</th></tr>
+		</table>
+	</div>
+	<r>
+	Arrendatario: <label id="lblArrendatario"></label>
+	<input type="hidden" id="hideClaveArrendatario" value="">
+	<br><br>
+
+	<input type="hidden" value="0" id="claveRentaPropiedad">
+	Inicio de Contrato: <input type="date" id="inicioContrato" ><br>
+	Duración: <input type="text" id="duracionContrato" value="0"> Meses<br>
+
+	Fecha de Renovacion: <input type="date" id="fechaRenovacion" disabled><br>
+	Monto Inicial: $<input type="text" id="montoInicial"><br>
+	Monto Actual: $<input type="text" id="montoActual" disabled><br>
+	Deposito: $<input type="text" id="montoDeposito"><br>
+	Se Regresa Desposito: <select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select><br>
+	Tiempo de Gracia: <input type="text" id="tiempoGracia" value="0"> Meses<br>
+	Mantenimeinto: <select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select><br>
+	Monto del Mantenimiento: $<input type="text" id="montoMantenimiento" value="0" disabled><br>
+	Consepto: <textarea id="areaConcepto"></textarea><br>
+	Observaciones: <textarea id="areaObservaciones"></textarea><br>
+	<!-- Estatus: <select><option></option><option></option><option></option></select> -->
+	<br>
+	<input type="button" value="Guardar" onclick="guardaRenta()" id="btnGuardaRenta">
+	<input type="button" value="Terminar Contrato">
 </body>
 </html>

@@ -35,7 +35,7 @@
 		$listaArchivos = listaArchivos($clave);
 		$filasArchivos = "";
 		while($row = mysqli_fetch_object($listaArchivos)){
-			$filasArchivos .= '<tr><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'">Abrir Archivo</a></td></tr>';
+			$filasArchivos .= '<tr><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
 		}
 		print $filasArchivos;
 	}

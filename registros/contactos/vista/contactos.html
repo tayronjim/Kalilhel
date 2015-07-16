@@ -47,6 +47,10 @@
 			 
 			    }
 			}; 
+			$("#listadoClientes").on('click','td',function(){
+				$("#listadoClientes td").css('background-color','#ffffff');
+				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
+			});
  
     		$("#myForm").ajaxForm(options);
 			// fin carga de archivos
@@ -92,7 +96,7 @@
 		}
 		function muestraContacto(clave){
 				 // alert(clave);
-				 listadoArchivos
+				 // $(this).css("background-color","#123456");
 				 $("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
 				$.ajax({
 	 			type: "POST",
@@ -150,6 +154,7 @@
 	 			}
 	 		});
 		}
+
 		function cambiaInfoContacto(){
 			alert($cadena);
 		}
@@ -170,9 +175,9 @@
 <br><br>
 <table border="1" id="listadoClientes">
 	<tr>
-		<td>Nombre</td>
-		<td>Email</td>
-		<td>Telefono</td>
+		<th>Nombre</th>
+		<th>Email</th>
+		<th>Telefono</th>
 	</tr>
 </table>
 <br>
