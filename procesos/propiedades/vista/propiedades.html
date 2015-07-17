@@ -27,7 +27,7 @@
 	 				while(obj.Propiedades[$v1]){
 	 					$reg = obj.Propiedades[$v1];
 	 					
-	 					$('#listaPropiedades tr:last').after("<tr><td>"+$reg.propiedad+"</td><td>"+$reg.arrendatario+"</td><td>"+$reg.inicioContrato+"</td><td>Fin de Contrato</td><td>"+$reg.montoActual+"</td></tr>");
+	 					$('#listaPropiedades tr:last').after("<tr onclick='muestraRentaPropiedad("+$reg.id+");muestraArchivos("+$reg.id+");'><td>"+$reg.propiedad+"</td><td>"+$reg.arrendatario+"</td><td>"+$reg.inicioContrato+"</td><td>Fin de Contrato</td><td>"+$reg.montoActual+"</td></tr>");
 	 					
 						$v1++;
 	 				}
@@ -68,6 +68,10 @@
 	 			}
 
 	 		});
+	 		$("#listaPropiedades").on('click','td',function(){
+				$("#listaPropiedades td").css('background-color','#ffffff');
+				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
+			});
 
 		});
 		function propiedadSeleccionada(clave,nombre){
@@ -109,14 +113,14 @@
 			$cadena += $clavePropiedad+").("+$claveArrendatario+").("+$inicioContrato+").("+$duracionContrato+").(";
 			$cadena += $montoInicial+").("+$montoDeposito+").("+$tiempoGracia+").("+$regresaDeposito+").(";
 			$cadena += $pagaMantenimiento+").("+$montoMantenimiento+").("+$areaConcepto+").("+$areaObservaciones;
-			// $.ajax({
-	 	// 		type: "POST",
-	 	// 		url: "../control/control.php",
-	 	// 		data: { "funcion" :  "guardaRenta", "cadena": $cadena},
-	 	// 		success: function(data){
-	 	// 			alert(data);
-	 	// 		}
-	 	// 	});
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "guardaRenta", "cadena": $cadena},
+	 			success: function(data){
+	 				alert(data);
+	 			}
+	 		});
 		}
 /*
 hideClavePropiedad
@@ -135,13 +139,82 @@ areaObservaciones
 btnGuardaRenta
 */
 		
+		function muestraRentaPropiedad(clave){
+				
+				// $("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
+				$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "recuperaRegistro", "clave": clave },
+	 			success: function(data){
+	 				// alert(data);
+	 				$valores = data.split(').(');
+
+	 					// 0 $row->id.").(".
+	 					// 1 $row->clave_propiedad.").(".
+	 					// 2 $row->clave_arrendatario.").(".
+	 					// 3 $row->inicioContrato.").(".
+	 					// 4 $row->duracion.").(".
+	 					// 5 $row->montoInicial.").(".
+	 					// 6 $row->montoActual.").(".
+	 					// 7 $row->deposito.").(".
+	 					// 8 $row->regresaDeposito.").(".
+	 					// 9 $row->gracia.").(".
+	 					// 10 $row->mantenimiento.").(".
+	 					// 11 $row->montoMantenimiento.").(".
+	 					// 12 $row->consepto.").(".
+	 					// 13 $row->observaciones.").(".
+	 					// 14 $row->clave_estatus.").(".
+	 					// 15 $row->propiedad.").(".
+	 					// 16 $row->arrendatario.").(".
+	 					// 17 $row->tipo
+	 					// 18 $row->fechaRenovacion
+
+	 					$("#claveRentaPropiedad").val($valores[0]);
+	 					$("#hideClavePropiedad").val($valores[1]);
+						$("#hideClaveArrendatario").val($valores[2]);
+						$("#inicioContrato").val($valores[3]);
+						$("#duracionContrato").val($valores[4]);
+						$("#montoInicial").val($valores[5]);
+						$("#montoActual").val($valores[6]);
+						$("#montoDeposito").val($valores[7]);
+						$("#tiempoGracia").val($valores[9]);
+						$("#regresaDeposito").val($valores[8]);
+						$("#pagaMantenimiento").val($valores[10]);
+						$("#montoMantenimiento").val($valores[11]);
+						$("#areaConcepto").val($valores[12]);
+						$("#areaObservaciones").val($valores[13]);
+						$("#lblPropiedad").text($valores[17]+" - "+$valores[15]);
+						$("#lblArrendatario").text($valores[16]);
+						$("#fechaRenovacion").val($valores[18]);
+	 				
+	 			}
+	 		});
+				
+		}
+		function muestraArchivos(){
+
+		}
+		function terminaContrato(){
+			$claveID = $("#claveRentaPropiedad").val();
+			if($claveID == 0){alert("no se ha seleccionado propiedad en renta"); return 0;}
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "terminaContrato", "clave": $claveID },
+	 			success: function(data){
+	 				location.reload(true);
+	 			}
+	 		});
+			
+		}
 	</script>
 </head>
 <body>
 
 	<table border="1" id="listaPropiedades">
 		<tr>
-			<td>Propiedad</td><td>Arrendatario</td><td>Inicio de Contrato</td><td>Fin de Contrato</td><td>Renta Actual</td>
+			<th>Propiedad</th><th>Arrendatario</th><th>Inicio de Contrato</th><th>Fin de Contrato</th><th>Renta Actual</th>
 		</tr>
 	</table>
 
@@ -169,7 +242,7 @@ btnGuardaRenta
 			<tr><th>Nombre</th><th>RFC</th></tr>
 		</table>
 	</div>
-	<r>
+	<br>
 	Arrendatario: <label id="lblArrendatario"></label>
 	<input type="hidden" id="hideClaveArrendatario" value="">
 	<br><br>
@@ -191,6 +264,6 @@ btnGuardaRenta
 	<!-- Estatus: <select><option></option><option></option><option></option></select> -->
 	<br>
 	<input type="button" value="Guardar" onclick="guardaRenta()" id="btnGuardaRenta">
-	<input type="button" value="Terminar Contrato">
+	<input type="button" value="Terminar Contrato" onclick="terminaContrato()">
 </body>
 </html>

@@ -6,7 +6,8 @@
 		case 'filtraPropiedades': filtraPropiedades($_POST['txtfiltronombre'],$_POST['txtfiltrotipo']); break;
 		case 'filtraArrendatario': filtraArrendatario($_POST['txtfiltronombre']); break;
 		case 'guardaRenta': guardaRenta($_POST['cadena']); break;
-		case 'recuperaRegistro': recuperaRegistro($_POST['clave']);
+		case 'recuperaRegistro': recuperaRegistro($_POST['clave']); break;
+		case 'terminaContrato': terminaContrato($_POST['clave']); break;
 
 	}
 	function cargaListadoPropiedades(){
@@ -42,11 +43,14 @@
 		$res = registroRenta($clave);
 		$resultado = "";
 		while($row = mysqli_fetch_object($res)){
-			$resultado .= "---";
+			$resultado .= $row->id.").(".$row->clave_propiedad.").(".$row->clave_arrendatario.").(".$row->inicioContrato.").(".$row->duracion.").(".$row->montoInicial.").(".$row->montoActual.").(".$row->deposito.").(".$row->regresaDeposito.").(".$row->gracia.").(".$row->mantenimiento.").(".$row->montoMantenimiento.").(".$row->consepto.").(".$row->observaciones.").(".$row->clave_estatus.").(".$row->propiedad.").(".$row->arrendatario.").(".$row->tipo.").(".$row->fechaRenovacion;
 		}
 		echo $resultado;
 
 	}
-
+	function terminaContrato($claveID){
+		$resultado = updateTerminaContrato($claveID);
+		return $resultado;
+	}
 	
 ?>

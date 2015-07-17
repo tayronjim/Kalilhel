@@ -37,9 +37,13 @@
 			        $tipo_documento = $("#tipoDocumentoFile").val();
 			        $archivo = $("#myfile").val();
 			        $descripcion = $("#descripcionFile").val();
+			        $explode= $archivo.split(".");
+					$extension=$explode.pop();
+					$nombre_archivo = $tipo_documento+"_"+$clave_cliente+"."+$extension;
 			        $cadena = $clave_cliente+"///"+$tipo_documento+"///"+$archivo+"///"+$descripcion+"///";
+
 			        almacenaArchivos($cadena);
-			        $('#listadoArchivos tr:last').after('<tr><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td></tr>');
+			        $('#listadoArchivos tr:last').after('<tr><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			    },
 			    error: function()
 			    {
@@ -95,9 +99,8 @@
 		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+');muestraArchivos('+reg.clave+');"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
 		}
 		function muestraContacto(clave){
-				 // alert(clave);
-				 // $(this).css("background-color","#123456");
-				 $("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
+				
+				$("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -105,15 +108,12 @@
 	 			success: function(data){
 	 				// alert(data);
 	 				obj = JSON.parse(data);
-	 				// alert(obj.ContactoΩ);
-	 				// $cadena = obj;
 	 				$("#SlcTipoCliente").val('1');
 	 				$("#claveNombreFile").val(obj.Contacto[1].clave);
 	 				$("#txtContactoClave").val(obj.Contacto[1].clave);
 	 				$("#txtContactoNombre").val(obj.Contacto[1].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[1].email);
 	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefono);
-	 				
 	 			}
 	 		});
 				
@@ -125,20 +125,9 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
 	 			success: function(data){
-	 				// alert(data);
-	 				// $objFile = JSON.stringify(data);
-	 				// alert($objFile);
+
 	 				$('#listadoArchivos tr:last').after(data);
-	 				  // objFile = JSON.parse(data);
-	 				// alert(objFile);
-	 				// $cadena = obj;
-	 				// $("#SlcTipoCliente").val('1');
-	 				// $("#claveNombreFile").val(obj.Contacto[1].clave);
-	 				// $("#txtContactoClave").val(obj.Contacto[1].clave);
-	 				// $("#txtContactoNombre").val(obj.Contacto[1].nombre);
-	 				// $("#txtContactoEmail").val(obj.Contacto[1].email);
-	 				// $("#txtContactoTelefono").val(obj.Contacto[1].telefono);
-	 				
+	 					
 	 			}
 	 		});
 		}

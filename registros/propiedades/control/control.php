@@ -7,6 +7,8 @@
 		case 'listaCaracteristicas': listaCaracteristicas(); break;
 		case 'buscaCaracteristicas': buscaCaracteristicas($_POST['clavePropiedad']); break;
 		case 'agregaCaracteristica': agregaCaracteristica($_POST['valores']); break;
+		case 'almacenaArchivos': almacenaArchivos($_POST['cadena']); break;
+		case 'muestraArchivos': muestraArchivos($_POST['clave']); break;
 	}
 
 	function cargaListadoPropiedad(){
@@ -44,5 +46,17 @@
 	function agregaCaracteristica($valores){
 		$agregaCaracteristica = agregaCaract($valores);
 		
+	}
+	function almacenaArchivos($cadena){
+		$archivos = guardaArchivos($cadena);
+		echo $archivos;
+	}
+	function muestraArchivos($clave){
+		$listaArchivos = listaArchivos($clave);
+		$filasArchivos = "";
+		while($row = mysqli_fetch_object($listaArchivos)){
+			$filasArchivos .= '<tr><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/propiedades/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
+		}
+		print $filasArchivos;
 	}
 ?>

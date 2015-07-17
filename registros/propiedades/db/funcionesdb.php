@@ -42,4 +42,25 @@
 		unconnectdb($mysqli);
 		return $resultado;
 	}
+	function guardaArchivos($cadena){
+		$descadena = explode('///', $cadena);
+		$clave_propiedad = $descadena[0];
+        $tipo_documento = $descadena[1];
+        $archivo = $descadena[2];
+        $descripcion = $descadena[3];
+        $explode= explode(".", $archivo);
+		$extension=array_pop($explode);
+		$nombre_archivo = $tipo_documento."_".$clave_propiedad.".".$extension;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("INSERT INTO `documentos` (`clave_propiedad`, `tipo_documento`, `nombre_archivo`, `descripcion`) VALUES (".$clave_propiedad.", '".$tipo_documento."', '".$nombre_archivo."', '".$descripcion."')");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function listaArchivos($clave){
+		$mysqli = connectdb();
+		// $resultado = $mysqli->query("SELECT * FROM documentos WHERE clave_cliente=".$clave." or clave_cliente in (SELECT clave from contactos where clave_padre=".$clave.")");
+		$resultado = $mysqli->query("SELECT * FROM documentos WHERE clave_propiedad=".$clave);
+		unconnectdb($mysqli);
+		return $resultado;
+	}
 ?>

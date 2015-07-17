@@ -14,6 +14,7 @@
 		$query .= " on prop.clave = enrenta.clave_propiedad";
 		$query .= " LEFT join contactos";
 		$query .= " on contactos.clave = enrenta.`clave_arrendatario`";
+		$query .= " WHERE enrenta.clave_estatus = 2 or enrenta.clave_estatus = 4";
 	
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
@@ -59,8 +60,22 @@
 	}
 	function registroRenta($clave){
 		$mysqli = connectdb();
-		$query = "select * from propiedades_renta where id = ".$clave;
+		$query = "SELECT enrenta.*, prop.nombre as propiedad, contactos.nombre as arrendatario, `tipo_propiedad`.`descripcion` as tipo ";
+		$query .= "FROM propiedades_renta as enrenta ";
+		$query .= "inner join propiedades as prop ";
+		$query .= "on prop.clave = enrenta.clave_propiedad ";
+		$query .= "LEFT join contactos ";
+		$query .= "on contactos.clave = enrenta.`clave_arrendatario` ";
+		$query .= "LEFT JOIN tipo_propiedad on tipo_propiedad.`clave_propiedad`=prop.`tipo_propiedad` ";
+		$query .= "where enrenta.id = ".$clave;
 		
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function updateTerminaContrato($claveID){
+		$mysqli = connectdb();
+		$query = "UPDATE `propiedades_renta` SET clave_estatus = 5, fechaRenovacion=NULL, fechaTerminoContrato=NOW() WHERE id=".$claveID;
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
 		return $resultado;

@@ -4,9 +4,53 @@
 <head>
 	<title></title>
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$("#areaRegCaracteriticas").css('visibility', 'hidden');
+
+			var options = { 
+			    beforeSend: function() 
+			    {
+			        $("#progress").show();
+			        //clear everything
+			        $("#bar").width('0%');
+			        $("#message").html("");
+			        $("#percent").html("0%");
+			    },
+			    uploadProgress: function(event, position, total, percentComplete) 
+			    {
+			        $("#bar").width(percentComplete+'%');
+			        $("#percent").html(percentComplete+'%');
+			 
+			    },
+			    success: function() 
+			    {
+			        $("#bar").width('100%');
+			        $("#percent").html('100%');
+			 
+			    },
+			    complete: function(response) 
+			    {
+			        $("#message").html("<font color='green'>"+response.responseText+"</font>");
+			        $clave_propiedad = $("#claveNombreFile").val();
+			        $tipo_documento = $("#tipoDocumentoFile").val();
+			        $archivo = $("#myfile").val();
+			        $descripcion = $("#descripcionFile").val();
+			        $cadena = $clave_propiedad+"///"+$tipo_documento+"///"+$archivo+"///"+$descripcion+"///";
+			        $explode= $archivo.split(".");
+					$extension=$explode.pop();
+					$nombre_archivo = $tipo_documento+"_"+$clave_propiedad+"."+$extension;
+			        almacenaArchivos($cadena);
+			        $('#listadoArchivos tr:last').after('<tr><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			    },
+			    error: function()
+			    {
+			        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+			 
+			    }
+			}; 
+			$("#myForm").ajaxForm(options);
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -40,9 +84,13 @@
 	 			});
 
 	 		});
+	 		$("#listadoPropiedades").on('click','td',function(){
+				$("#listadoPropiedades td").css('background-color','#ffffff');
+				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
+			});
 		});
 		function agregaFilaPropiedades(reg){
-		$('#listadoPropiedades tr:last').after('<tr onclick="muestraPropiedad('+reg.clave+')"><td>'+reg.clave+'</td><td>'+reg.nombre+'</td><td></td><td>'+reg.monto_inquilino+'</td></tr>');
+		$('#listadoPropiedades tr:last').after('<tr onclick="muestraPropiedad('+reg.clave+'); muestraArchivos('+reg.clave+')"><td>'+reg.clave+'</td><td>'+reg.nombre+'</td><td></td><td>'+reg.monto_inquilino+'</td></tr>');
 		}
 		function muestraPropiedad(clave){
 			$.ajax({
@@ -54,6 +102,7 @@
 	 				
 	 				cargaCaracteristicas(clave);
 	 				obj = JSON.parse(data);
+	 				$("#claveNombreFile").val(obj.Propiedad[0].clave);
 	 				$("#txtPropiedadesClave").val(obj.Propiedad[0].clave);
 	 				$("#txtPropiedadesNombre").val(obj.Propiedad[0].nombre);
 	 				$("#txtPropiedadesMontoInquilino").val(obj.Propiedad[0].monto_inquilino);
@@ -81,14 +130,43 @@
 	 			}
 	 		});
 		}
+		function almacenaArchivos($cadena){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" : "almacenaArchivos", "cadena": $cadena },
+	 			success: function(data){
+	 				alert(data);
+	 			}
+	 		});
+		}
+		function muestraArchivos(clave){
+				// alert("muestra");
+				$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
+	 			success: function(data){
+
+	 				$('#listadoArchivos tr:last').after(data);
+	 				
+	 			}
+	 		});
+		}
 	 </script>
+	 <style>
+		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
+		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
+	</style>
 </head>
 <body>
 <br>
 <h1>Propiedades</h1>
 <table border="1" id="listadoPropiedades">
 	<tr>
-		<td>Clave</td><td>Propiedad</td><td>Propietario</td><td>Monto Generado</td>
+		<th>Clave</th><th>Propiedad</th><th>Propietario</th><th>Monto Generado</th>
 	</tr>
 </table>
 <br><br>
@@ -121,6 +199,34 @@ Monto Generado por Inquilino Actual: <input type="text" id="txtPropiedadesMontoI
 		</tr>
 	</table>
 </div>
+<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
 	
+	<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="doc1">Documento 1</option><option value="doc2">Documento 2</option></select>
+	<br><br>
+	<input type="file" size="60" name="myfile" id="myfile">
+	<br><br>
+	Descripción:<br> <textarea id="descripcionFile"></textarea>
+	<br><br>
+	<input type="submit" value="Cargar Archivo">
+	
+	<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
+	<input type="hidden" value="propiedades" name="subdir">
+	
+ </form>
+ 
+ <br>
+  <div id="progress">
+        <div id="bar"></div>
+        <div id="percent">0%</div >
+</div>
+<br/>
+ 
+<div id="message"></div>
+ <br>
+<table border="1" id="listadoArchivos">
+	<tr>
+		<td>Tipo Documento</td><td>Descripción</td>
+	</tr>
+</table>
 </body>
 </html>
