@@ -9,6 +9,9 @@
 		case 'agregaCaracteristica': agregaCaracteristica($_POST['valores']); break;
 		case 'almacenaArchivos': almacenaArchivos($_POST['cadena']); break;
 		case 'muestraArchivos': muestraArchivos($_POST['clave']); break;
+		case 'guardaRegistro': guardaRegistro($_POST['cadena']); break;
+			# code...
+			break;
 	}
 
 	function cargaListadoPropiedad(){
@@ -58,5 +61,9 @@
 			$filasArchivos .= '<tr><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/propiedades/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
 		}
 		print $filasArchivos;
+	}
+	function guardaRegistro($cadena){
+		// $datos = explode(').(',$cadena);
+		$respAgregaPropiedad = agregaPropiedad($cadena);
 	}
 ?>

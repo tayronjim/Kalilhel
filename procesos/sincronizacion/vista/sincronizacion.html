@@ -2,6 +2,34 @@
 <html>
 <head>
 	<title></title>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+	
+	});
+	function sincClientes(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funsion" :  "sincClientes" },
+ 			success: function(data){
+ 				alert(data);
+ 				alert("Clientes Sincronziados");
+ 			}
+ 		});
+	}
+	function sincPropiedades(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funsion" :  "sincPropiedades" },
+ 			success: function(data){
+ 				alert(data);
+ 				alert("Propiedades Sincronziados");
+ 			}
+ 		});
+	}
+	</script>
 </head>
 <body>
 <table>
@@ -9,10 +37,10 @@
 		<th></th>
 	</tr>
 	<tr>
-		<td>Descargar Catalogo de Clientes</td><td><input type="button" value="Descargar" id="btnDescargaClientes"></td>
+		<td>Descargar Catalogo de Clientes</td><td><input type="button" onclick="sincClientes();" value="Descargar" id="btnDescargaClientes"></td>
 	</tr>
 	<tr>
-		<td>Descargar Catalogo de Propiedades</td><td><input type="button" value="Descargar" id="btnDescargaPropiedades"></td>
+		<td>Descargar Catalogo de Propiedades</td><td><input type="button" onclick="sincPropiedades();" value="Descargar" id="btnDescargaPropiedades"></td>
 	</tr>
 </table>
 

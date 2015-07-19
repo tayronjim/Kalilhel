@@ -1,6 +1,6 @@
 <?php
-$fecha1 = new DateTime("2014-10-13 17:35:04");
-$fecha2 = new DateTime("2015-07-16");
+$fecha1 = new DateTime("2015-10-13 19:35:04"); //xml
+$fecha2 = new DateTime("2015-10-13 18:35:04"); //registro
 $interval = $fecha1->diff($fecha2);
 // $interval = $fecha2->diff($fecha1);
 $fechaXML = "13.Oct.14 17:35:04";
@@ -9,7 +9,10 @@ $fecha = explode('.',$s[0]);
 $dia = $fecha[0];
 $mesLetra = $fecha[1];
 $anio2d = $fecha[2];
-// echo $interval->format('%R%a')+0;
+// echo $interval->format('%R%i')+0;
+print_r($interval);
+echo "<br>";
+echo $interval->invert;
 switch ($mesLetra) {
 	case 'Ene': $mes = '01'; break;
 	case 'Feb': $mes = '02'; break;
@@ -28,7 +31,7 @@ switch ($mesLetra) {
 		# code...
 		break;
 }
-echo $anio2d."-".$mes."-".$dia;
+// echo $anio2d."-".$mes."-".$dia;
 
     
 ?>

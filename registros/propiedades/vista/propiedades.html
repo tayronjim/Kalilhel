@@ -153,6 +153,36 @@
 	 			}
 	 		});
 		}
+		function guardaRegistro(){
+
+			$clave =		$("txtPropiedadesNombre").val();
+			$tipo =			$("slcPropiedadesTipo").val();
+			$propietario =	$("slcPropiedadesPropietario").val();
+			$pagaM =		$("slcPropiedadesMantenimiento").val();
+			$direccion =	$("txtPropiedadesDireccion").val();
+			$nExt = 		$("txtPropiedadesNE").val();
+			$nInt = 		$("txtPropiedadesNI").val();
+			$cp =			$("txtPropiedadesCP").val();
+			$ciudad =		$("txtPropiedadesCiudad").val();
+			$estado =		$("txtPropiedadesEstado").val();
+			$valorGInicial= $("txtPropiedadesValorInicial").val();
+			$moneda =		$("txtPropiedadesMoneda").val();
+			$cambio =		$("txtPropiedadesCambio").val();
+			$fechaAdquisicion=$("txtPropiedadesAdquisicion").val();
+			$valorRActual =	$("txtPropiedadesValorActual").val();
+			$montoInquilino=$("txtPropiedadesMontoInquilino").val();
+
+			$cadena = $tipo.").(".$propietario.").(".$pagaM.").(".$direccion.").(".$nExt.").(".$nInt.").(".$cp.").(".$ciudad.").(".$estado.").(".$valorGInicial.").(".$moneda.").(".$cambio.").(".v$fechaAdquisicion.").(".$valorRActual.").(".$valorRActual.").(".$montoInquilino;
+
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "guardaRegistro", "cadena":$cadena},
+	 			success: function(data){
+	 				
+	 			}
+	 		});
+		}
 	 </script>
 	 <style>
 		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
@@ -164,11 +194,26 @@
 <body>
 <br>
 <h1>Propiedades</h1>
-<table border="1" id="listadoPropiedades">
+<table width="800px" border="1">
 	<tr>
-		<th>Clave</th><th>Propiedad</th><th>Propietario</th><th>Monto Generado</th>
+		<td width="50%">
+			<table border="1" id="listadoPropiedades">
+				<tr>
+					<th>Clave</th><th>Propiedad</th><th>Propietario</th><th>Monto Generado</th>
+				</tr>
+			</table>
+		</td>
+		<td width="25%"></td>
+		<td width="25%">
+			
+			<input type="button" value="Nuevo Registro">
+			<br><br>
+			<input type="button" value="Guardar Registro" onclick="guardaRegistro()">
+		</td>
 	</tr>
 </table>
+
+
 <br><br>
 Clave: <input type="text" id="txtPropiedadesClave"> <br>
 Nombre Propiedad <input type="text" id="txtPropiedadesNombre"> <br>
