@@ -1,12 +1,6 @@
-<?php
-	function connectdb(){
-		$connectdb = new mysqli("localhost", "root", "root", "kalilhel");
-		mysqli_set_charset( $connectdb, 'utf8' );
-		return $connectdb;
-	}
-	function unconnectdb($connectdb){
-		$connectdb->close();
-	}
+<?php 
+	include("../../../connect_db/connect_db.php");
+
 	function recuperaPropiedades(){
 		$mysqli = connectdb();
 		$resultado = $mysqli->query("SELECT clave, nombre, monto_inquilino FROM propiedades");
@@ -15,10 +9,31 @@
 	}
 	function unaPropiedad($clave){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, nombre, monto_inquilino FROM propiedades WHERE clave=".$clave);
+		$resultado = $mysqli->query("SELECT * FROM propiedades WHERE clave=".$clave);
 		unconnectdb($mysqli);
 		return $resultado;
 	}
+	function recuperaTiposPropiedad(){
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT * FROM tipo_propiedad");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+
+	function recuperaPropietarios(){
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT * FROM propietario");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+
+	function recuperaEstados(){
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT * FROM estados");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+
 	function listadoCaracteristicas(){
 		$mysqli = connectdb();
 		$resultado = $mysqli->query("SELECT clave, nombre, tipo FROM lista_caracteristicas");
@@ -35,28 +50,37 @@
 		return $resultado;
 	}
 	function agregaPropiedad($cadena){
-		$datos = explode(').(',$cadena);
+		$datos = explode(')+(',$cadena);
 
-		$tipo =			$datos[0];
-		$propietario =	$datos[1];
-		$pagaM =		$datos[2];
-		$direccion =	$datos[3];
-		$nExt = 		$datos[4];
-		$nInt = 		$datos[5];
-		$cp =			$datos[6];
-		$ciudad =		$datos[7];
-		$estado =		$datos[8];
-		$valorGInicial= $datos[9];
-		$moneda =		$datos[10];
-		$cambio =		$datos[11];
-		$fechaAdquisicion=$datos[12];
-		$valorRActual =	$datos[13];
-		$montoInquilino=$datos[14];
+		$nombre = 			$datos[0];
+		$tipo =				$datos[1];
+		$propietario =		$datos[2];
+		$pagaM =			$datos[3];
+		$direccion =		$datos[4];
+		$nExt = 			$datos[5];
+		$nInt = 			$datos[6];
+		$colonia = 			$datos[7];
+		$cp =				$datos[8];
+		$ciudad =			$datos[9];
+		$estado =			$datos[10];
+		$valorGInicial= 	$datos[11];
+		$moneda =			$datos[12];
+		$cambio =			$datos[13];
+		$fechaAdquisicion=	$datos[14];
+		$valorRActual =		$datos[15];
+		$montoInquilino=	$datos[16];
+
+		$siguienteClave = ultimaClaveMasUno();
+
+
 
 		$query="INSERT INTO `propiedades` (`fechaRegistro`, `clave`, `nombre`, `tipo_propiedad`, `propietario`, `paga_mantenimiento`, `direccion`, `ext`, `int`, `colonia`, `cp`, `ciudad`, `estado`, `valor_inicial`, `tipo_moneda`, `cambio`, `adquisicion`, `valor_actual`, `monto_inquilino`)
-VALUES
-	('0000-00-00', 1, 'PATRIOTISMO', 1, 1, 0, 'AV. MUNICH', '823', 'PB', 'INSURGENTES,MIXCOAC', 3920, 'BENITO JUAREZ', 0, NULL, NULL, NULL, NULL, NULL, NULL);
- ";
+			VALUES (NOW(), ".$siguienteClave.", '".$nombre."', ".$tipo.", ".$propietario.", ".$pagaM.", '".$direccion."', '".$nExt."', '".$nInt."', '".$colonia."', '".$cp."', '".$ciudad."', ".$estado.", ".$valorGInicial.", '".$moneda."', ".$cambio.", '".$fechaAdquisicion."', ".$valorRActual.", ".$montoInquilino.")";
+		// echo $query;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		echo $siguienteClave;
 	}
 	function agregaCaract($valores){
 		list($claveP, $ClaveC, $valor) = split('@', $valores);
@@ -66,6 +90,31 @@ VALUES
 		unconnectdb($mysqli);
 		return $resultado;
 	}
+	function buscaRegArchivo($cadena){
+		$descadena = explode('///', $cadena);
+		$clave_propiedad = $descadena[0];
+        $tipo_documento = $descadena[1];
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT count(id) as cuenta from documentos where clave_propiedad=".$clave_propiedad." and tipo_documento='".$tipo_documento."'");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+
+	function actualizaArchivos($cadena){
+		$descadena = explode('///', $cadena);
+		$clave_propiedad = $descadena[0];
+        $tipo_documento = $descadena[1];
+        $archivo = $descadena[2];
+        $descripcion = $descadena[3];
+        $explode= explode(".", $archivo);
+		$extension=array_pop($explode);
+		$nombre_archivo = $tipo_documento."_".$clave_propiedad.".".$extension;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("UPDATE `documentos` SET `nombre_archivo`='".$nombre_archivo."', `descripcion` ='".$descripcion."' where `clave_propiedad`=".$clave_propiedad." and tipo_documento='".$tipo_documento."'");
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+
 	function guardaArchivos($cadena){
 		$descadena = explode('///', $cadena);
 		$clave_propiedad = $descadena[0];
@@ -86,5 +135,12 @@ VALUES
 		$resultado = $mysqli->query("SELECT * FROM documentos WHERE clave_propiedad=".$clave);
 		unconnectdb($mysqli);
 		return $resultado;
+	}
+	function ultimaClaveMasUno(){
+		$mysqli = connectdb();
+		$resultado = $mysqli->query("SELECT MAX(clave)+1 as clave from propiedades");
+		$row = mysqli_fetch_object($resultado);
+		unconnectdb($mysqli);
+		return $row->clave;
 	}
 ?>

@@ -102,12 +102,21 @@
 			$areaConcepto = $("#areaConcepto").val();
 			$areaObservaciones = $("#areaObservaciones").val();
 			$fechaArr = $("#inicioContrato").val().split('-');
-			$fechaArrMes = parseInt($fechaArr[1]) + parseInt($duracionContrato);
-			$fechaArrAnio = $fechaArr[0];
+			$tipoDuracion = $("#tipoDuracion").val();
+			if($tipoDuracion == "meses"){
+				$fechaArrMes = parseInt($fechaArr[1]) + parseInt($duracionContrato);
+				$fechaArrAnio = $fechaArr[0];
+			}
+			if($tipoDuracion == "anios"){
+				$fechaArrMes = $fechaArr[1];
+				$fechaArrAnio = parseInt($fechaArr[0]) + parseInt($duracionContrato);
+			}
+				
+			
 			if($fechaArrMes>12){$fechaArrAnio = parseInt($fechaArr[0])+1; $fechaArrMes = $fechaArrMes-12;}
 			if($fechaArrMes<=9){$fechaArrMes=""+0+$fechaArrMes;}
 			$nuevaFecha = $fechaArrAnio+"-"+$fechaArrMes+"-"+$fechaArr[2];
-			$("#fechaRenovacion").val($nuevaFecha);
+			$("#fechaFin").val($nuevaFecha);
 			alert($nuevaFecha);
 			$cadena = "";
 			$cadena += $clavePropiedad+").("+$claveArrendatario+").("+$inicioContrato+").("+$duracionContrato+").(";
@@ -249,14 +258,16 @@ btnGuardaRenta
 
 	<input type="hidden" value="0" id="claveRentaPropiedad">
 	Inicio de Contrato: <input type="date" id="inicioContrato" ><br>
-	Duración: <input type="text" id="duracionContrato" value="0"> Meses<br>
-
+	Duración: <input type="text" id="duracionContrato" value="0">  <select id="tipoDuracion"><option value="meses">Meses</option><option value="anios">Años</option></select><br>
+	Fecha Fin de Contrato: <input type="date" id="fechaFin" disabled><br> 
+	Renovar Contrato: <input type="checkbox"> <br>
 	Fecha de Renovacion: <input type="date" id="fechaRenovacion" disabled><br>
 	Monto Inicial: $<input type="text" id="montoInicial"><br>
 	Monto Actual: $<input type="text" id="montoActual" disabled><br>
 	Deposito: $<input type="text" id="montoDeposito"><br>
 	Se Regresa Desposito: <select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select><br>
 	Tiempo de Gracia: <input type="text" id="tiempoGracia" value="0"> Meses<br>
+	Fecha Inicio Facturacion <input type="date" id="fechaInicioFacturacion" disabled><br>
 	Mantenimeinto: <select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select><br>
 	Monto del Mantenimiento: $<input type="text" id="montoMantenimiento" value="0" disabled><br>
 	Consepto: <textarea id="areaConcepto"></textarea><br>

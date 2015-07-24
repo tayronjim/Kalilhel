@@ -6,7 +6,7 @@
 	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	 <script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	 <script type="text/javascript">
-	 	$cadena="";
+	 	$cadena=""; 
 		$(document).ready(function(){
 			// inicio carga de archivos
 			var options = { 
@@ -43,7 +43,9 @@
 			        $cadena = $clave_cliente+"///"+$tipo_documento+"///"+$archivo+"///"+$descripcion+"///";
 
 			        almacenaArchivos($cadena);
-			        $('#listadoArchivos tr:last').after('<tr><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        // listadoArchivos($clave_cliente);
+			        $("#listadoArchivos #tr"+$tipo_documento).remove();
+			        $('#listadoArchivos tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			    },
 			    error: function()
 			    {
@@ -69,7 +71,15 @@
 	 				$("#txtContactoClave").val(obj.Contacto[$tipo].clave);
 					$("#txtContactoNombre").val(obj.Contacto[$tipo].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[$tipo].email);
-	 				$("#txtContactoTelefono").val(obj.Contacto[$tipo].telefono);
+	 				$("#txtContactoTelefono").val(obj.Contacto[$tipo].telefonoCasa);
+	 				$("#txtContactoRfc").val(obj.Contacto[$tipo].rfc);
+	 				$("#txtContactoDireccion").val(obj.Contacto[$tipo].direccion);
+	 				$("#txtContactoNE").val(obj.Contacto[$tipo].ext);
+	 				$("#txtContactoNI").val(obj.Contacto[$tipo].int);
+	 				$("#txtContactoCol").val(obj.Contacto[$tipo].colonia);
+	 				$("#txtContactoCP").val(obj.Contacto[$tipo].cp);
+	 				$("#txtContactoCiudad").val(obj.Contacto[$tipo].ciudad);
+	 				$("#SlcContactoEstado").val(obj.Contacto[$tipo].estado);
 	 				muestraArchivos(obj.Contacto[$tipo].clave);
 				}
 				catch(err){}
@@ -79,7 +89,7 @@
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
-	 			data: { "funcion" :  "cargaTipoContacto" },
+	 			data: { "funcion" :  "cargaContacto" },
 	 			success: function(data){
 	 				// alert(data);
 	 				obj = JSON.parse(data);
@@ -91,12 +101,29 @@
 	 				}
 	 			}
 	 		});
+	 		$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "cargaEstados" },
+	 			success: function(data){
+	 				$("#SlcContactoEstado").append(data);
+	 				
+	 			}
+	 		});
 	 		$("#listadoClientes").on("dblclick", "tr", function(){
 	 			alert("doble");
 	 		});
+	 		$("#SlcTipoTelefono").change(function(){
+	 			
+	 			switch($(this).val()){
+	 				case 'telHome': $("#txtContactoTelefono").val($("#txtContactoTelefono").attr('telcasa')); break;
+	 				case 'telCel': $("#txtContactoTelefono").val($("#txtContactoTelefono").attr('telCel')); break;
+	 				case 'telJob': $("#txtContactoTelefono").val($("#txtContactoTelefono").attr('telJob')); break;
+	 			}
+	 		});
 		});
 		function agregaFilaContactos(reg){
-		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+');muestraArchivos('+reg.clave+');"><td>'+reg.nombre+'</td><td>'+reg.email+'</td><td>'+reg.telefono+'</td></tr>');
+		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+');muestraArchivos('+reg.clave+');"><td>'+reg.nombre+'</td><td>'+reg.email+'</td></tr>');
 		}
 		function muestraContacto(clave){
 				
@@ -108,12 +135,26 @@
 	 			success: function(data){
 	 				// alert(data);
 	 				obj = JSON.parse(data);
+	 				// alert(obj.Contacto[1].rfc);
 	 				$("#SlcTipoCliente").val('1');
 	 				$("#claveNombreFile").val(obj.Contacto[1].clave);
 	 				$("#txtContactoClave").val(obj.Contacto[1].clave);
 	 				$("#txtContactoNombre").val(obj.Contacto[1].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[1].email);
-	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefono);
+	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefonoCasa);
+	 				$("#txtContactoTelefono").attr('telcasa',obj.Contacto[1].telefonoCasa);
+	 				$("#txtContactoTelefono").attr('telcel',obj.Contacto[1].telefonoCel);
+	 				$("#txtContactoTelefono").attr('teljob',obj.Contacto[1].telefonoOficina);
+	 				
+	 				$("#txtContactoRfc").val(obj.Contacto[1].rfc);
+	 				$("#txtContactoDireccion").val(obj.Contacto[1].direccion);
+	 				$("#txtContactoNE").val(obj.Contacto[1].ext);
+	 				$("#txtContactoNI").val(obj.Contacto[1].int);
+	 				$("#txtContactoCol").val(obj.Contacto[1].colonia);
+	 				$("#txtContactoCP").val(obj.Contacto[1].cp);
+	 				$("#txtContactoCiudad").val(obj.Contacto[1].ciudad);
+	 				$("#SlcContactoEstado").val(obj.Contacto[1].estado);
+	 				$("#divArchivos").show();
 	 			}
 	 		});
 				
@@ -144,8 +185,10 @@
 	 		});
 		}
 
+
+
 		function cambiaInfoContacto(){
-			alert($cadena);
+			// $("#listadoArchivos tr:#trife").remove();
 		}
 	 </script>
 	 <style>
@@ -166,7 +209,7 @@
 	<tr>
 		<th>Nombre</th>
 		<th>Email</th>
-		<th>Telefono</th>
+		
 	</tr>
 </table>
 <br>
@@ -174,12 +217,13 @@ Tipo de Cliente: <select id="SlcTipoCliente" change="cambiaInfoContacto"><option
 Clave: <input type="text" id="txtContactoClave" disabled> <br><!-- autonumerico -->
 Nombre: <input type="text" id="txtContactoNombre" disabled><br>
 Email: <input type="text" id="txtContactoEmail" disabled><br>
-Telefono: <input type="text" id="txtContactoTelefono" disabled> <select id="SlcTipoTelefono"><option>Casa</option><option>Celular</option><option>Trabajo</option> </select><br>
+Telefono: <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select><br>
 RFC: <input type="text" id="txtContactoRfc" disabled><br>
 Dirección: <input type="text" id="txtContactoDireccion" disabled> Numero Ext: <input type="text" id="txtContactoNE" disabled> Int: <input type="text" id="txtContactoNI" disabled><br>
+Colonia <input type="text" id="txtContactoCol" disabled><br>
 Codigo Postal: <input type="text" id="txtContactoCP" disabled><br>
 Ciudad / Municipio: <input type="text" id="txtContactoCiudad" disabled>
-Estado: <select id="SlcContactoEstado"><option value="1">Distrito Federal</option><option value="2">Aguascalientes</option> </select>
+Estado: <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select>
 <!-- <br>
 <h5>Datos Facturacion</h5>
 Razon Social: <input type="text" id="txtFacturacionRS" disabled><br>
@@ -196,34 +240,37 @@ Estado: <select id="SlcFacturacionEstado"><option value="1">Distrito Federal</op
 <!-- <input type="button" value="Limpiar"><br> -->
 <!-- <input type="button" value="Agregar Documentos"> -->
 <br>
-<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
-	
-	<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select>
-	<br><br>
-	<input type="file" size="60" name="myfile" id="myfile">
-	<br><br>
-	Descripción:<br> <textarea id="descripcionFile"></textarea>
-	<br><br>
-	<input type="submit" value="Cargar Archivo">
-	
-	<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
-	<input type="hidden" value="contactos" name="subdir">
-	
- </form>
- 
- <br>
-  <div id="progress">
-        <div id="bar"></div>
-        <div id="percent">0%</div >
+<div id="divArchivos" hidden>
+	<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
+		
+		<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select>
+		<br><br>
+		<input type="file" size="60" name="myfile" id="myfile">
+		<br><br>
+		Descripción:<br> <textarea id="descripcionFile"></textarea>
+		<br><br>
+		<input type="submit" value="Cargar Archivo">
+		
+		<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
+		<input type="hidden" value="contactos" name="subdir">
+		
+	 </form>
+	 
+	 <br>
+	  <div id="progress">
+	        <div id="bar"></div>
+	        <div id="percent">0%</div >
+	</div>
+	<br/>
+	 
+	<div id="message"></div>
+	 <br>
+	<table border="1" id="listadoArchivos">
+		<tr>
+			<td>Tipo Documento</td><td>Descripción</td>
+		</tr>
+	</table>
 </div>
-<br/>
- 
-<div id="message"></div>
- <br>
-<table border="1" id="listadoArchivos">
-	<tr>
-		<td>Tipo Documento</td><td>Descripción</td>
-	</tr>
-</table>
+	
 </body>
 </html>

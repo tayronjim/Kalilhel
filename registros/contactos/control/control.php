@@ -2,14 +2,15 @@
 	require_once("../db/funcionesdb.php");
 	$funcion = $_POST["funcion"];
 	switch($funcion){
-		case 'cargaTipoContacto': cargaTipoContacto(); break;
+		case 'cargaContacto': cargaContacto(); break;
 		case 'recuperaUnContacto': recuperaUnContacto($_POST['clave']); break;
 		case 'almacenaArchivos': almacenaArchivos($_POST['cadena']); break;
 		case 'muestraArchivos': muestraArchivos($_POST['clave']); break;
+		case 'cargaEstados': cargaEstados(); break;
 
 	}
 
-	function cargaTipoContacto(){
+	function cargaContacto(){
 		$contactos = recuperaContactos();
 		// print_r($contacto);
 		while ($row = mysqli_fetch_assoc($contactos)){
@@ -17,6 +18,15 @@
 		}
 		$struct = array("Contacto" => $contacto);
 		print json_encode($struct);
+	}
+ 
+	function cargaEstados(){
+		$res = "";
+		$estados = cargaListaEstados();
+		while($row = mysqli_fetch_object($estados)){
+			$res .= "<option value='".$row->id."'>".$row->estado."</option>";
+		}
+		echo $res;
 	}
 
 	function recuperaUnContacto($clave){
@@ -28,14 +38,21 @@
 		print json_encode($struct);
 	}
 	function almacenaArchivos($cadena){
-		$archivos = guardaArchivos($cadena);
+		$registro = buscaRegArchivo($cadena);
+		$cuenta = $registro->fetch_object();
+		if($cuenta->cuenta > 0){
+			$archivos = actualizaArchivos($cadena);
+		}
+		else{
+			$archivos = guardaArchivos($cadena);
+		}
 		echo $archivos;
 	}
 	function muestraArchivos($clave){
 		$listaArchivos = listaArchivos($clave);
 		$filasArchivos = "";
 		while($row = mysqli_fetch_object($listaArchivos)){
-			$filasArchivos .= '<tr><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
+			$filasArchivos .= '<tr id="tr'.$row->tipo_documento.'"><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
 		}
 		print $filasArchivos;
 	}

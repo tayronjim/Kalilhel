@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funsion" :  "listaFacturas" },
+	 			success: function(data){
+	 				// alert(data);
+	 				$("#listadoRentas").append(data);
+	 			}
+	 		});
+	 		$("#listadoRentas").on('click','.checkPagado',function(){
+				if($(this).prop('checked')){
+					$fecha = new Date($.now());
+					var d = $fecha.getDate();
+					// var m =  $fecha.getMonth();
+					// m += 1;  // JavaScript months are 0-11
+					m = ("0" + ($fecha.getMonth() + 1)).slice(-2)
+					var y = $fecha.getFullYear();
+					$nuevaFecha = y + "-" + m + "-" + d;
+					// $("#txtDate").val(d + "." + m + "." + y);
+					// alert($nuevaFecha);
+					$(this).first().closest("td").next().find(".fechaPagado").val($nuevaFecha);
+				}
+			});
+		});
+		function subeCambios(){
+			$cadenaObj = '{';
+			$('#listadoRentas tr').next('tr').each(function () {
+				if($(this).attr('id')!='trBusqueda'){
+					$key = $(this).find("td").eq(0).attr('value');
+					// var pk = $(this).find("td").eq(0).html();
+					$checked = 0;
+					if($(this).find("td").eq(5).find('.checkPagado').prop('checked')){$checked=1;}
+					$fecha = "NULL";
+					if($(this).find("td").eq(6).find('input').attr('type','date').val() != ""){$fecha = "'"+$(this).find("td").eq(6).find('input').attr('type','date').val()+"'";}
+					$cadenaObj += '"'+$key+'":{ "pagadoCheck":'+$checked+',"pagadoFecha":"'+$fecha+'"},';
+					
+					// var nombre = $(this).find("td").eq(1).html();
+					// var apellidos = $(this).find("td").eq(3).html();
+					// alert(pk);
+					
+				}
+
+			});
+			alert($cadenaObj);
+			$cadenaObj += '"fin":[]}';
+			$cadena = jQuery.parseJSON($cadenaObj);
+
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funsion" :  "subeCambios","cadena":$cadena },
+	 			success: function(data){
+	 				alert(data);
+	 				// $("#listadoRentas").append(data);
+	 			}
+	 		});
+
+		}
+		
+	</script>
+</head>
+<body>
+<table>
+	<tr>
+		<td>Filtros</td>
+	</tr>
+	<tr>
+		<td>Clave de Renta:</td><td><input type="text"></td>
+	</tr>
+	<tr>
+		<td>Propiedad:</td><td><input type="text"></td>
+	</tr>
+	<tr>
+		<td>Fecha:</td><td><select>
+			<option>Este mes</option>
+			<!-- <option>Este año</option> -->
+			<!-- <option>Esta semana</option> -->
+			<option>Hoy</option>
+			<!-- <option>A partir de</option> -->
+			<!-- <option>Hasta</option> -->
+			<!-- <option>Entre</option> -->
+			<!-- <option>Igual a</option> -->
+		</select></td>
+		<!-- <td><input type="date"> - <input type="date"></td> -->
+	</tr>
+	<tr>
+		<td>Facturado</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
+	</tr>
+	<tr>
+		<td>Pagado:</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
+	</tr>
+
+</table>
+
+<table border="1" id="listadoRentas">
+	<tr>
+		<td>Clave de Renta</td><td>Propiedad</td><td>Fecha de Corte</td><td>Facturado</td><td>No. Factura</td><td>Pagado</td><td>Fecha de Pago</td>
+		
+	</tr>
+	<tr id="trBusqueda">
+		<td><input type="text"></td>
+		<td><input type="text"></td>
+		<td><input type="date"></td>
+		<td><input type="checkbox"></td>
+		<td><input type="text"></td>
+		<td><input type="checkbox"></td>
+		<td><input type="date"></td>
+	</tr>
+</table>
+<input type="button" value="Guardar Cambios" onclick="subeCambios()">
+</body>
+</html>

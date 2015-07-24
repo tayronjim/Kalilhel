@@ -24,7 +24,9 @@
 						'tipoCliente' => '1',
 						'nombre' => $xml->RazonSocial,
 						'Email' => $xml->Email,
-						'telefono' => '00000000',
+						'telefonoCasa' => '('.$xml->TelefonoCasaClaveLD.')'.$xml->TelefonoCasaTelefono,
+						'telefonoCel' => '('.$xml->MovilClaveLD.')'.$xml->MovilTelefono,
+						'telefonoOficina' => '('.$xml->TelefonoTrabajoClaveLD.')'.$xml->TelefonoTrabajoTelefono,
 						'rfc' => $xml->RFC,
 						'direccion' => $xml->DireccionPrincipalCalle,
 						'ext' => $xml->DireccionPrincipalNumExt,
@@ -36,7 +38,7 @@
 						'moroso' => $xml->Moroso,
 						'metododepago' => $xml->Metododepago,
 						'contacto' => (object) array(
-							'c'.$arrayClientes[0]->Clave => (object) array(
+							'c'.$xml->Clave => (object) array(
 								'clave_contacto' => $xml->Clave,
 								'clave_padre' => $xml->IDCliente,
 								'tipoCliente' => $xml->TipodeContacto,
@@ -134,11 +136,7 @@
 	// 	-----
 
 
-	// <Direcciond3></Direcciond3>
-	// <Direcciond8>INSURGENTES,MIXCOAC</Direcciond8>
-	// <Direcciond7>BENITO JUAREZ</Direcciond7>
-	
-	// <Direcciond5>Distrito Federal</Direcciond5>
+
 	
 	// <Rentado></Rentado>
 	}

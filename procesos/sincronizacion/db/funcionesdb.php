@@ -80,7 +80,7 @@ class Database{
 
 	function ultimaSinc(){
 		$mysqli = connectdb();
-		$query = "SELECT max(fechaSincronizacion) FROM registro_actualizacion";
+		$query = "SELECT max(fechaSincronizacion) as fechaSincronizacion FROM registro_actualizacion";
 		$resultadoReg = $mysqli->query($query);
 		$fecha = mysqli_fetch_object($resultadoReg); 
 		unconnectdb($mysqli);

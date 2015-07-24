@@ -1,12 +1,7 @@
 <?php
 	include("../../../connect_db/connect_db.php");
-	// function connectdb(){
-	// 	$connectdb = new mysqli("localhost", "root", "root", "kalilhel");
-	// 	return $connectdb;
-	// }
-	function unconnectdb($connectdb){
-		$connectdb->close();
-	}
+	
+	
 	function recuperaPropiedades(){
 		$mysqli = connectdb();
 		$query = "SELECT enrenta.*, prop.nombre as propiedad, contactos.nombre as arrendatario FROM propiedades_renta as enrenta";
