@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/general.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+<!-- <link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="css/font-awesome4.css" rel="stylesheet"> -->
+<link href="css/font-awesome.css" rel="stylesheet"> 
+	<style type="text/css">
+		body{
+			margin: 0px;
+			padding: 0px;
+		}
+		#divMain{
+			width: 100%;
+			height: 100%;
+		}
+		#submenu{
+			position: relative;
+			width: 100%;
+			height: 100px;
+			border:0px solid;
+		}
+		#submenu ul{
+			list-style: none;
+			padding: 0px;
+			height: 100%;
+			margin: 0px;
+		}
+		#submenu li{
+			float: left;
+			/*width: 100%;*/
+			height: 100%;
+			background-color: #dddddd;
+			border-bottom: 2px solid #555555;
+			
+			
+		}
+		#submenu .izq{
+			border-right: 1px solid #555555;
+		}
+		#submenu .der{
+			
+			/*border-left: 1px solid #555555;*/
+		}
+		#submenu li:hover{
+			background-color: #eeeeee;
+		}
+		.lblmenu {
+		    position: relative;
+		}
+		.lblmenu:before {
+		    content: "\f005";
+		    font-family: FontAwesome;
+		    font-style: normal;
+		    font-weight: normal;
+		    text-decoration: inherit;
+		/*--adjust as necessary--*/
+		    color: #000;
+		    font-size: 18px;
+		    padding-right: 0.5em;
+		    position: absolute;
+		    top: 10px;
+		    left: 0;
+		}
+	</style>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	// $cuentaMenus = 0;
+	
+	function cuentaMenus(){
+		$cuentaMenus = 0;
+		$("#submenu .subli").each(function(){
+			$cuentaMenus ++;
+		});
+		return $cuentaMenus;
+
+	}
+	function anchoVentana(){
+		$anchoVentana = $( window ).width();
+		return $anchoVentana;
+	}
+	$(document).ready(function(){
+		$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+		$(window).resize(function(){
+			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+		});
+	
+	});
+	</script>
+</head>
+<body>
+<div><i class="fa fa-book">cosa</i></div>
+<div id="divMain">
+	<div id="submenu">
+		<ul>
+			<li class="subli izq"><i class="fa fa-book icon-large"></i>Menu Uno</li>
+			<li class="subli der">dos</li>
+		</ul>
+	</div>
+	<div>
+		
+	</div>
+</div>
+	
+
+</body>
+</html>

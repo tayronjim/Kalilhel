@@ -3,11 +3,21 @@
 <meta charset="UTF-8">
 <head>
 	<title></title>
+	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
 	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	 <script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	 <script type="text/javascript">
 	 	$cadena=""; 
 		$(document).ready(function(){
+			
+			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-1);
+			$(window).resize(function(){
+				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+			});
+			$("#divArchivos").hide();
+			$("#areaFormulario").hide();
+			// $("#areaRegCaracteriticas").hide();
+
 			// inicio carga de archivos
 			var options = { 
 			    beforeSend: function() 
@@ -190,40 +200,171 @@
 		function cambiaInfoContacto(){
 			// $("#listadoArchivos tr:#trife").remove();
 		}
+		function cuentaMenus(){
+		$cuentaMenus = 0;
+		$("#submenu .subli").each(function(){
+			$cuentaMenus ++;
+		});
+		return $cuentaMenus;
+
+		}
+		function anchoVentana(){
+			$anchoVentana = $( window ).width();
+			return $anchoVentana;
+		}
+		function menuUno(){
+			$("#menuUno").removeClass('inactivo').addClass('activo');
+			$("#menuDos").removeClass('activo').addClass('inactivo');
+			$("#menuTres").removeClass('activo').addClass('inactivo');
+			$("#areaTabla").show();
+			$("#divArchivos").hide();
+			$("#areaFormulario").hide();
+			// $("#areaRegCaracteriticas").hide();
+		}
+		function menuDos(){
+			$("#menuUno").removeClass('activo').addClass('inactivo');
+			$("#menuDos").removeClass('inactivo').addClass('activo');
+			$("#menuTres").removeClass('activo').addClass('inactivo');
+			$("#areaTabla").hide();
+			$("#divArchivos").hide();
+			$("#areaFormulario").show();
+			// $("#areaRegCaracteriticas").hide();
+		}
+		function menuTres(){
+			$("#menuUno").removeClass('activo').addClass('inactivo');
+			$("#menuDos").removeClass('activo').addClass('inactivo');
+			$("#menuTres").removeClass('inactivo').addClass('activo');
+			$("#areaTabla").hide();
+			$("#divArchivos").show();
+			$("#areaFormulario").hide();
+			// $("#areaRegCaracteriticas").show();
+		}
 	 </script>
 	 <style>
+	 	body{
+			margin: 0px;
+			padding: 0px;
+		}
 		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
 		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
 		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
 		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
+		#divMain{
+			width: 100%;
+			height: 100%;
+		}
+		#submenu{
+			position: relative;
+			width: 100%;
+			height: 60px;
+			border:0px solid;
+		}
+		#submenu ul{
+			list-style: none;
+			padding: 0px;
+			height: 100%;
+			margin: 0px;
+		}
+		#submenu li{
+			float: left;
+			/*width: 100%;*/
+			height: 100%;
+			
+		}
+		#submenu .izq{
+			border-right: 1px solid #555555;
+		}
+		#submenu .der{
+			
+		}
+		.lblmenu {
+		    position: relative;
+		}
+		.subli{
+			padding-top: 10px;
+		}
+		.activo{
+			background-color: #ffffff;
+			border-bottom: 0px solid #555555;
+		}
+		.inactivo{
+			background-color: #eeeeee;
+			border-bottom: 2px solid #555555;
+		}
+		.inactivo:hover{
+			background-color: #cccccc;
+			border-bottom: 2px solid #555555;
+		}
+		.subli div{
+			width: auto;
+			padding-left: 15px;
+
+		}
+		.subli i:before {
+		    content: "\f005";
+		    font-family: FontAwesome;
+		    font-style: normal;
+		    font-weight: normal;
+		    text-decoration: inherit;
+		/*--adjust as necessary--*/
+		    color: #000;
+		    font-size: 25px;
+		    padding-right: 0.5em;
+		    position: absolute;
+		    top: 10px;
+		    left: 30px;
+		    /*bottom: 0px;*/
+		    
+		}
+		.subli i{
+			padding-top: 13px;
+			padding-left: 55px;
+			padding-bottom: 15px;
+
+		}
 	</style>
 	
 </head>
 <body>
 
+<div id="divMain">
+	<div id="submenu">
+		<ul>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
 
+		</ul>
+	</div>
+	<div id="areaTabla">
+		<table border="1" id="listadoClientes">
+			<tr>
+				<th>Nombre</th>
+				<th>Email</th>
+				
+			</tr>
+		</table>
+	</div>
+	<div id="areaFormulario">
+		Tipo de Cliente: <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select><br>
+		Clave: <input type="text" id="txtContactoClave" disabled> <br><!-- autonumerico -->
+		Nombre: <input type="text" id="txtContactoNombre" disabled><br>
+		Email: <input type="text" id="txtContactoEmail" disabled><br>
+		Telefono: <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select><br>
+		RFC: <input type="text" id="txtContactoRfc" disabled><br>
+		Dirección: <input type="text" id="txtContactoDireccion" disabled> Numero Ext: <input type="text" id="txtContactoNE" disabled> Int: <input type="text" id="txtContactoNI" disabled><br>
+		Colonia <input type="text" id="txtContactoCol" disabled><br>
+		Codigo Postal: <input type="text" id="txtContactoCP" disabled><br>
+		Ciudad / Municipio: <input type="text" id="txtContactoCiudad" disabled>
+		Estado: <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select>
+	</div>
+</div>
  
 
-<br><br>
-<table border="1" id="listadoClientes">
-	<tr>
-		<th>Nombre</th>
-		<th>Email</th>
+
+	
+
 		
-	</tr>
-</table>
-<br>
-Tipo de Cliente: <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select><br>
-Clave: <input type="text" id="txtContactoClave" disabled> <br><!-- autonumerico -->
-Nombre: <input type="text" id="txtContactoNombre" disabled><br>
-Email: <input type="text" id="txtContactoEmail" disabled><br>
-Telefono: <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select><br>
-RFC: <input type="text" id="txtContactoRfc" disabled><br>
-Dirección: <input type="text" id="txtContactoDireccion" disabled> Numero Ext: <input type="text" id="txtContactoNE" disabled> Int: <input type="text" id="txtContactoNI" disabled><br>
-Colonia <input type="text" id="txtContactoCol" disabled><br>
-Codigo Postal: <input type="text" id="txtContactoCP" disabled><br>
-Ciudad / Municipio: <input type="text" id="txtContactoCiudad" disabled>
-Estado: <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select>
 <!-- <br>
 <h5>Datos Facturacion</h5>
 Razon Social: <input type="text" id="txtFacturacionRS" disabled><br>

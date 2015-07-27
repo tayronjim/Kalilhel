@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title></title>
+	<!-- <link rel="stylesheet" type="text/css" href="../../../css/general.css"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="../../../css/style.css" /> -->
+	<link href="../../../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+	<!-- <link href="css/font-awesome.css" rel="stylesheet"> 
+	<link href="css/font-awesome4.css" rel="stylesheet"> -->
+	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
+	<style type="text/css">
+		body{
+			margin: 0px;
+			padding: 0px;
+		}
+		#divMain{
+			width: 100%;
+			height: 100%;
+		}
+		#submenu{
+			position: relative;
+			width: 100%;
+			height: 60px;
+			border:0px solid;
+		}
+		#submenu ul{
+			list-style: none;
+			padding: 0px;
+			height: 100%;
+			margin: 0px;
+		}
+		#submenu li{
+			float: left;
+			/*width: 100%;*/
+			height: 100%;
+			
+			
+			
+		}
+		#submenu .izq{
+			border-right: 1px solid #555555;
+		}
+		#submenu .der{
+			
+			/*border-left: 1px solid #555555;*/
+		}
+		.lblmenu {
+		    position: relative;
+		}
+		.subli{
+			padding-top: 10px;
+			/*padding-left: 10px;*/
+		}
+		.activo{
+			background-color: #ffffff;
+			border-bottom: 0px solid #555555;
+		}
+		.inactivo{
+			background-color: #eeeeee;
+			border-bottom: 2px solid #555555;
+		}
+		.inactivo:hover{
+			background-color: #cccccc;
+			border-bottom: 2px solid #555555;
+		}
+		.subli div{
+			width: auto;
+			padding-left: 15px;
+
+		}
+		.subli i:before {
+		    content: "\f005";
+		    font-family: FontAwesome;
+		    font-style: normal;
+		    font-weight: normal;
+		    text-decoration: inherit;
+		/*--adjust as necessary--*/
+		    color: #000;
+		    font-size: 25px;
+		    padding-right: 0.5em;
+		    position: absolute;
+		    top: 10px;
+		    left: 30px;
+		    /*bottom: 0px;*/
+		    
+		}
+		.subli i{
+			/*font-size: 25px;*/
+			/*color: #999;*/
+			padding-top: 13px;
+			padding-left: 55px;
+			/*padding-right: 15px;*/
+			padding-bottom: 15px;
+			/*border: solid 1px #e4e4e4;*/
+			/*box-shadow: 0 1px #fff inset;*/
+			/*border-radius: 3px;*/
+			/*background:#eeeeee;*/
+			/*display:block;*/
+			/*margin: 0 auto;*/
+
+		}
+	</style>
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	// $cuentaMenus = 0;
+	
+	function cuentaMenus(){
+		$cuentaMenus = 0;
+		$("#submenu .subli").each(function(){
+			$cuentaMenus ++;
+		});
+		return $cuentaMenus;
+
+	}
+	function anchoVentana(){
+		$anchoVentana = $( window ).width();
+		return $anchoVentana;
+	}
+	$(document).ready(function(){
+		$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+		$(window).resize(function(){
+			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+		});
+	
+	});
+	</script>
+</head>
+<body>
+
+<div id="divMain">
+	<div id="submenu">
+		<ul>
+			<li class="subli izq activo"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
+			<li class="subli izq inactivo"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li class="subli der inactivo"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+
+		</ul>
+	</div>
+	<div>
+		
+	</div>
+</div>
+	
+
+</body>
+</html>

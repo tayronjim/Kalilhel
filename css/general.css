@@ -1,0 +1,11 @@
+#pantallaPrincipal{
+	width: 96%;
+	height: 80vh;
+	border-radius: 30px;
+}
+#main{
+	width: 100%;
+	/*margin:auto;*/
+	margin-left: 10px;
+	/*background-color: BLUE;*/
+}

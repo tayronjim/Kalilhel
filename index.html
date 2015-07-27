@@ -3,34 +3,104 @@
 <meta charset="UTF-8">
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/general.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+<!-- <link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="css/font-awesome4.css" rel="stylesheet"> -->
+<link href="css/font-awesome.css" rel="stylesheet"> 
+<!-- <link href="css/font-awesome.min.css" rel="stylesheet"> -->
 	<style type="text/css">
-		#pantallaPrincipal{
-			width: 100%;
-			height: 70vh;
-		}
+		
 	</style>
+	<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(window).width('500px');
+		});
+		function nuevaVentana(){
+			window.open("index.html", "_blank", "toolbar=yes, scrollbars=no, resizable=no, top=10, left=200, width=680, height=700");
+		}
+		function cambiaTitle(title){
+			document.title = title;
+		}
+	</script>
 </head>
 <body>
-<nav>
-	<ul>
-		<li>Registros</li>
-			<ul>
-				<li><a href="registros/propiedades/vista/propiedades.html" target="pantallaPrincipal">Propiedades</li>
-				<li><a href="registros/contactos/vista/contactos.html" target="pantallaPrincipal">Contactos</a></li>
-				<li><a href="registros/tipo_propiedad/vista/tipo.html" target="pantallaPrincipal">Tipo de Propiedad</a></li>
-			</ul>
-		<li>Procesos</li>
-			<ul>
-				<li><a href="procesos/propiedades/vista/propiedades.html" target="pantallaPrincipal">Propiedades en Renta</a></li>
-				<li><a href="procesos/corte/vista/corte.html" target="pantallaPrincipal">Corte Mensual</li>
-			</ul>
-		<li>Reportes</li>
-		<li><a href="procesos/sincronizacion/vista/sincronizacion.html" target="pantallaPrincipal">Actualiza Informacion</a></li>
-	</ul>
-</nav>
-<br>
+<div id="main">
+	<div class="techandall-menu">
 
-<iframe name="pantallaPrincipal" id="pantallaPrincipal"></iframe>
+
+		<ul>
+
+			<li><a></a></li> <!-- keep this empty for border line-->
+
+			<!-- <li class="active"><a href=""><i class="icon-list icon-large"></i>Menu</a>
+
+				<div>
+				       <ul>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				            <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				            <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				           <li><a href="#"> <i class="fa fa-caret-square-o-right"></i> Tech & ALL </a></li>
+				       </ul>
+				</div>
+
+			</li> -->
+
+			<li><a href="#"><i class="fa fa-home icon-large"></i>Home</a></li>
+			<li><a href="#"><i class="fa fa-desktop icon-large"></i>Registros</a>
+
+
+				<div>
+				       <ul>
+				       		<li><a href="registros/contactos/vista/contactos.html" target="pantallaPrincipal"><i class="fa fa-users"></i>Contactos</a></li>
+				           	<li onclick="cambiaTitle('PROPIEDADES')"><a href="registros/propiedades/vista/propiedades.html" target="pantallaPrincipal"><i class="fa fa-building"></i>Propiedades</a></li>
+							<li><a href="registros/tipo_propiedad/vista/tipo.html" target="pantallaPrincipal"><i class="fa fa-bars"></i>Tipo de Propiedad</a></li>
+				       </ul>
+				</div>
+			</li>
+
+
+
+			<li><a href="#"><i class="fa fa-cog icon-large"></i>Procesos</a>
+				<div>
+				       <ul>
+				           	<li><a href="procesos/propiedades/vista/propiedades.html" target="pantallaPrincipal"><i class="fa fa-sitemap"></i>Propiedades en Renta</a></li>
+					<li><a href="procesos/corte/vista/corte.html" target="pantallaPrincipal"><i class="fa fa-calendar"></i>Corte Mensual</a></li>
+				       </ul>
+				</div>
+			</li>
+			<li><a href="#"><i class="fa fa-book icon-large"></i>Reportes</a></li>
+			<li><a href="procesos/sincronizacion/vista/sincronizacion.html" target="pantallaPrincipal"><i class="fa fa-folder-open icon-large"></i>Actualiza Informacion</a></li>
+			<!-- <li><a href="#"><i class="fa fa-envelope icon-large"></i>Email</a></li> -->
+
+			<li><a href="" onclick="nuevaVentana();"><i class="fa fa-search icon-large"></i>Menu</a>
+
+
+				<!-- <div>
+				   <input class="form-control" type="text" placeholder="Search..">
+				</div> -->
+
+			</li>
+
+
+		</ul>
+	</div>
+
+
+
+	<br>
+
+
+
+	<iframe name="pantallaPrincipal" id="pantallaPrincipal"></iframe>
+</div>
+	
 
 </body>
 </html>

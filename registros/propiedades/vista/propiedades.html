@@ -3,12 +3,19 @@
 <meta charset="UTF-8">
 <head> 
 	<title></title>
+	<!-- <link href="../../../css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> -->
+	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function(){
-			$("#areaRegCaracteriticas").css('visibility', 'hidden');
-			$("#areaArchivos").css('visibility', 'hidden');
+			$(document).ready(function(){
+			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-1);
+			$(window).resize(function(){
+				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
+			});
+			$("#areaArchivos").hide();
+			$("#areaFormulario").hide();
+			$("#areaRegCaracteriticas").hide();
 			
 
 			var options = { 
@@ -130,6 +137,7 @@
 		$('#listadoPropiedades tr:last').after('<tr onclick="muestraPropiedad('+reg.clave+'); muestraArchivos('+reg.clave+')"><td>'+reg.clave+'</td><td>'+reg.nombre+'</td><td></td><td>'+reg.monto_inquilino+'</td></tr>');
 		}
 		function muestraPropiedad(clave){
+			menuDos();
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -295,102 +303,247 @@
 			$("#bar").width('0%');
 			$("#percent").html('0%');
 			$("#message").html('');
+			menuDos();
+		}
+		function cuentaMenus(){
+		$cuentaMenus = 0;
+		$("#submenu .subli").each(function(){
+			$cuentaMenus ++;
+		});
+		return $cuentaMenus;
+
+		}
+		function anchoVentana(){
+			$anchoVentana = $( window ).width();
+			return $anchoVentana;
+		}
+		function menuUno(){
+			$("#menuUno").removeClass('inactivo').addClass('activo');
+			$("#menuDos").removeClass('activo').addClass('inactivo');
+			$("#menuTres").removeClass('activo').addClass('inactivo');
+			$("#areaTabla").show();
+			$("#areaArchivos").hide();
+			$("#areaFormulario").hide();
+			$("#areaRegCaracteriticas").hide();
+		}
+		function menuDos(){
+			$("#menuUno").removeClass('activo').addClass('inactivo');
+			$("#menuDos").removeClass('inactivo').addClass('activo');
+			$("#menuTres").removeClass('activo').addClass('inactivo');
+			$("#areaTabla").hide();
+			$("#areaArchivos").hide();
+			$("#areaFormulario").show();
+			$("#areaRegCaracteriticas").hide();
+		}
+		function menuTres(){
+			$("#menuUno").removeClass('activo').addClass('inactivo');
+			$("#menuDos").removeClass('activo').addClass('inactivo');
+			$("#menuTres").removeClass('inactivo').addClass('activo');
+			$("#areaTabla").hide();
+			$("#areaArchivos").show();
+			$("#areaFormulario").hide();
+			$("#areaRegCaracteriticas").show();
 		}
 	 </script>
 	 <style>
+	 	body{
+			margin: 0px;
+			padding: 0px;
+		}
 		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
 		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
 		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
 		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
+		
+		
+		#divMain{
+			width: 100%;
+			height: 100%;
+		}
+		#submenu{
+			position: relative;
+			width: 100%;
+			height: 60px;
+			border:0px solid;
+		}
+		#submenu ul{
+			list-style: none;
+			padding: 0px;
+			height: 100%;
+			margin: 0px;
+		}
+		#submenu li{
+			float: left;
+			/*width: 100%;*/
+			height: 100%;
+			
+		}
+		#submenu .izq{
+			border-right: 1px solid #555555;
+		}
+		#submenu .der{
+			
+		}
+		.lblmenu {
+		    position: relative;
+		}
+		.subli{
+			padding-top: 10px;
+		}
+		.activo{
+			background-color: #ffffff;
+			border-bottom: 0px solid #555555;
+		}
+		.inactivo{
+			background-color: #eeeeee;
+			border-bottom: 2px solid #555555;
+		}
+		.inactivo:hover{
+			background-color: #cccccc;
+			border-bottom: 2px solid #555555;
+		}
+		.subli div{
+			width: auto;
+			padding-left: 15px;
+
+		}
+		.subli i:before {
+		    content: "\f005";
+		    font-family: FontAwesome;
+		    font-style: normal;
+		    font-weight: normal;
+		    text-decoration: inherit;
+		/*--adjust as necessary--*/
+		    color: #000;
+		    font-size: 25px;
+		    padding-right: 0.5em;
+		    position: absolute;
+		    top: 10px;
+		    left: 30px;
+		    /*bottom: 0px;*/
+		    
+		}
+		.subli i{
+			padding-top: 13px;
+			padding-left: 55px;
+			padding-bottom: 15px;
+
+		}
+		
+	</style>
 	</style>
 </head>
 <body>
-<br>
-<h1>Propiedades</h1>
-<table width="800px" border="1">
-	<tr>
-		<td width="50%">
-			<table border="1" id="listadoPropiedades">
+<div id="divMain">
+	<div id="submenu">
+		<ul>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+
+		</ul>
+	</div>
+	<div style="margin-left:10px;margin-top:20px;">
+		<!-- <br>
+		<h1>Propiedades</h1> -->
+		<div id="areaTabla">
+			<table border="1" >
 				<tr>
-					<th>Clave</th><th>Propiedad</th><th>Propietario</th><th>Monto Generado</th>
+					<th width="120px">Fecha de Registro</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
+				</tr>
+				
+			</table>
+			<div style="overflow:auto; height:200px;">
+				<table border="1" id="listadoPropiedades">
+					
+					<tr>
+						<td width="120px">17 / Dic / 2015</td>
+						<td width="150px">Edificio color Azul</td>
+						<td width="150px">Bodega Grande</td>
+						<td width="150px">Inmobiliaria Kalilhel</td>
+					</tr>
+				</table>
+			</div>
+				
+					
+
+			<input type="button" value="Nuevo Registro" onclick="limpiaCampos()">
+			
+
+		</div>
+
+			
+
+		<!-- <br><br> -->
+		<div id="areaFormulario" >
+			Clave: <input type="text" id="txtPropiedadesClave"> <br>
+			Nombre Propiedad <input type="text" id="txtPropiedadesNombre"> <br>
+			Tipo Propiedad <select id="slcPropiedadesTipo"><option value="-1">Selecciona Tipo de Propiedad</option></select><br>
+			Propietario <select id="slcPropiedadesPropietario"><option value="-1">Selecciona Propietario</option></select><br>
+			Paga Mantenimiento <select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select><br>
+			Direccion: <input type="text" id="txtPropiedadesDireccion"> 
+			Numero Ext: <input type="text" id="txtPropiedadesNE"> Int: <input type="text" id="txtPropiedadesNI"> <br>
+			Colonia: <input type="text" id="txtPropiedadesCol"> <br>
+			CP<input type="text" id="txtPropiedadesCP"> <br>
+			Ciudad<input type="text" id="txtPropiedadesCiudad"> <br>
+			Estado: <select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select><br>
+			Valor Generado Inicial $<input type="text" id="txtPropiedadesValorInicial"> <br>
+			Tipo de Moneda <select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select><br>
+			Valor Tipo Cambio: <input type="text" id="txtPropiedadesCambio"> <br>
+			Valor Real Actual: <input type="text" id="txtPropiedadesValorActual"> <br>
+			Fecha Adquisición: <input type="date" id="txtPropiedadesAdquisicion"> <br>
+			Monto Generado por Inquilino Actual: <input type="text" id="txtPropiedadesMontoInquilino"> <br>
+			<br>
+			<input type="button" value="Guardar Registro" onclick="guardaRegistro()">
+
+		</div>
+			
+		<div id="areaRegCaracteriticas" >
+			<h3>Registro de Caracteristicas</h3>
+
+			Caracteristica: <select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select>    Valor:<input type="text" id="txtPropiedadesCaracteristicaValor"> <br>
+			<input type="button" value="Agregar" id="btnAgregaCaract">
+			<br>
+			<table id="listadoCaracteristicas" border="1">
+				<tr>
+					<td>Caracteristica</td><td>Valor</td>
 				</tr>
 			</table>
-		</td>
-		<td width="25%"></td>
-		<td width="25%">
-			
-			<input type="button" value="Nuevo Registro" onclick="limpiaCampos()">
-			<br><br>
-			<input type="button" value="Guardar Registro" onclick="guardaRegistro()">
-		</td>
-	</tr>
-</table>
-
-
-
-
-<br><br>
-Clave: <input type="text" id="txtPropiedadesClave"> <br>
-Nombre Propiedad <input type="text" id="txtPropiedadesNombre"> <br>
-Tipo Propiedad <select id="slcPropiedadesTipo"><option value="-1">Selecciona Tipo de Propiedad</option></select><br>
-Propietario <select id="slcPropiedadesPropietario"><option value="-1">Selecciona Propietario</option></select><br>
-Paga Mantenimiento <select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select><br>
-Direccion: <input type="text" id="txtPropiedadesDireccion"> 
-Numero Ext: <input type="text" id="txtPropiedadesNE"> Int: <input type="text" id="txtPropiedadesNI"> <br>
-Colonia: <input type="text" id="txtPropiedadesCol"> <br>
-CP<input type="text" id="txtPropiedadesCP"> <br>
-Ciudad<input type="text" id="txtPropiedadesCiudad"> <br>
-Estado: <select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select><br>
-Valor Generado Inicial $<input type="text" id="txtPropiedadesValorInicial"> <br>
-Tipo de Moneda <select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select><br>
-Valor Tipo Cambio: <input type="text" id="txtPropiedadesCambio"> <br>
-Valor Real Actual: <input type="text" id="txtPropiedadesValorActual"> <br>
-Fecha Adquisición: <input type="date" id="txtPropiedadesAdquisicion"> <br>
-Monto Generado por Inquilino Actual: <input type="text" id="txtPropiedadesMontoInquilino"> <br>
-
-<div id="areaRegCaracteriticas">
-	<h3>Registro de Caracteristicas</h3>
-
-	Caracteristica: <select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select>    Valor:<input type="text" id="txtPropiedadesCaracteristicaValor"> <br>
-	<input type="button" value="Agregar" id="btnAgregaCaract">
-	<br>
-	<table id="listadoCaracteristicas" border="1">
-		<tr>
-			<td>Caracteristica</td><td>Valor</td>
-		</tr>
-	</table>
-</div>
-<div id="areaArchivos">
-	<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
-		
-		<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="doc1">Documento 1</option><option value="doc2">Documento 2</option></select>
-		<br><br>
-		<input type="file" size="60" name="myfile" id="myfile">
-		<br><br>
-		Descripción:<br> <textarea id="descripcionFile"></textarea>
-		<br><br>
-		<input type="submit" value="Cargar Archivo">
-		
-		<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
-		<input type="hidden" value="propiedades" name="subdir">
-		
-	 </form>
-	 
-	 <br>
-	  <div id="progress">
-	        <div id="bar"></div>
-	        <div id="percent">0%</div >
+		</div>
+		<div id="areaArchivos" >
+			<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
+				
+				<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="doc1">Documento 1</option><option value="doc2">Documento 2</option></select>
+				<br><br>
+				<input type="file" size="60" name="myfile" id="myfile">
+				<br><br>
+				Descripción:<br> <textarea id="descripcionFile"></textarea>
+				<br><br>
+				<input type="submit" value="Cargar Archivo">
+				
+				<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
+				<input type="hidden" value="propiedades" name="subdir">
+				
+			 </form>
+			 
+			 <br>
+			  <div id="progress">
+			        <div id="bar"></div>
+			        <div id="percent">0%</div >
+			</div>
+			<br/>
+			 
+			<div id="message"></div>
+			 <br>
+			<table border="1" id="listadoArchivos">
+				<tr>
+					<td>Tipo Documento</td><td>Descripción</td>
+				</tr>
+			</table>
+		</div>
 	</div>
-	<br/>
-	 
-	<div id="message"></div>
-	 <br>
-	<table border="1" id="listadoArchivos">
-		<tr>
-			<td>Tipo Documento</td><td>Descripción</td>
-		</tr>
-	</table>
 </div>
+		
 	
 </body>
 </html>
