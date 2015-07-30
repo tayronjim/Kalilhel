@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "reporteMontoXPropiedad" },
+ 			success: function(data){
+ 				// alert(data);
+ 				obj = JSON.parse(data);
+ 				$filas = "";
+ 				$.each( obj.Reporte, function(key) {
+
+ 					$montoActual = obj.Reporte[key].montoActual;
+ 					if(isNaN(obj.Reporte[key].montoActual) || obj.Reporte[key].montoActual==null){$montoActual = 0;}
+
+ 					$filas += "<tr id='fila_"+obj.Reporte[key].id+"'>";
+ 					$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
+ 					$filas += "<td>"+obj.Reporte[key].fechaTerminoContrato+"</td>";
+ 					
+ 					$filas += "<td>"+$montoActual+"</td>";
+ 					
+ 					$filas += "</tr>";
+ 					// id,clave_propiedad,fechaTerminoContrato,montoActual
+				  // alert( obj.Reporte[key].id +" - "+ obj.Reporte[key].clave_arrendatario);
+				});
+				$("#tablaReporte").append($filas);
+ 			}
+ 		});
+	});
+	</script>
+</head>
+<body>
+<table border="1" id="tablaReporte">
+	<tr>
+		<th>Propiedad</th><th>Fin de Contrato</th><th>Monto de Renta</th>
+	</tr>
+</table>
+</body>
+</html>

@@ -33,6 +33,9 @@
 		return $resultado;
 	}
 	function saveRenta($cadena){
+		$lastID = lastID();
+		$claveID = $lastID->fetch_object();
+
 		$campos = explode(').(',$cadena);
 			$clavePropiedad = $campos[0];
 			$claveArrendatario = $campos[1];
@@ -46,11 +49,17 @@
 			$montoMantenimiento = $campos[9];
 			$areaConcepto = $campos[10];
 			$areaObservaciones = $campos[11];
+			$finContrato = $campos[12];
+			$fechaRenovacion = $campos[13];
+			// $claveID = $campos[15];
 		$mysqli = connectdb();
-		$query = "INSERT INTO `propiedades_renta` (`clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `mantenimiento`, `montoMantenimiento`, `consepto`, `observaciones`, `clave_estatus`) ";
-		$query .= "VALUES ($clavePropiedad, $claveArrendatario, '$inicioContrato', $duracionContrato, $montoInicial, $montoInicial, $montoDeposito, $regresaDeposito, $tiempoGracia, $pagaMantenimiento, $montoMantenimiento, '$areaConcepto', '$areaObservaciones', 2)";
+
+		$query = "INSERT INTO `propiedades_renta` (`fechaRegistro`,`clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `mantenimiento`, `montoMantenimiento`, `consepto`, `observaciones`, `clave_estatus`,`fechaTerminoContrato`) ";
+		$query .= "VALUES (NOW(),".$clavePropiedad.", ".$claveArrendatario.", '".$inicioContrato."', ".$duracionContrato.", ".$montoInicial.", ".$montoInicial.", ".$montoDeposito.", ".$regresaDeposito.", ".$tiempoGracia.", ".$pagaMantenimiento.", ".$montoMantenimiento.", '".$areaConcepto."', '".$areaObservaciones."', 2,'".$finContrato."')";
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
+		insertaHistorial($claveID->id,$inicioContrato,$finContrato,$fechaRenovacion);
+		// return $cadena;
 		return $resultado;
 	}
 	function registroRenta($clave){
@@ -71,6 +80,50 @@
 	function updateTerminaContrato($claveID){
 		$mysqli = connectdb();
 		$query = "UPDATE `propiedades_renta` SET clave_estatus = 5, fechaRenovacion=NULL, fechaTerminoContrato=NOW() WHERE id=".$claveID;
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function updateContrato($cadena){
+		$campos = explode(').(',$cadena);
+
+		$inicioContrato = $campos[2];
+		$finContrato = $campos[12];
+		$fechaRenovacion = $campos[13];
+		$montoActual = $campos[14];
+		$observaciones = $campos[11];
+		$mantenimiento = $campos[8];
+		$montoMantenimiento = $campos[9];
+		$consepto = $campos[10];
+		$claveID = $campos[15];
+		$checkRenovar = $campos[16];
+
+		$mysqli = connectdb();
+		$query = "UPDATE `propiedades_renta` SET fechaTerminoContrato = '".$finContrato."', fechaRenovacion='".$fechaRenovacion."', montoActual = ".$montoActual.", mantenimiento = ".$mantenimiento.", montoMantenimiento = ".$montoMantenimiento.", consepto = '".$consepto."', observaciones = '".$observaciones."' WHERE id=".$claveID;
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		if($checkRenovar=="1"){insertaHistorial($claveID,$inicioContrato,$finContrato,$fechaRenovacion);}
+		return $query;
+		// return $resultado;
+		
+		// norma ., servicio  de datos de la instancia esta detenido 
+	
+	}
+	function lastID(){
+		$query = "SELECT max(id)+1 as id from `propiedades_renta`;";
+		$resultado = queryGeneral($query);
+		return $resultado;	
+	}
+
+	function insertaHistorial($claveID,$inicioContrato,$finContrato,$fechaRenovacion){
+		$query = "INSERT INTO `fechas_contratos` (`clave_renta`, `inicioContrato`, `fechaTerminoContrato`, `fechaRenovacion`)
+				VALUES (".$claveID.", '".$inicioContrato."', '".$finContrato."','".$fechaRenovacion."')";
+		$resultado = queryGeneral($query);
+		return $resultado;	
+	}
+
+	function queryGeneral($query){
+		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
 		return $resultado;

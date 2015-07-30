@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title>Reporte - Listado de Rentas Pendientes de Facturar</title>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#divFecha1").hide();
+		$("#divFecha2").hide();
+
+		buscaDatos('1');
+
+		$("#filtroFechas").change(function(){
+			switch($("#filtroFechas").val()){
+				case '1': $("#divFecha1").hide(); $("#divFecha2").hide(); buscaDatos('1'); break;
+				case '2': $("#divFecha1").hide(); $("#divFecha2").hide(); buscaDatos('2'); break;
+				case '3': $("#divFecha1").hide(); $("#divFecha2").hide(); buscaDatos('3'); break;
+				case '4': $("#divFecha1").show(); $("#divFecha2").hide(); break;
+				case '5': $("#divFecha1").show(); $("#divFecha2").show(); break;
+			}
+		});
+
+		$(".filtroFecha").change(function(){
+			$fecha1 = $("#filtroFecha1").val();
+			$fecha2 = $("#filtroFecha2").val();
+			// alert($fecha1);
+			if($("#filtroFechas").val()=='4' && $fecha1 != ""){
+			
+				buscaDatos('4');
+			}
+			if($("#filtroFechas").val()=='5' && $fecha1 != "" && $fecha2 != ""){
+				
+				buscaDatos('5');
+			}
+		});
+		
+ 		
+	});
+	
+
+	function buscaDatos(tipoFiltro){
+	
+		
+		$filtro = tipoFiltro + "_" + $("#filtroFecha1").val() + "_" + $("#filtroFecha2").val() + "_";
+		// alert($filtro);
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "reportePendFactClientes", "filtro" : $filtro },
+ 			success: function(data){
+ 				// alert(data);
+ 				listaTabla(data);
+ 			}
+ 		});
+	}
+	function listaTabla(data){
+		obj = JSON.parse(data);
+		$filas = "";
+		$clave_arrendatario = 0;
+		$totalMonto=0;
+		$.each( obj.Reporte, function(key) {
+			if($clave_arrendatario == 0){$clave_arrendatario = obj.Reporte[key].clave_arrendatario;}
+			if(obj.Reporte[key].clave_arrendatario != $clave_arrendatario){
+				$filas += "<tr>";
+				$filas += "<td></td>";
+				$filas += "<td>SubTotal</td>";
+				$filas += "<td>"+$totalMonto+"</td>";
+				$filas += "</tr>";
+				$totalMonto = 0;
+				$totalMonto += parseInt(obj.Reporte[key].monto);
+				$clave_arrendatario = obj.Reporte[key].clave_arrendatario;
+			}
+			else{
+				$totalMonto += parseInt(obj.Reporte[key].monto);
+			}
+			$filas += "<tr>";
+			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
+			$filas += "<td>"+obj.Reporte[key].corte+"</td>";
+			$filas += "<td>"+obj.Reporte[key].monto+"</td>";
+			$filas += "</tr>";
+		});
+		$filas += "<tr>";
+		$filas += "<td></td>";
+		$filas += "<td>SubTotal</td>";
+		$filas += "<td>"+$totalMonto+"</td>";
+		$filas += "</tr>";
+		$("#tablaReporte").html('<tr><th>Cliente</th><th>Mes</th><th>Monto de Renta</th></tr>');
+		$("#tablaReporte").append($filas);
+		}
+	</script>
+</head>
+<body>
+<table>
+	<tr>
+		<td>Filtro:</td><td></td><td></td>
+	</tr>
+	<tr>
+		<td>Mostrar: <select id="filtroFechas">
+				<option value="1">Todo</option>
+				<option value="2">Este mes</option>
+				<option value="3">Este año</option>
+				<option value="4">Dia exacto</option>
+				<option value="5">Entre fechas</option>
+			</select>
+		</td>
+		<td><div id="divFecha1"><input type="date" id="filtroFecha1" class="filtroFecha"></div></td><td><div id="divFecha2"> y <input type="date" id="filtroFecha2" class="filtroFecha"></div></td>
+	</tr>
+</table>
+<br><br>
+
+ 
+<table border="1" id="tablaReporte">
+	<tr>
+		<th>Cliente</th><th>Mes</th><th>Monto de Renta</th>
+	</tr>
+</table>
+</body>
+</html>

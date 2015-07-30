@@ -1,3 +1,6 @@
+body{
+	font-family: times;
+}
 #pantallaPrincipal{
 	width: 96%;
 	height: 80vh;
@@ -8,4 +11,30 @@
 	/*margin:auto;*/
 	margin-left: 10px;
 	/*background-color: BLUE;*/
+}
+input[type="text"],input[type="date"]{
+	border:0px;
+	border-bottom: 1px solid;
+}
+div.cuerpo{
+	margin-left:10px;
+	margin-top:20px;
+}
+#areaFormulario table{
+	width: 600px;
+	margin-top: 20px;
+}
+#areaFormulario label{
+	font-weight: bold;
+	font-size: 13px;
+	font-family: arial;
+	margin-left: 10px;
+	margin-right: 5px;
+}
+#areaFormulario td{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.tdlabel{
+	text-align: right;
 }

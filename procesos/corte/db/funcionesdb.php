@@ -21,8 +21,8 @@
 		return $resultado;
 	}
 	function insertaCorte($info){
-		$query = "INSERT INTO `cortes` (`claveRenta`, `clavePropiedad`, `fechaCorte`, `facturado`, `factura`, `pagado`, `fechaPago`, `corte`)
-				VALUES (".$info->id.", ".$info->clave_propiedad.", CONCAT(DATE_FORMAT(NOW(), '%Y-%m'),DATE_FORMAT('".$info->inicioFacturacion."', '-%d')), 0, '', 0, NULL, DATE_FORMAT(NOW(), '%Y%m'))";
+		$query = "INSERT INTO `cortes` (`claveRenta`, `clavePropiedad`, `fechaCorte`, `facturado`, `factura`, `monto`, `pagado`, `fechaPago`, `corte`)
+				VALUES (".$info->id.", ".$info->clave_propiedad.", CONCAT(DATE_FORMAT(NOW(), '%Y-%m'),DATE_FORMAT('".$info->inicioFacturacion."', '-%d')), 0, '',".$info->montoActual.", 0, NULL, DATE_FORMAT(NOW(), '%Y%m'))";
 		$resultado = queryGeneral($query);
 		return $resultado;	
 	}
@@ -38,6 +38,7 @@
 		// $resultado = queryGeneral($query);
 		// return $resultado;
 	}
+
 	function queryGeneral($query){
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);

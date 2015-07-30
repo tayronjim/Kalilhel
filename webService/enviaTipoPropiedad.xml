@@ -1,0 +1,18 @@
+POST PLATAFORMA.hsplatform.com/webservice HTTP/1.0
+Host: PLATAFORMA.hsplatform.com/webservice
+User-Agent: NuSOAP/0.7.3 (1.114)
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: "http://PLATAFORMA.hsplatform.com/webservice"
+
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://PLATAFORMA.hsplatform.com/webservice/?wsdl">
+  <SOAP-ENV:Body>
+    <tns:recibeTipoPropiedad xmlns:tns="http://PLATAFORMA.hsplatform.com/webservice/?wsdl">
+      <Key>rtp123</Key>
+      <Action>1</Action>
+      <clave_propiedad>7</clave_propiedad>
+      <descripcion>Tipo subido 1</descripcion>
+      <activo>1</activo>
+    </tns:recibeTipoPropiedad>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

@@ -5,6 +5,8 @@
 	<title></title>
 	<!-- <link href="../../../css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> -->
 	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
+	<link rel="stylesheet" type="text/css" href="../../../css/general.css">
+	<link rel="stylesheet" type="text/css" href="../../../tabla.css">
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
@@ -175,28 +177,6 @@
 			        $("#percent").html('0%');
 			        $("#message").html('');
 	 				
-
-
-					// txtPropiedadesClave
-					// txtPropiedadesNombre
-					// slcPropiedadesTipo
-					// slcPropiedadesPropietario
-					// slcPropiedadesMantenimiento
-					// txtPropiedadesDireccion
-					// txtPropiedadesNE
-					// txtPropiedadesNI
-					// txtPropiedadesCol
-					// txtPropiedadesCP
-					// txtPropiedadesCiudad
-					// txtPropiedadesEstado
-					// txtPropiedadesValorInicial
-					// txtPropiedadesMoneda
-					// txtPropiedadesCambio
-					// txtPropiedadesValorActual
-					// txtPropiedadesAdquisicion
-					// txtPropiedadesMontoInquilino
-
-	 				
 	 			}
 	 		});
 		}
@@ -237,7 +217,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
 	 			success: function(data){
-	 				$('#listadoArchivos').html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
+	 				$('#listadoArchivos').html('<thead><tr><td>Tipo Documento</td><td>Descripción</td></tr></thead><tfoot><tr><td colspan="4"><div id="paging"><ul><li><a href="#"><span>Previous</span></a></li><li><a href="#" class="active"><span>1</span></a></li><li><a href="#"><span>2</span></a></li><li><a href="#"><span>3</span></a></li><li><a href="#"><span>4</span></a></li><li><a href="#"><span>5</span></a></li><li><a href="#"><span Next</span></a></li></ul></div></tr></tfoot>');
 	 				$('#listadoArchivos tr:last').after(data);
 	 				
 	 			}
@@ -321,7 +301,7 @@
 			$("#menuUno").removeClass('inactivo').addClass('activo');
 			$("#menuDos").removeClass('activo').addClass('inactivo');
 			$("#menuTres").removeClass('activo').addClass('inactivo');
-			$("#areaTabla").show();
+			$(".areaTabla").show();
 			$("#areaArchivos").hide();
 			$("#areaFormulario").hide();
 			$("#areaRegCaracteriticas").hide();
@@ -330,7 +310,7 @@
 			$("#menuUno").removeClass('activo').addClass('inactivo');
 			$("#menuDos").removeClass('inactivo').addClass('activo');
 			$("#menuTres").removeClass('activo').addClass('inactivo');
-			$("#areaTabla").hide();
+			$(".areaTabla").hide();
 			$("#areaArchivos").hide();
 			$("#areaFormulario").show();
 			$("#areaRegCaracteriticas").hide();
@@ -339,7 +319,7 @@
 			$("#menuUno").removeClass('activo').addClass('inactivo');
 			$("#menuDos").removeClass('activo').addClass('inactivo');
 			$("#menuTres").removeClass('inactivo').addClass('activo');
-			$("#areaTabla").hide();
+			$(".areaTabla").hide();
 			$("#areaArchivos").show();
 			$("#areaFormulario").hide();
 			$("#areaRegCaracteriticas").show();
@@ -429,7 +409,21 @@
 			padding-bottom: 15px;
 
 		}
-		
+		#txtPropiedadesNombre{
+			width: 250px;
+		}
+		#txtPropiedadesDireccion{
+			width: 200px;
+		}
+		#txtPropiedadesNE, #txtPropiedadesNI, #txtPropiedadesCP{
+			width: 50px;
+		}
+		#txtPropiedadesCol{
+			width: 170px;
+		}
+		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino{
+			width: 80px;
+		}
 	</style>
 	</style>
 </head>
@@ -443,27 +437,34 @@
 
 		</ul>
 	</div>
-	<div style="margin-left:10px;margin-top:20px;">
+	<div class="cuerpo">
 		<!-- <br>
 		<h1>Propiedades</h1> -->
-		<div id="areaTabla">
+
+		<div id="listadoPropiedades" class="areaTabla datagrid">
 			<table border="1" >
+				<thead>
 				<tr>
 					<th width="120px">Fecha de Registro</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
 				</tr>
+				</thead>
+				<tfoot>
+					<tr><td colspan="4"><div id="paging"><ul><li><a href="#"><span>Previous</span></a></li><li><a href="#" class="active"><span>1</span></a></li><li><a href="#"><span>2</span></a></li><li><a href="#"><span>3</span></a></li><li><a href="#"><span>4</span></a></li><li><a href="#"><span>5</span></a></li><li><a href="#"><span>Next</span></a></li></ul></div></tr>
+				</tfoot>
 				
-			</table>
-			<div style="overflow:auto; height:200px;">
-				<table border="1" id="listadoPropiedades">
-					
+			<!-- </table> -->
+			<!-- <div class="datagrid" style="overflow:auto; height:200px;"> -->
+				<!-- <table border="1" id="listadoPropiedades"> -->
+					<tbody>
 					<tr>
-						<td width="120px">17 / Dic / 2015</td>
-						<td width="150px">Edificio color Azul</td>
-						<td width="150px">Bodega Grande</td>
-						<td width="150px">Inmobiliaria Kalilhel</td>
+						<td width="120px"></td>
+						<td width="150px"></td>
+						<td width="150px"></td>
+						<td width="150px"></td>
 					</tr>
+					</tbody>
 				</table>
-			</div>
+			<!-- </div> -->
 				
 					
 
@@ -476,24 +477,38 @@
 
 		<!-- <br><br> -->
 		<div id="areaFormulario" >
-			Clave: <input type="text" id="txtPropiedadesClave"> <br>
-			Nombre Propiedad <input type="text" id="txtPropiedadesNombre"> <br>
-			Tipo Propiedad <select id="slcPropiedadesTipo"><option value="-1">Selecciona Tipo de Propiedad</option></select><br>
-			Propietario <select id="slcPropiedadesPropietario"><option value="-1">Selecciona Propietario</option></select><br>
-			Paga Mantenimiento <select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select><br>
-			Direccion: <input type="text" id="txtPropiedadesDireccion"> 
-			Numero Ext: <input type="text" id="txtPropiedadesNE"> Int: <input type="text" id="txtPropiedadesNI"> <br>
-			Colonia: <input type="text" id="txtPropiedadesCol"> <br>
-			CP<input type="text" id="txtPropiedadesCP"> <br>
-			Ciudad<input type="text" id="txtPropiedadesCiudad"> <br>
-			Estado: <select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select><br>
-			Valor Generado Inicial $<input type="text" id="txtPropiedadesValorInicial"> <br>
-			Tipo de Moneda <select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select><br>
-			Valor Tipo Cambio: <input type="text" id="txtPropiedadesCambio"> <br>
-			Valor Real Actual: <input type="text" id="txtPropiedadesValorActual"> <br>
-			Fecha Adquisición: <input type="date" id="txtPropiedadesAdquisicion"> <br>
-			Monto Generado por Inquilino Actual: <input type="text" id="txtPropiedadesMontoInquilino"> <br>
-			<br>
+			<table border ="0">
+				<tr>
+					<td colspan="3"><label>Tipo Propiedad: </label><select id="slcPropiedadesTipo"><option value="-1">-Tipo de Propiedad-</option></select></td><td colspan="3"><label>Propietario: </label><select id="slcPropiedadesPropietario"><option value="-1">-Propietario-</option></select></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Nombre Propiedad: </label><input type="text" id="txtPropiedadesNombre"></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Direccion: </label><input type="text" id="txtPropiedadesDireccion"> 
+			<label>Numero Ext: </label><input type="text" id="txtPropiedadesNE"><label> Int: </label><input type="text" id="txtPropiedadesNI"></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Colonia: </label><input type="text" id="txtPropiedadesCol"><label>CP: </label><input type="text" id="txtPropiedadesCP"> <label>Ciudad: </label><input type="text" id="txtPropiedadesCiudad"></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Estado: </label><select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
+				</tr>
+				<tr>
+					<td colspan="6"><label>Fecha Adquisición: </label><input type="date" id="txtPropiedadesAdquisicion"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><label>Valor Inicial $</label><input type="text" id="txtPropiedadesValorInicial"> </td><td colspan="2"><label>Moneda: </label><select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td colspan="2"><label>Tipo de Cambio: </label><input type="text" id="txtPropiedadesCambio"></td>
+				</tr>
+				<tr>
+					<td colspan="3"><label>Valor Real Actual: </label><input type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: </label><input type="text" id="txtPropiedadesMontoInquilino"></td>
+				</tr>
+			</table>
+			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> <br>
+			
 			<input type="button" value="Guardar Registro" onclick="guardaRegistro()">
 
 		</div>

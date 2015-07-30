@@ -8,6 +8,7 @@
 		case 'guardaRenta': guardaRenta($_POST['cadena']); break;
 		case 'recuperaRegistro': recuperaRegistro($_POST['clave']); break;
 		case 'terminaContrato': terminaContrato($_POST['clave']); break;
+		case 'actualizaRenta': actualizaRenta($_POST['cadena']); break;
 
 	}
 	function cargaListadoPropiedades(){
@@ -37,6 +38,10 @@
 	}
 	function guardaRenta($cadena){
 		$respuesta = saveRenta($cadena);
+		echo $respuesta;
+	}
+	function actualizaRenta($cadena){
+		$respuesta = updateContrato($cadena);
 		echo $respuesta;
 	}
 	function recuperaRegistro($clave){

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>Reporte - Listado de Incrementos</title>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "reporteIncrementos" },
+ 			success: function(data){
+ 				listaTabla(data);
+ 			}
+ 		});
+		$("#txtBuscaXCliente").keyup(function(){
+ 			$txtFiltroNombre = $("#txtBuscaXCliente").val();
+ 			
+ 				$.ajax({
+		 			type: "POST",
+		 			url: "../control/control.php",
+		 			data: { "funcion" :  "filtraTablaIncrementos", "txtfiltronombre": $txtFiltroNombre},
+		 			success: function(data){
+		 				$("#tablaReporte").html('<tr><th>Clientes</th><th>Fecha Fin Contrato</th><th>Fecha Renovación</th><th>Renta Actual</th></tr>');
+		 				listaTabla(data);
+		 			}
+		 		});
+ 			
+
+ 		});
+	});
+	
+	function listaTabla(data){
+		obj = JSON.parse(data);
+			$filas = "";
+			$.each( obj.Reporte, function(key) {
+
+				$terminoContrato = obj.Reporte[key].fechaTerminoContrato;
+				if(obj.Reporte[key].fechaTerminoContrato == null){$terminoContrato = "0000-00-00";}
+
+				$fechaRenovacion = obj.Reporte[key].fechaRenovacion;
+				if(obj.Reporte[key].fechaRenovacion == null){$fechaRenovacion = "0000-00-00";}
+
+				$inicioContrato = obj.Reporte[key].inicioContrato;
+				if(obj.Reporte[key].inicioContrato == null){$inicioContrato = "0000-00-00";}
+
+				$incrementos = obj.Reporte[key].incrementos;
+				if(obj.Reporte[key].incrementos == null){$incrementos = obj.Reporte[key].montoInicial;}
+
+				$filas += "<tr id='renta_"+obj.Reporte[key].id+"'>";
+				// $filas += "<td>"+obj.Reporte[key].id+"</td>";
+				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
+				$filas += "<td>"+$inicioContrato+"</td>";
+				$filas += "<td>"+$terminoContrato+"</td>";
+				$filas += "<td>"+$fechaRenovacion+"</td>";
+				$filas += "<td>"+$incrementos+"</td>";
+				$filas += "</tr>";
+									
+
+		  // alert( obj.Reporte[key].id +" - "+ obj.Reporte[key].clave_arrendatario);
+		});
+		$("#tablaReporte").append($filas);
+	}
+	</script>
+</head>
+<body>
+Filtro: <br>
+Clientes: <input type="text" id="txtBuscaXCliente">
+<br><br>
+<table border="1" id="tablaReporte">
+	<tr>
+		<th>Clientes</th><th>Fecha Inicio Contrato</th><th>Fecha Fin Contrato</th><th>Fecha Renovación</th><th>Renta Actual</th>
+	</tr>
+</table>
+
+</body>
+</html>

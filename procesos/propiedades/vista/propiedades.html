@@ -72,8 +72,12 @@
 				$("#listaPropiedades td").css('background-color','#ffffff');
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
 			});
+			$("#checkRenovar").click(function(){
+				$("#checkRenovar").is(':checked') ? $("#fechaRenovacion").prop('disabled','') : $("#fechaRenovacion").prop('disabled','disabled');
+			});
 
 		});
+		
 		function propiedadSeleccionada(clave,nombre){
 			$("#lblPropiedad").text(nombre);
 			$("#hideClavePropiedad").val(clave);
@@ -89,11 +93,42 @@
 	 		
 		}
 		function guardaRenta(){
+
+
+			// $finContrato = "$("#fechaFin").val();";
+			// $fechaRenovacion ="";
+			
+			// $montoActual = "";
+			// $mantenimiento = "";
+			// $montoMantenimiento = "";
+			// $consepto = "";
+			// $claveID = "";
+
+			$claveRentaPropiedad = $("#claveRentaPropiedad").val();
+			// alert($("#fechaRenovacion").val());
+			$checkRenovar = $("#checkRenovar").is(':checked') ? 1 : 0;
+			// alert($checkRenovar);
+			if($claveRentaPropiedad == 0){
+				$fechaArr = $("#inicioContrato").val().split('-');$tipoGuardado='guardaRenta';
+			}
+			else{
+				if($("#fechaRenovacion").val() != ''){
+					$fechaArr = $("#fechaRenovacion").val().split('-');
+					$fechaRenovacion = $("#fechaRenovacion").val();
+				}
+				else{
+					$fechaArr = $("#inicioContrato").val().split('-');
+					$fechaRenovacion = null;
+				}
+				$tipoGuardado='actualizaRenta';
+			}
 			$clavePropiedad = $("#hideClavePropiedad").val();
 			$claveArrendatario = $("#hideClaveArrendatario").val();
 			$inicioContrato = $("#inicioContrato").val();
+			
 			$duracionContrato = $("#duracionContrato").val();
 			$montoInicial = $("#montoInicial").val();
+			$montoActual = $("#montoActual").val();
 			$montoDeposito = $("#montoDeposito").val();
 			$tiempoGracia = $("#tiempoGracia").val();
 			$regresaDeposito = $("#regresaDeposito").val();
@@ -101,7 +136,7 @@
 			$montoMantenimiento = $("#montoMantenimiento").val();
 			$areaConcepto = $("#areaConcepto").val();
 			$areaObservaciones = $("#areaObservaciones").val();
-			$fechaArr = $("#inicioContrato").val().split('-');
+			
 			$tipoDuracion = $("#tipoDuracion").val();
 			if($tipoDuracion == "meses"){
 				$fechaArrMes = parseInt($fechaArr[1]) + parseInt($duracionContrato);
@@ -115,17 +150,20 @@
 			
 			if($fechaArrMes>12){$fechaArrAnio = parseInt($fechaArr[0])+1; $fechaArrMes = $fechaArrMes-12;}
 			if($fechaArrMes<=9){$fechaArrMes=""+0+$fechaArrMes;}
-			$nuevaFecha = $fechaArrAnio+"-"+$fechaArrMes+"-"+$fechaArr[2];
-			$("#fechaFin").val($nuevaFecha);
-			alert($nuevaFecha);
+			$fechaFin = $fechaArrAnio+"-"+$fechaArrMes+"-"+$fechaArr[2];
+			$("#fechaFin").val($fechaFin);
+			alert($tipoGuardado);
 			$cadena = "";
 			$cadena += $clavePropiedad+").("+$claveArrendatario+").("+$inicioContrato+").("+$duracionContrato+").(";
 			$cadena += $montoInicial+").("+$montoDeposito+").("+$tiempoGracia+").("+$regresaDeposito+").(";
-			$cadena += $pagaMantenimiento+").("+$montoMantenimiento+").("+$areaConcepto+").("+$areaObservaciones;
+			$cadena += $pagaMantenimiento+").("+$montoMantenimiento+").("+$areaConcepto+").(";
+			$cadena += $areaObservaciones+").("+$fechaFin+").("+$fechaRenovacion+").("+$montoActual+").(";
+			$cadena += $claveRentaPropiedad+").("+$checkRenovar+").(";
+
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
-	 			data: { "funcion" :  "guardaRenta", "cadena": $cadena},
+	 			data: { "funcion" : $tipoGuardado, "cadena": $cadena},
 	 			success: function(data){
 	 				alert(data);
 	 			}
@@ -260,7 +298,7 @@ btnGuardaRenta
 	Inicio de Contrato: <input type="date" id="inicioContrato" ><br>
 	Duración: <input type="text" id="duracionContrato" value="0">  <select id="tipoDuracion"><option value="meses">Meses</option><option value="anios">Años</option></select><br>
 	Fecha Fin de Contrato: <input type="date" id="fechaFin" disabled><br> 
-	Renovar Contrato: <input type="checkbox"> <br>
+	Renovar Contrato: <input type="checkbox" id="checkRenovar"> <br>
 	Fecha de Renovacion: <input type="date" id="fechaRenovacion" disabled><br>
 	Monto Inicial: $<input type="text" id="montoInicial"><br>
 	Monto Actual: $<input type="text" id="montoActual" disabled><br>

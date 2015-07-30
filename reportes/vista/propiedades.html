@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title></title>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "reportePropiedad" },
+ 			success: function(data){
+ 				// alert(data);
+ 				obj = JSON.parse(data);
+
+ 				$filas = "";
+ 				$.each( obj.Reporte, function(key) {
+
+ 					$inicial = obj.Reporte[key].valor_inicial;
+ 					if(isNaN(obj.Reporte[key].valor_inicial) || obj.Reporte[key].valor_inicial==null){$inicial = 0;}
+
+ 					$generado = obj.Reporte[key].generado;
+ 					if(isNaN(obj.Reporte[key].generado) || obj.Reporte[key].generado==null){$generado = 0;}
+
+ 					$recuperado = $inicial - $generado;
+
+ 					$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
+ 					$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
+ 					$filas += "<td>"+obj.Reporte[key].propietario+"</td>";
+ 					$filas += "<td>"+$inicial+"</td>";
+ 					$filas += "<td></td>";
+ 					$filas += "<td></td>";
+ 					$filas += "<td>"+$generado+"</td>";
+ 					$filas += "<td>"+$recuperado+"</td>";
+ 					$filas += "</tr>";
+ 					
+				});
+				$("#tablaReporte").append($filas);
+ 			}
+ 		});
+	});
+	</script>
+</head>
+<body>
+<table border="1" id="tablaReporte">
+	<tr>
+		<th>Propiedad</th><th>Propietario</th><th>Costo de Adquisición</th><th>% Rend. Mensual</th><th>% Rend. Anual</th><th>Generado al día</th><th>Costo por Recuperar</th>
+	</tr>
+</table>
+</body>
+</html>
