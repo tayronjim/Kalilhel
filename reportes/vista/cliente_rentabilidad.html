@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<title></title>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "reporteClienteRentabilidad" },
+ 			success: function(data){
+ 				// alert(data);
+ 				listaTabla(data);
+ 			}
+ 		});
+		
+	});
+	function filtra(){
+		$txtFiltroCliente = $("#txtFiltroCliente").val();
+		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
+		
+			$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funcion" :  "filtraTablaClienteRentabilidad", "txtFiltroCliente": $txtFiltroCliente, "txtFiltroEmpresa": $txtFiltroEmpresa},
+ 			success: function(data){
+ 				$("#tablaReporte").html('<tr><th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual</th></tr>');
+ 				listaTabla(data);
+ 			}
+ 		});
+	}
+	function listaTabla(data){
+		obj = JSON.parse(data);
+		$filas = "";
+		$.each( obj.Reporte, function(key) {
+
+			$monto = obj.Reporte[key].monto;
+			if(isNaN(obj.Reporte[key].monto) || obj.Reporte[key].monto==null){$monto = '';}
+
+			$rentabilMensual = obj.Reporte[key].rentabilMensual;
+			if(isNaN(obj.Reporte[key].rentabilMensual) || obj.Reporte[key].rentabilMensual==null){$rentabilMensual = '';}
+
+			$retabiAnual = obj.Reporte[key].retabiAnual;
+			if(isNaN(obj.Reporte[key].retabiAnual) || obj.Reporte[key].retabiAnual==null){$retabiAnual = '';}
+
+			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
+			$filas += "<td>"+obj.Reporte[key].cliente+"</td>";
+			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
+			$filas += "<td>"+$monto+"</td>";
+			$filas += "<td>"+$rentabilMensual+"</td>";
+			$filas += "<td>"+$retabiAnual+"</td>";
+			$filas += "</tr>";
+		});
+		$("#tablaReporte").append($filas);
+	}
+	</script>
+</head>
+<body>
+<table>
+	<tr>
+		<td>Filtro:</td>
+	</tr>
+	<tr>
+		<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
+	</tr>
+</table>
+<br>
+<table border="1" id="tablaReporte">
+	<tr>
+		<th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual </th>
+	</tr>
+</table>
+</body>
+</html>

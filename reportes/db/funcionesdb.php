@@ -50,12 +50,44 @@
 		unconnectdb($mysqli);
 		return $resultado;
 	}
-	function repPropiedad(){
-		$query ="SELECT prop.`clave`, prop.`nombre`, propietario.nombre as `propietario`, prop.`valor_inicial`, SUM(cortes.`monto`) as generado
+	function repPropiedad($txtFiltroPropiedad,$txtFiltroPropietario){
+		$query ="SELECT prop.`clave`, prop.`nombre`, propietario.nombre as `propietario`, prop.`valor_inicial`, SUM(cortes.`monto`) as generado, cortes.`monto`
 				from `propiedades` as prop
 					left join cortes on cortes.`clavePropiedad`= prop.`clave`
 					left join propietario on propietario.`clave` = prop.`propietario`
+				WHERE prop.`nombre` LIKE '%".$txtFiltroPropiedad."%' and `propietario` LIKE '%".$txtFiltroPropietario."%'
 				GROUP BY prop.clave;";
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function repRentabilidad($txtFiltroCliente,$txtFiltroEmpresa){
+		$query ="SELECT cliente.`clave`,cliente.`nombre`,propietario.`nombre` as empresa,tipo.`descripcion`,propiedad.`valor_inicial`,propiedad.`tipo_moneda`,propiedad.`adquisicion`, (SELECT SUM(cortes.`monto`) from cortes where cortes.`claveRenta`=renta.`id`) as ingresos,SUM(cortes.`monto`) as recuperado,propiedad.`valorGeneradoInicial` ,renta.id as rentaID
+				from `propiedades_renta` as renta
+					left join contactos as cliente on cliente.`clave`=renta.`clave_arrendatario`
+					left join `propiedades` as propiedad on propiedad.`clave` = renta.`clave_propiedad`
+					left join `propietario` on propietario.`clave` = propiedad.`propietario`
+					left join `tipo_propiedad` as tipo on tipo.`id` = propiedad.`tipo_propiedad`
+					left join cortes on propiedad.`clave` =cortes.`clavePropiedad`
+				WHERE (renta.`clave_estatus` = 2 OR renta.`clave_estatus` = 4 OR renta.`clave_estatus` = 1) AND cliente.`nombre` LIKE '%".$txtFiltroCliente."%' AND propietario.`nombre` LIKE '%".$txtFiltroEmpresa."%' 
+				GROUP BY cliente.`clave`,propiedad.`clave`;";
+		
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
+	}
+	function repClienteRentabilidad($txtFiltroCliente,$txtFiltroEmpresa){
+		$query ="SELECT renta.`clave_arrendatario`,contactos.`nombre` as cliente, propietario.`nombre` as empresa, SUM(cortes.monto) as monto, renta.`montoActual`/propiedades.`valor_inicial`*100 as rentabilMensual, renta.`montoActual`/propiedades.`valor_inicial`*100*12 as retabiAnual
+				from cortes 
+					left join `propiedades_renta` as renta on renta.`id` = cortes.`claveRenta`
+					left join contactos on renta.`clave_arrendatario` = contactos.`clave`
+					left join propiedades on propiedades.`clave` = renta.`clave_propiedad`
+					left join propietario on propiedades.`propietario` = propietario.`clave`
+				where cortes.`claveRenta` IN (select id from `propiedades_renta` where `propiedades_renta`.`clave_arrendatario` = renta.`clave_arrendatario`) AND contactos.`nombre` LIKE '%".$txtFiltroCliente."%' AND propietario.`nombre` LIKE '%".$txtFiltroEmpresa."%'
+				group by renta.`clave_arrendatario`;";
+		
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);

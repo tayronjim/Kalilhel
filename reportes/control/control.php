@@ -7,8 +7,13 @@
 		case 'reporteMontoXPropiedad': reporteMontoXPropiedad(); break;
 		case 'reporteVendidas': reporteVendidas(); break;
 		case 'reportePropiedad': reportePropiedad(); break;
+		case 'reporteRentabilidad': reporteRentabilidad(); break;
+		case 'reporteClienteRentabilidad': reporteClienteRentabilidad(); break;
 		case 'filtraTablaIncrementos': filtraTablaIncrementos($_POST['txtfiltronombre']); break;
 		case 'filtraTablaVendidas': filtraTablaVendidas($_POST['txtfiltroPropiedad']); break;
+		case 'filtraTablaPropiedad': filtraTablaPropiedad($_POST['txtFiltroPropiedad'],$_POST['txtFiltroPropietario']); break;
+		case 'filtraTablaRentabilidad': filtraTablaRentabilidad($_POST['txtFiltroCliente'],$_POST['txtFiltroEmpresa']); break;
+		case 'filtraTablaClienteRentabilidad': filtraTablaClienteRentabilidad($_POST['txtFiltroCliente'],$_POST['txtFiltroEmpresa']); break;
 
 	}
 	function reporteIncrementos(){
@@ -73,7 +78,7 @@
 	}
 
 	function reportePropiedad(){
-		$rep = repPropiedad();
+		$rep = repPropiedad('','');
 		// print_r($contacto);
 		while ($row = $rep->fetch_object()){
 		    $var[] = $row;
@@ -81,6 +86,27 @@
 		$struct = array("Reporte" => $var);
 		print json_encode($struct);
 	}
+
+	function reporteRentabilidad(){
+		$rep = repRentabilidad('','');
+		// print_r($contacto);
+		while ($row = $rep->fetch_object()){
+		    $var[] = $row;
+		}
+		$struct = array("Reporte" => $var);
+		print json_encode($struct);
+	}
+
+	function reporteClienteRentabilidad(){
+		$rep = repClienteRentabilidad('','');
+		// print_r($contacto);
+		while ($row = $rep->fetch_object()){
+		    $var[] = $row;
+		}
+		$struct = array("Reporte" => $var);
+		print json_encode($struct);
+	}
+
 	function filtraTablaIncrementos($txtfiltronombre){
 		$rep = repIncrementos($txtfiltronombre);
 		// print_r($contacto);
@@ -95,6 +121,34 @@
 		$rep = repVendidas($txtfiltroPropiedad);
 		// print_r($contacto);
 		$res = "";
+		while ($row = $rep->fetch_object()){
+		    $var[] = $row;
+		}
+		$struct = array("Reporte" => $var);
+		print json_encode($struct);
+	}
+	function filtraTablaPropiedad($txtFiltroPropiedad,$txtFiltroPropietario){
+		$rep = repPropiedad($txtFiltroPropiedad,$txtFiltroPropietario);
+		// print_r($contacto);
+		$res = "";
+		while ($row = $rep->fetch_object()){
+		    $var[] = $row;
+		}
+		$struct = array("Reporte" => $var);
+		print json_encode($struct);
+	}
+	function filtraTablaRentabilidad($txtFiltroCliente,$txtFiltroEmpresa){
+		$rep = repRentabilidad($txtFiltroCliente,$txtFiltroEmpresa);
+		// print_r($contacto);
+		while ($row = $rep->fetch_object()){
+		    $var[] = $row;
+		}
+		$struct = array("Reporte" => $var);
+		print json_encode($struct);
+	}
+	function filtraTablaClienteRentabilidad($txtFiltroCliente,$txtFiltroEmpresa){
+		$rep = repClienteRentabilidad($txtFiltroCliente,$txtFiltroEmpresa);
+		// print_r($contacto);
 		while ($row = $rep->fetch_object()){
 		    $var[] = $row;
 		}
