@@ -2,7 +2,10 @@
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="../../../css/general.css">
+	<link rel="stylesheet" type="text/css" href="../../../css/tabla.css">
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$.ajax({
@@ -77,43 +80,62 @@
 	<tr>
 		<td>Propiedad:</td><td><input type="text"></td>
 	</tr>
-	<tr>
+	<!-- <tr>
 		<td>Fecha:</td><td><select>
-			<option>Este mes</option>
+			<option>Este mes</option> -->
 			<!-- <option>Este año</option> -->
 			<!-- <option>Esta semana</option> -->
-			<option>Hoy</option>
+			<!-- <option>Hoy</option> -->
 			<!-- <option>A partir de</option> -->
 			<!-- <option>Hasta</option> -->
 			<!-- <option>Entre</option> -->
 			<!-- <option>Igual a</option> -->
-		</select></td>
+		<!-- </select></td> -->
 		<!-- <td><input type="date"> - <input type="date"></td> -->
+	<!-- </tr> -->
+	<tr>
+		<td>Facturado</td><td><input type="radio" name="facturado" value="si">SI<br><input type="radio" name="facturado" value="no">NO<br><input type="radio" name="facturado" value="todo">TODO<!-- <select><option>Todo</option><option>SI</option><option>NO</option></select> --></td>
 	</tr>
 	<tr>
-		<td>Facturado</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
-	</tr>
-	<tr>
-		<td>Pagado:</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
+		<td>Pagado:</td><td><input type="radio" name="pagado" value="si">SI<br><input type="radio" name="pagado" value="no">NO<br><input type="radio" name="pagado" value="todo">TODO<!-- <select><option>Todo</option><option>SI</option><option>NO</option></select> --></td>
 	</tr>
 
 </table>
-
-<table border="1" id="listadoRentas">
-	<tr>
-		<td>Clave de Renta</td><td>Propiedad</td><td>Fecha de Corte</td><td>Facturado</td><td>No. Factura</td><td>Pagado</td><td>Fecha de Pago</td>
-		
-	</tr>
-	<tr id="trBusqueda">
-		<td><input type="text"></td>
-		<td><input type="text"></td>
-		<td><input type="date"></td>
-		<td><input type="checkbox"></td>
-		<td><input type="text"></td>
-		<td><input type="checkbox"></td>
-		<td><input type="date"></td>
-	</tr>
-</table>
+<input type="button" class="periodoFlecha" value="<<" id="btnPerPrev"><select id="slcPeriodo"><option value="201508">201508</option><option value="201507">201507</option><option value="201506">201506</option></select><input type="button" class="periodoFlecha" value=">>" id="btnPerSig">
+<div class="datagrid">
+	<table border="1" id="listadoRentas">
+		<thead>
+			<tr>
+				<th>Clave de Renta</th><th>Propiedad</th><th>Fecha de Corte</th><th>Facturado</th><th>No. Factura</th><th>Pagado</th><th>Fecha de Pago</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="trBusqueda">
+				<td><input type="text"></td>
+				<td><input type="text"></td>
+				<td><input type="date"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="text"></td>
+				<td><input type="checkbox"></td>
+				<td><input type="date"></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="7">
+					<div id="paging">
+						<ul>
+							<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+							<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+							<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+			
+	</table>
+</div>
 <input type="button" value="Guardar Cambios" onclick="subeCambios()">
 </body>
 </html>

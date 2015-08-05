@@ -50,10 +50,11 @@
 	}
 	function muestraArchivos($clave){
 		$listaArchivos = listaArchivos($clave);
-		$filasArchivos = "";
+		$filasArchivos = "<tbody>";
 		while($row = mysqli_fetch_object($listaArchivos)){
-			$filasArchivos .= '<tr id="tr'.$row->tipo_documento.'"><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
+			$filasArchivos .= '<tr id="tr'.$row->tipo_documento.'"><td width="150px">'.$row->tipo_documento.'</td><td width="250px">'.$row->descripcion.'</td><td><a href="../../../uploads/contactos/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
 		}
+		$filasArchivos .= "</tbody>";
 		print $filasArchivos;
 	}
 ?>

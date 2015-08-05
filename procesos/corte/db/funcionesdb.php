@@ -10,7 +10,7 @@
 		return $resultado;
 	}
 	 function listadoFacturasCorte(){
-	 	$query="select * from `cortes` where corte = DATE_FORMAT(NOW(),'%Y%m');";
+	 	$query="select propiedades.nombre as propiedad, cortes.* from `cortes` left join propiedades on propiedades.clave = cortes.`clavePropiedad` where corte = DATE_FORMAT(NOW(),'%Y%m');";
 		$resultado = queryGeneral($query);
 		return $resultado;
 	 }

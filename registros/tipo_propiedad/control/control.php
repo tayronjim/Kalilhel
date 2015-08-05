@@ -4,6 +4,7 @@
 	switch($funcion){
 		case 'cargaTipoPropiedad': cargaTipoPropiedad(); break;
 		case 'recuperaUnTipoPropiedad': recuperaUnTipoPropiedad($_POST['clave']); break;
+		case 'GuardaTipoPropiedad': GuardaTipoPropiedad($_POST['desc'], $_POST['alta'], $_POST['activo']); break;
 
 	}
 	function cargaTipoPropiedad(){
@@ -22,6 +23,10 @@
 		}
 		$struct = array("Propiedad" => $propiedad);
 		print json_encode($struct);
+	}
+	function GuardaTipoPropiedad($desc,$alta,$activo){
+		$GuardaTipoPropiedad = guardaTipo($desc,$alta,$activo);
+		echo $GuardaTipoPropiedad;
 	}
 	
 ?>

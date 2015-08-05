@@ -9,7 +9,9 @@
 					left join propiedades_renta as renta on renta.`id` = fechas.`clave_renta`
 					left join cortes on cortes.`claveRenta` = fechas.clave_Renta and cortes.corte = DATE_FORMAT(fechas.fechaRenovacion, '%Y%m')
 					left join contactos on contactos.`clave`=renta.`clave_arrendatario`
-				".$filtro." order by clave_renta;";
+				".$filtro."
+				group by fechas.id 
+				order by clave_renta;";
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);

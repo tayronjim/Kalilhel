@@ -5,9 +5,15 @@
 	<title></title>
 	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
 	<link rel="stylesheet" type="text/css" href="../../../css/general.css">
+	<link rel="stylesheet" type="text/css" href="../../../css/tabla.css">
 	 <script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	 <script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	 <script type="text/javascript">
+	 	$respObj = null;
+	 	$arregloTabla = new Array();
+		$filasxPagina = 8;
+		$cont = 0;
+		$pagina = 0;
 	 	$cadena=""; 
 		$(document).ready(function(){
 			
@@ -17,6 +23,8 @@
 			});
 			$("#divArchivos").hide();
 			$("#areaFormulario").hide();
+			$("#areaArchivos").hide();
+
 			// $("#areaRegCaracteriticas").hide();
 
 			// inicio carga de archivos
@@ -26,7 +34,7 @@
 			        $("#progress").show();
 			        //clear everything
 			        $("#bar").width('0%');
-			        $("#message").html("");
+			        // $("#message").html("");
 			        $("#percent").html("0%");
 			    },
 			    uploadProgress: function(event, position, total, percentComplete) 
@@ -43,7 +51,7 @@
 			    },
 			    complete: function(response) 
 			    {
-			        $("#message").html("<font color='green'>"+response.responseText+"</font>");
+			        // $("#message").html("<font color='green'>"+response.responseText+"</font>");
 			        $clave_cliente = $("#claveNombreFile").val();
 			        $tipo_documento = $("#tipoDocumentoFile").val();
 			        $archivo = $("#myfile").val();
@@ -56,11 +64,11 @@
 			        almacenaArchivos($cadena);
 			        // listadoArchivos($clave_cliente);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			    },
 			    error: function()
 			    {
-			        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+			        // $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
 			 
 			    }
 			}; 
@@ -76,22 +84,22 @@
 				$tipo = $("#SlcTipoCliente").val();
 
 				$(":input[type='text']").val('');
-				$("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
+				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
 				try{
-					$("#claveNombreFile").val(obj.Contacto[$tipo].clave);
-	 				$("#txtContactoClave").val(obj.Contacto[$tipo].clave);
-					$("#txtContactoNombre").val(obj.Contacto[$tipo].nombre);
-	 				$("#txtContactoEmail").val(obj.Contacto[$tipo].email);
-	 				$("#txtContactoTelefono").val(obj.Contacto[$tipo].telefonoCasa);
-	 				$("#txtContactoRfc").val(obj.Contacto[$tipo].rfc);
-	 				$("#txtContactoDireccion").val(obj.Contacto[$tipo].direccion);
-	 				$("#txtContactoNE").val(obj.Contacto[$tipo].ext);
-	 				$("#txtContactoNI").val(obj.Contacto[$tipo].int);
-	 				$("#txtContactoCol").val(obj.Contacto[$tipo].colonia);
-	 				$("#txtContactoCP").val(obj.Contacto[$tipo].cp);
-	 				$("#txtContactoCiudad").val(obj.Contacto[$tipo].ciudad);
-	 				$("#SlcContactoEstado").val(obj.Contacto[$tipo].estado);
-	 				muestraArchivos(obj.Contacto[$tipo].clave);
+					$("#claveNombreFile").val($respObj.Contacto[$tipo].clave);
+	 				$("#txtContactoClave").val($respObj.Contacto[$tipo].clave);
+					$("#txtContactoNombre").val($respObj.Contacto[$tipo].nombre);
+	 				$("#txtContactoEmail").val($respObj.Contacto[$tipo].email);
+	 				$("#txtContactoTelefono").val($respObj.Contacto[$tipo].telefonoCasa);
+	 				$("#txtContactoRfc").val($respObj.Contacto[$tipo].rfc);
+	 				$("#txtContactoDireccion").val($respObj.Contacto[$tipo].direccion);
+	 				$("#txtContactoNE").val($respObj.Contacto[$tipo].ext);
+	 				$("#txtContactoNI").val($respObj.Contacto[$tipo].int);
+	 				$("#txtContactoCol").val($respObj.Contacto[$tipo].colonia);
+	 				$("#txtContactoCP").val($respObj.Contacto[$tipo].cp);
+	 				$("#txtContactoCiudad").val($respObj.Contacto[$tipo].ciudad);
+	 				$("#SlcContactoEstado").val($respObj.Contacto[$tipo].estado);
+	 				muestraArchivos($respObj.Contacto[$tipo].clave);
 				}
 				catch(err){}
 					
@@ -102,14 +110,15 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "cargaContacto" },
 	 			success: function(data){
-	 				// alert(data);
+	 				 // alert(data);
 	 				obj = JSON.parse(data);
-	 				$v1=0;
-	 				while(obj.Contacto[$v1]){
-	 					agregaFilaContactos(obj.Contacto[$v1]);
-						// alert(obj.Contacto[$v1].nombre);
-						$v1++;
+	 				while(obj.Contacto[$cont]){
+	 					$arregloTabla[$cont] = obj.Contacto[$cont];
+	 					
+						$cont++;
 	 				}
+	 				cuentaFilas();
+	 				agregaFilaContactos(0);
 	 			}
 	 		});
 	 		$.ajax({
@@ -122,7 +131,7 @@
 	 			}
 	 		});
 	 		$("#listadoClientes").on("dblclick", "tr", function(){
-	 			alert("doble");
+	 			// alert("doble");
 	 		});
 	 		$("#SlcTipoTelefono").change(function(){
 	 			
@@ -133,17 +142,50 @@
 	 			}
 	 		});
 		});
-		function agregaFilaContactos(reg){
-		$('#listadoClientes tr:last').after('<tr onclick="muestraContacto('+reg.clave+');muestraArchivos('+reg.clave+');"><td>'+reg.nombre+'</td><td>'+reg.email+'</td></tr>');
+		function agregaFilaContactos(ini){
+			$pagina = ini;
+			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
+				$('#listadoClientes tbody tr:last').after('<tr onclick="muestraContacto('+$arregloTabla[i].clave+');muestraArchivos('+$arregloTabla[i].clave+');"><td>'+$arregloTabla[i].nombre+'</td><td>'+$arregloTabla[i].email+'</td></tr>');
+			}
 		}
+		function cuentaFilas(){
+			$npag = $cont/$filasxPagina;
+			if($cont%$filasxPagina > 0){ $npag++;}
+			agregaPaginacion(parseInt($npag));
+		}
+		function agregaPaginacion(npag){
+			for (var i = npag; i >= 2; i--) {
+				$pagina = $filasxPagina * (i-1);
+				$("#paging").find("li#paging1").after('<li><a onclick="limpiaTabla('+ $pagina +')"><span>'+ i +'</span></a></li>');
+			};
+				
+		}
+		function limpiaTabla(ini){
+			$("#listadoClientes tbody").html('<tr><td></td><td></td></tr>');
+			agregaFilaContactos(ini);
+		}
+		function pagPrev(){
+			if($pagina > 0){
+				limpiaTabla($pagina-$filasxPagina);
+			}
+		}
+		function pagSig(){
+			if($pagina < $cont-$filasxPagina){
+				limpiaTabla($pagina+$filasxPagina);
+			}
+		}
+
 		function muestraContacto(clave){
 				
-				$("#listadoArchivos").html('<tr><td>Tipo Documento</td><td>Descripción</td></tr>');
+				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "recuperaUnContacto", "clave": clave },
 	 			success: function(data){
+	 				$("#menuDos").removeClass('bloqueado');
+	 				$("#menuTres").removeClass('bloqueado');
+	 				menuDos();
 	 				// alert(data);
 	 				obj = JSON.parse(data);
 	 				// alert(obj.Contacto[1].rfc);
@@ -166,6 +208,9 @@
 	 				$("#txtContactoCiudad").val(obj.Contacto[1].ciudad);
 	 				$("#SlcContactoEstado").val(obj.Contacto[1].estado);
 	 				// $("#divArchivos").show();
+	 				$respObj = obj;
+	 				// delete obj;
+
 	 			}
 	 		});
 				
@@ -178,7 +223,7 @@
 	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
 	 			success: function(data){
 
-	 				$('#listadoArchivos tr:last').after(data);
+	 				$('#listadoArchivos thead').after(data);
 	 					
 	 			}
 	 		});
@@ -218,111 +263,73 @@
 			$("#menuDos").removeClass('activo').addClass('inactivo');
 			$("#menuTres").removeClass('activo').addClass('inactivo');
 			$("#areaTabla").show();
-			$("#divArchivos").hide();
+			$("#areaArchivos").hide();
 			$("#areaFormulario").hide();
 			// $("#areaRegCaracteriticas").hide();
 		}
 		function menuDos(){
-			$("#menuUno").removeClass('activo').addClass('inactivo');
-			$("#menuDos").removeClass('inactivo').addClass('activo');
-			$("#menuTres").removeClass('activo').addClass('inactivo');
-			$("#areaTabla").hide();
-			$("#divArchivos").hide();
-			$("#areaFormulario").show();
+			if (!$("#menuDos").hasClass('bloqueado')){
+				$("#menuUno").removeClass('activo').addClass('inactivo');
+				$("#menuDos").removeClass('inactivo').addClass('activo');
+				$("#menuTres").removeClass('activo').addClass('inactivo');
+				$("#areaTabla").hide();
+				$("#areaArchivos").hide();
+				$("#areaFormulario").show();
+			}
+
+				
 			// $("#areaRegCaracteriticas").hide();
 		}
 		function menuTres(){
-			$("#menuUno").removeClass('activo').addClass('inactivo');
-			$("#menuDos").removeClass('activo').addClass('inactivo');
-			$("#menuTres").removeClass('inactivo').addClass('activo');
-			$("#areaTabla").hide();
-			$("#divArchivos").show();
-			$("#areaFormulario").hide();
+			if (!$("#menuTres").hasClass('bloqueado')){
+				$("#menuUno").removeClass('activo').addClass('inactivo');
+				$("#menuDos").removeClass('activo').addClass('inactivo');
+				$("#menuTres").removeClass('inactivo').addClass('activo');
+				$("#areaTabla").hide();
+				$("#areaArchivos").show();
+				$("#areaFormulario").hide();
+			}
+				
 			// $("#areaRegCaracteriticas").show();
 		}
+		
 	 </script>
 	 <style>
 	 	body{
 			margin: 0px;
 			padding: 0px;
 		}
-		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
-		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+		form { display: block; margin: 20px auto; /*background: #eee;*/ border-radius: 10px; /*padding: 15px;*/ }
+		#progress { position:relative; width:270px; height: 20px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
 		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
 		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
+		#divListadoArchivos{
+			margin-top: 20px;
+		}
+		#tablaCargaArchivos	{
+			width: 570px;
+
+		}
+		#tablaCargaArchivos > tbody > tr > td{
+			width: 150px;
+			vertical-align: top;
+			/*padding-top: 5px;*/
+			padding-bottom: 15px;
+		}
+		#areaArchivos label{
+			font-weight: bold;
+			font-size: 13px;
+			font-family: arial;
+			margin-left: 0px;
+			margin-right: 5px;
+		}
+		
+
 		#divMain{
 			width: 100%;
 			height: 100%;
 		}
-		#submenu{
-			position: relative;
-			width: 100%;
-			height: 60px;
-			border:0px solid;
-		}
-		#submenu ul{
-			list-style: none;
-			padding: 0px;
-			height: 100%;
-			margin: 0px;
-		}
-		#submenu li{
-			float: left;
-			/*width: 100%;*/
-			height: 100%;
-			
-		}
-		#submenu .izq{
-			border-right: 1px solid #555555;
-		}
-		#submenu .der{
-			
-		}
-		.lblmenu {
-		    position: relative;
-		}
-		.subli{
-			padding-top: 10px;
-		}
-		.activo{
-			background-color: #ffffff;
-			border-bottom: 0px solid #555555;
-		}
-		.inactivo{
-			background-color: #eeeeee;
-			border-bottom: 2px solid #555555;
-		}
-		.inactivo:hover{
-			background-color: #cccccc;
-			border-bottom: 2px solid #555555;
-		}
-		.subli div{
-			width: auto;
-			padding-left: 15px;
-
-		}
-		.subli i:before {
-		    content: "\f005";
-		    font-family: FontAwesome;
-		    font-style: normal;
-		    font-weight: normal;
-		    text-decoration: inherit;
-		/*--adjust as necessary--*/
-		    color: #000;
-		    font-size: 25px;
-		    padding-right: 0.5em;
-		    position: absolute;
-		    top: 10px;
-		    left: 30px;
-		    /*bottom: 0px;*/
-		    
-		}
-		.subli i{
-			padding-top: 13px;
-			padding-left: 55px;
-			padding-bottom: 15px;
-
-		}
+		
 		/*////////*/
 		#txtContactoNombre{
 			width: 200px;
@@ -358,20 +365,36 @@
 	<div id="submenu">
 		<ul>
 			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
-			<li id="menuTres" onclick="menuTres()" class="inactivo subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
 
 		</ul>
 	</div>
 	<div class="cuerpo">
 
 			<div id="areaTabla">
+				<div class="datagrid">
 				<table border="1" id="listadoClientes">
+					<thead>
 					<tr>
 						<th>Nombre</th>
 						<th>Email</th>
 					</tr>
+					<thead>
+					<tfoot>
+						<tr><td colspan="4"><div id="paging">
+							<ul>
+								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+							</ul>
+						</div></tr>
+					</tfoot>
+					<tbody>
+						<tr><td></td><td></td></tr>
+					</tbody>
 				</table>
+				</div>
 			</div>
 
 			<div id="areaFormulario">
@@ -380,20 +403,20 @@
 						<td class="tdlabel"><label>Tipo de Cliente: </label></td><td colspan="2"> <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select></td><td></td><td></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Nombre: </label></td><td colspan="2"><input type="text" id="txtContactoNombre" value="Tayron Israel Jimenez Figueroa" disabled></td><td></td><td></td>
+						<td class="tdlabel"><label>Nombre: </label></td><td colspan="2"><input type="text" id="txtContactoNombre" value="" disabled></td><td></td><td></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Telefono: </label></td><td colspan="2"> <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" value="01 (55) 2025 3413" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select></td>
-						<td class="tdlabel"><label>Email: </label></td><td><input type="text" id="txtContactoEmail" value="tayrom.jimenez@hmsolutions.mx" disabled></td>
+						<td class="tdlabel"><label>Telefono: </label></td><td colspan="2"> <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" value="" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select></td>
+						<td class="tdlabel"><label>Email: </label></td><td><input type="text" id="txtContactoEmail" value="" disabled></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>RFC: </label></td><td colspan="2"> <input type="text" id="txtContactoRfc" value="JIFT850918TRA" disabled></td><td></td><td></td>
+						<td class="tdlabel"><label>RFC: </label></td><td colspan="2"> <input type="text" id="txtContactoRfc" value="" disabled></td><td></td><td></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Dirección: </label></td><td colspan="4"><input type="text" id="txtContactoDireccion" disabled><label> Ext: </label><input type="text" id="txtContactoNE" value="4444-A" disabled><label> Int: </label><input type="text" id="txtContactoNI" value="4444-A" disabled></td>
+						<td class="tdlabel"><label>Dirección: </label></td><td colspan="4"><input type="text" id="txtContactoDireccion" disabled><label> Ext: </label><input type="text" id="txtContactoNE" value="" disabled><label> Int: </label><input type="text" id="txtContactoNI" value="" disabled></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Colonia: </label></td><td colspan="3"><input type="text" id="txtContactoCol" value="Valle de San Nicolas"  disabled> <label>CP: </label><input type="text" id="txtContactoCP" value="55555" disabled></td><td class="tdlabel"></td>
+						<td class="tdlabel"><label>Colonia: </label></td><td colspan="3"><input type="text" id="txtContactoCol" value=""  disabled> <label>CP: </label><input type="text" id="txtContactoCP" value="" disabled></td><td class="tdlabel"></td>
 					</tr>
 					<tr>
 						<td class="tdlabel"><label>Ciudad: </label></td><td><input type="text" id="txtContactoCiudad" disabled></td><td class="tdlabel"><label>Estado: </label></td><td colspan="2"> <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select></td>
@@ -403,43 +426,50 @@
 				<!-- Clave:  --><input type="hidden" id="txtContactoClave" disabled> <br><!-- autonumerico -->
 				
 			</div>
-		</div>
-		 
-
-		<br>
-		<div id="divArchivos" hidden>
+	
+		<div id="areaArchivos">
+		<div><h3>Agregar Archivos</h3></div>
 			<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
-				
-				<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select>
-				<br><br>
-				<input type="file" size="60" name="myfile" id="myfile">
-				<br><br>
-				Descripción:<br> <textarea id="descripcionFile"></textarea>
-				<br><br>
-				<input type="submit" value="Cargar Archivo">
+				<table border ="0" id="tablaCargaArchivos">
+					
+					<tr>
+						<td><label>Tipo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select></td>
+						<td><label>Descripción: </label><br> <textarea cols="40" rows="1" id="descripcionFile"></textarea></td>
+						
+					</tr>
+					<tr>
+						<td><input type="file" size="60" name="myfile" id="myfile"></td>
+						
+						<td><input type="submit" value="Cargar Archivo"></td>
+					</tr>
+					<tr>
+						<td>
+							
+						</td>
+						<td><div id="progress"><div id="bar"></div><div id="percent">0%</div ><br></div></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="datagrid" id="divListadoArchivos">
+								<table id="listadoArchivos">
+									<thead>
+									<tr>
+										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th>
+									</tr>
+									</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					
+				</table>
 				
 				<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
-				<input type="hidden" value="contactos" name="subdir">
-				
+				<input type="hidden" value="propiedades" name="subdir">
 			 </form>
-			 
-			 <br>
-			  <div id="progress">
-			        <div id="bar"></div>
-			        <div id="percent">0%</div >
-			</div>
-			<br/>
-			 
-			<div id="message"></div>
-			 <br>
-			<table border="1" id="listadoArchivos">
-				<tr>
-					<td>Tipo Documento</td><td>Descripción</td>
-				</tr>
-			</table>
+			
 		</div>
 	</div>
-			
 	
 </body>
 </html>

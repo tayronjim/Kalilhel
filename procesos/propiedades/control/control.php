@@ -22,10 +22,11 @@
 	}
 	function filtraPropiedades($txtfiltronombre,$txtfiltrotipo){
 		$propiedades = filtraBuscaPropiedades($txtfiltronombre,$txtfiltrotipo);
-		$resultado = "";
+		$resultado = "<tbody>";
 		while($row = mysqli_fetch_object($propiedades)){
 			$resultado .= "<tr onclick='propiedadSeleccionada(`".$row->clave."`,`".$row->tipo." - ".$row->nombre."`)'><td>".$row->nombre."</td><td>".$row->tipo."</td><td>".$row->direccion."</td></tr>";
 		}
+		$resultado .= "</tbody>";
 		echo $resultado;
 	}
 	function filtraArrendatario($txtfiltronombre){
@@ -48,7 +49,11 @@
 		$res = registroRenta($clave);
 		$resultado = "";
 		while($row = mysqli_fetch_object($res)){
-			$resultado .= $row->id.").(".$row->clave_propiedad.").(".$row->clave_arrendatario.").(".$row->inicioContrato.").(".$row->duracion.").(".$row->montoInicial.").(".$row->montoActual.").(".$row->deposito.").(".$row->regresaDeposito.").(".$row->gracia.").(".$row->mantenimiento.").(".$row->montoMantenimiento.").(".$row->consepto.").(".$row->observaciones.").(".$row->clave_estatus.").(".$row->propiedad.").(".$row->arrendatario.").(".$row->tipo.").(".$row->fechaRenovacion;
+			$datetime1 = date_create($row->fechaTerminoContrato);
+			$datetime2 = date_create(date("Y-m-d"));
+			$interval = date_diff($datetime1, $datetime2);
+			$dif = $interval->format('%R%a');
+			$resultado .= $row->id.").(".$row->clave_propiedad.").(".$row->clave_arrendatario.").(".$row->inicioContrato.").(".$row->duracion.").(".$row->montoInicial.").(".$row->montoActual.").(".$row->deposito.").(".$row->regresaDeposito.").(".$row->gracia.").(".$row->mantenimiento.").(".$row->montoMantenimiento.").(".$row->consepto.").(".$row->observaciones.").(".$row->clave_estatus.").(".$row->propiedad.").(".$row->arrendatario.").(".$row->tipo.").(".$row->fechaRenovacion.").(".$row->fechaTerminoContrato.").(".$dif.").(".$row->inicioFacturacion;
 		}
 		echo $resultado;
 

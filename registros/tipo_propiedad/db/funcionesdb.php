@@ -15,8 +15,15 @@
 	}
 	function unTipoPropiedad($clave){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT * FROM tipo_propiedad WHERE clave_propiedad=".$clave);
+		$resultado = $mysqli->query("SELECT * FROM tipo_propiedad WHERE id=".$clave);
 		unconnectdb($mysqli);
 		return $resultado;
+	}
+	function guardaTipo($desc,$alta,$activo){
+		$query = "INSERT INTO `tipo_propiedad` (`descripcion`, `fechaAlta`, `activo`) VALUES ('".$desc."', '".$alta."', ".$activo.");";
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $query;
 	}
 ?>

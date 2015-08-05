@@ -28,9 +28,9 @@
 			while ($row = mysqli_fetch_object($res)) {
 				$checked1 = "";
 				$checked2 = "";
-				if($row->facturado==1){$checked1 = 'checked';}
-				if($row->pagado==1){$checked2 = 'checked';}
-				$resultado .= "<tr id=renta_".$row->claveRenta."><td value='".$row->claveRenta."'>".$row->claveRenta."</td><td value='".$row->clavePropiedad."'>".$row->clavePropiedad."</td><td>".$row->fechaCorte."</td><td>Facturado: <input type='checkbox' ".$checked1." disabled ></td><td>".$row->factura."</td><td>Pagado: <input class='checkPagado' type='checkbox' ".$checked2."></td><td><input type='date' class='fechaPagado' value='".$row->fechaPago."'></td></tr>";
+				if($row->facturado=='1'){$checked1 = 'checked';}
+				if($row->pagado=='1'){$checked2 = 'checked';}
+				$resultado .= "<tr id=renta_".$row->claveRenta."><td value='".$row->claveRenta."'>".$row->claveRenta."</td><td value='".$row->propiedad."'>".$row->propiedad."</td><td>".$row->fechaCorte."</td><td>Facturado: <input type='checkbox' ".$checked1." disabled ></td><td>".$row->factura."</td><td>Pagado: <input class='checkPagado' type='checkbox' ".$checked2."></td><td><input type='date' class='fechaPagado' value='".$row->fechaPago."'></td></tr>";
 			}
 		}
 		

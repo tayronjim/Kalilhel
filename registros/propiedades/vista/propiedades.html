@@ -6,11 +6,17 @@
 	<!-- <link href="../../../css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> -->
 	<link href="../../../css/font-awesome.css" rel="stylesheet"> 
 	<link rel="stylesheet" type="text/css" href="../../../css/general.css">
-	<link rel="stylesheet" type="text/css" href="../../../tabla.css">
+	<link rel="stylesheet" type="text/css" href="../../../css/tabla.css">
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
+		$arregloTabla = new Array();
+		$filasxPagina = 8;
+		$cont = 0;
+		$pagina = 0;
 			$(document).ready(function(){
+
+			$("#btnAgregaCaract").val('Agrega\nCaracteristica');
 			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-1);
 			$(window).resize(function(){
 				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
@@ -18,15 +24,15 @@
 			$("#areaArchivos").hide();
 			$("#areaFormulario").hide();
 			$("#areaRegCaracteriticas").hide();
+			$("#plecaArchivos").hide();
+			$("#plecaRegCaracteriticas").hide();
 			
-
 			var options = { 
 			    beforeSend: function() 
 			    {
 			        $("#progress").show();
-			        //clear everything
 			        $("#bar").width('0%');
-			        $("#message").html("");
+			        // $("#message").html("");
 			        $("#percent").html("0%");
 			    },
 			    uploadProgress: function(event, position, total, percentComplete) 
@@ -43,7 +49,7 @@
 			    },
 			    complete: function(response) 
 			    {
-			        $("#message").html("<font color='green'>"+response.responseText+"</font>");
+			        // $("#message").html("<font color='green'>"+response.responseText+"</font>");
 			        $clave_propiedad = $("#claveNombreFile").val();
 			        $tipo_documento = $("#tipoDocumentoFile").val();
 			        $archivo = $("#myfile").val();
@@ -54,13 +60,13 @@
 					$nombre_archivo = $tipo_documento+"_"+$clave_propiedad+"."+$extension;
 			        almacenaArchivos($cadena);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			        $("#myfile").val('');
 			        $("#descripcionFile").val('');
 			    },
 			    error: function()
 			    {
-			        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+			        // $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
 			 
 			    }
 			}; 
@@ -72,11 +78,14 @@
 	 			data: { "funcion" :  "cargaListadoPropiedad" },
 	 			success: function(data){
 	 				obj = JSON.parse(data);
-	 				$v1=0;
-	 				while(obj.Propiedad[$v1]){
-	 					agregaFilaPropiedades(obj.Propiedad[$v1]);
-						$v1++;
+	 				
+	 				while(obj.Propiedad[$cont]){
+	 					$arregloTabla[$cont] = obj.Propiedad[$cont];
+	 					
+						$cont++;
 	 				}
+	 				cuentaFilas();
+	 				agregaFilaPropiedades(0);
 	 			}
 	 		});
 
@@ -125,7 +134,7 @@
 		 			url: "../control/control.php",
 		 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
 		 			success: function(data){
-		 				$('#listadoCaracteristicas tr:last').after("<tr><td>"+$textCaract+"</td><td>"+$valorCaract+"</td></tr>");
+		 				$('#listadoCaracteristicas tbody tr:last').after("<tr><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
 		 			}
 	 			});
 
@@ -135,17 +144,36 @@
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
 			});
 		});
-		function agregaFilaPropiedades(reg){
-		$('#listadoPropiedades tr:last').after('<tr onclick="muestraPropiedad('+reg.clave+'); muestraArchivos('+reg.clave+')"><td>'+reg.clave+'</td><td>'+reg.nombre+'</td><td></td><td>'+reg.monto_inquilino+'</td></tr>');
+		function agregaFilaPropiedades(ini){
+			$pagina = ini;
+			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
+				$alt = '';
+				// if(i%2==0){ $alt = 'class="alt"';}
+				$('#listadoPropiedades tr:last').after('<tr '+$alt+' onclick="muestraPropiedad('+$arregloTabla[i].clave+'); muestraArchivos('+$arregloTabla[i].clave+')"><td>'+$arregloTabla[i].fechaRegistro+'</td><td>'+$arregloTabla[i].nombre+'</td><td></td><td>'+$arregloTabla[i].monto_inquilino+'</td></tr>');
+			}
+			// $(".alt td").css('background', '#E1EEf4');
+			// $(".alt td").css('color', '#00557F');
+			
 		}
+		function cuentaFilas(){
+			$npag = $cont/$filasxPagina;
+			if($cont%$filasxPagina > 0){ $npag++;}
+			agregaPaginacion(parseInt($npag));
+		}
+			
 		function muestraPropiedad(clave){
-			menuDos();
+			// alert(clave);
+			$("#btnguardaRegistro").val('Actualiza Registro');
+			$("#btnguardaRegistro").attr('onclick','guardaRegistro(2)');
+			// alert($("#btnguardaRegistro").attr('onclick'));
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "recuperaUnaPropiedad", "clave": clave },
 	 			success: function(data){
-	 				$("#listadoCaracteristicas").html("<tr><td>Caracteristica</td><td>Valor</td></tr>");
+	 				$("#menuDos").removeClass('bloqueado');
+	 				$("#menuTres").removeClass('bloqueado');
+	 				$("#listadoCaracteristicas").html("<thead><tr><th>Caracteristica</th><th>Valor</th></tr></thead>");
 	 				
 	 				cargaCaracteristicas(clave);
 	 				obj = JSON.parse(data);
@@ -175,8 +203,8 @@
 
 	 				$("#bar").width('0%');
 			        $("#percent").html('0%');
-			        $("#message").html('');
-	 				
+			        // $("#message").html('');
+	 				menuDos();
 	 			}
 	 		});
 		}
@@ -196,7 +224,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "buscaCaracteristicas", "clavePropiedad": clave},
 	 			success: function(data){
-	 				$('#listadoCaracteristicas tr:last').after(data);
+	 				$('#listadoCaracteristicas thead').after(data);
 	 			}
 	 		});
 		}
@@ -217,13 +245,16 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
 	 			success: function(data){
-	 				$('#listadoArchivos').html('<thead><tr><td>Tipo Documento</td><td>Descripción</td></tr></thead><tfoot><tr><td colspan="4"><div id="paging"><ul><li><a href="#"><span>Previous</span></a></li><li><a href="#" class="active"><span>1</span></a></li><li><a href="#"><span>2</span></a></li><li><a href="#"><span>3</span></a></li><li><a href="#"><span>4</span></a></li><li><a href="#"><span>5</span></a></li><li><a href="#"><span Next</span></a></li></ul></div></tr></tfoot>');
-	 				$('#listadoArchivos tr:last').after(data);
+	 				$('#listadoArchivos').html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
+	 				$('#listadoArchivos thead').after(data);
 	 				
 	 			}
 	 		});
 		}
-		function guardaRegistro(){
+		function guardaRegistro(val){
+			// alert(val);
+			if(val == '1'){$funcion = 'guardaRegistro';}
+			if(val == '2'){$funcion = 'actualizaRegistro';}
 
 			$nombre =			$("#txtPropiedadesNombre").val();
 			$tipo =				$("#slcPropiedadesTipo").val();
@@ -242,20 +273,31 @@
 			$fechaAdquisicion=	$("#txtPropiedadesAdquisicion").val();
 			$valorRActual =		$("#txtPropiedadesValorActual").val();
 			$montoInquilino=	$("#txtPropiedadesMontoInquilino").val();
+			$PropiedadesClave=	$("#txtPropiedadesClave").val();
 
-			$cadena = $nombre+")+("+$tipo+")+("+$propietario+")+("+$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorGInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$valorRActual+")+("+$montoInquilino;
-
+			$cadena = 	$nombre+")+("+
+						$tipo+")+("+
+						$propietario+")+("+
+						$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorGInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$montoInquilino+")+("+$PropiedadesClave;
+			// alert($funcion);
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
-	 			data: { "funcion" :  "guardaRegistro", "cadena":$cadena},
+	 			data: { "funcion" :  $funcion, "cadena":$cadena},
 	 			success: function(data){
+	 				alert(data);
 	 				$("#areaRegCaracteriticas").css('visibility', 'visible');
 	 				$("#areaArchivos").css('visibility', 'visible');
+	 				$("#menuTres").removeClass('bloqueado');
+	 				menuTres();
 	 			}
 	 		});
 		}
 		function limpiaCampos(){
+			$("#listadoPropiedades tbody td").css('background-color','#ffffff');
+			$("#btnguardaRegistro").val('Guardar Registro');
+			$("#menuTres").removeClass('bloqueado');
+			$("#menuTres").addClass('bloqueado');
 			$("#claveNombreFile").val('');
 			$("#txtPropiedadesClave").val('');
 			$("#txtPropiedadesNombre").val('');
@@ -282,15 +324,17 @@
 
 			$("#bar").width('0%');
 			$("#percent").html('0%');
-			$("#message").html('');
+			// $("#message").html('');
+			$("#menuDos").removeClass('bloqueado');
+	 		
 			menuDos();
 		}
 		function cuentaMenus(){
-		$cuentaMenus = 0;
-		$("#submenu .subli").each(function(){
-			$cuentaMenus ++;
-		});
-		return $cuentaMenus;
+			$cuentaMenus = 0;
+			$("#submenu .subli").each(function(){
+				$cuentaMenus ++;
+			});
+			return $cuentaMenus;
 
 		}
 		function anchoVentana(){
@@ -305,24 +349,60 @@
 			$("#areaArchivos").hide();
 			$("#areaFormulario").hide();
 			$("#areaRegCaracteriticas").hide();
+			$("#plecaArchivos").hide();
+			$("#plecaRegCaracteriticas").hide();
 		}
 		function menuDos(){
-			$("#menuUno").removeClass('activo').addClass('inactivo');
-			$("#menuDos").removeClass('inactivo').addClass('activo');
-			$("#menuTres").removeClass('activo').addClass('inactivo');
-			$(".areaTabla").hide();
-			$("#areaArchivos").hide();
-			$("#areaFormulario").show();
-			$("#areaRegCaracteriticas").hide();
+			if (!$("#menuDos").hasClass('bloqueado')){
+				$("#menuUno").removeClass('activo').addClass('inactivo');
+				$("#menuDos").removeClass('inactivo').addClass('activo');
+				$("#menuTres").removeClass('activo').addClass('inactivo');
+				$(".areaTabla").hide();
+				$("#areaArchivos").hide();
+				$("#areaFormulario").show();
+				$("#areaRegCaracteriticas").hide();
+				$("#plecaArchivos").hide();
+				$("#plecaRegCaracteriticas").hide();
+			}
 		}
 		function menuTres(){
-			$("#menuUno").removeClass('activo').addClass('inactivo');
-			$("#menuDos").removeClass('activo').addClass('inactivo');
-			$("#menuTres").removeClass('inactivo').addClass('activo');
-			$(".areaTabla").hide();
-			$("#areaArchivos").show();
-			$("#areaFormulario").hide();
-			$("#areaRegCaracteriticas").show();
+			if (!$("#menuTres").hasClass('bloqueado')){
+				$("#menuUno").removeClass('activo').addClass('inactivo');
+				$("#menuDos").removeClass('activo').addClass('inactivo');
+				$("#menuTres").removeClass('inactivo').addClass('activo');
+				$(".areaTabla").hide();
+				$("#areaArchivos").hide();
+				$("#areaFormulario").hide();
+				$("#areaRegCaracteriticas").hide();
+				$("#plecaArchivos").show();
+				$("#plecaRegCaracteriticas").show();
+			}
+		}
+		function agregaPaginacion(npag){
+			for (var i = npag; i >= 2; i--) {
+				$pagina = $filasxPagina * (i-1);
+				$("#paging").find("li#paging1").after('<li><a onclick="limpiaTabla('+ $pagina +')"><span>'+ i +'</span></a></li>');
+			};
+				
+		}
+		function limpiaTabla(ini){
+			$("#tablaPropiedades tbody").html('<tr><td width="120px"></td><td width="150px"></td><td width="150px"></td><td width="150px"></td></tr>');
+			agregaFilaPropiedades(ini);
+		}
+		function muestraOcultaArchivos(idOcultar){
+			$("#"+idOcultar).slideToggle("slow", function() {
+				$("#areaArchivos").height('100px');
+			});
+		}
+		function pagPrev(){
+			if($pagina > 0){
+				limpiaTabla($pagina-$filasxPagina);
+			}
+		}
+		function pagSig(){
+			if($pagina < $cont-$filasxPagina){
+				limpiaTabla($pagina+$filasxPagina);
+			}
 		}
 	 </script>
 	 <style>
@@ -330,85 +410,17 @@
 			margin: 0px;
 			padding: 0px;
 		}
-		form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
-		#progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+		form { display: block; margin: 20px auto; /*background: #eee;*/ border-radius: 10px; /*padding: 15px;*/ }
+		#progress { position:relative; width:270px; height: 20px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
 		#bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
 		#percent { position:absolute; display:inline-block; top:3px; left:48%; }
-		
 		
 		#divMain{
 			width: 100%;
 			height: 100%;
 		}
-		#submenu{
-			position: relative;
-			width: 100%;
-			height: 60px;
-			border:0px solid;
-		}
-		#submenu ul{
-			list-style: none;
-			padding: 0px;
-			height: 100%;
-			margin: 0px;
-		}
-		#submenu li{
-			float: left;
-			/*width: 100%;*/
-			height: 100%;
-			
-		}
-		#submenu .izq{
-			border-right: 1px solid #555555;
-		}
-		#submenu .der{
-			
-		}
-		.lblmenu {
-		    position: relative;
-		}
-		.subli{
-			padding-top: 10px;
-		}
-		.activo{
-			background-color: #ffffff;
-			border-bottom: 0px solid #555555;
-		}
-		.inactivo{
-			background-color: #eeeeee;
-			border-bottom: 2px solid #555555;
-		}
-		.inactivo:hover{
-			background-color: #cccccc;
-			border-bottom: 2px solid #555555;
-		}
-		.subli div{
-			width: auto;
-			padding-left: 15px;
+		
 
-		}
-		.subli i:before {
-		    content: "\f005";
-		    font-family: FontAwesome;
-		    font-style: normal;
-		    font-weight: normal;
-		    text-decoration: inherit;
-		/*--adjust as necessary--*/
-		    color: #000;
-		    font-size: 25px;
-		    padding-right: 0.5em;
-		    position: absolute;
-		    top: 10px;
-		    left: 30px;
-		    /*bottom: 0px;*/
-		    
-		}
-		.subli i{
-			padding-top: 13px;
-			padding-left: 55px;
-			padding-bottom: 15px;
-
-		}
 		#txtPropiedadesNombre{
 			width: 250px;
 		}
@@ -424,55 +436,117 @@
 		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino{
 			width: 80px;
 		}
+		
+		#areaRegCaracteriticas{
+			margin-bottom: 40px;
+		}
+		#areaRegCaracteriticas table{
+			width: 350px;
+			vertical-align: top;
+		}
+		#areaRegCaracteriticas td{
+			
+			vertical-align: top;
+		}
+		#tablaCargaArchivos	{
+			width: 570px;
+
+		}
+		#tablaCargaArchivos > tbody > tr > td{
+			width: 150px;
+			vertical-align: top;
+			/*padding-top: 5px;*/
+			padding-bottom: 15px;
+		}
+		#areaRegCaracteriticas label, #areaArchivos label{
+			font-weight: bold;
+			font-size: 13px;
+			font-family: arial;
+			margin-left: 10px;
+			margin-right: 5px;
+		}
+		#areaArchivos label{
+			margin-left: 0px !important;
+		}
+		#fila2 td{
+			padding-top: 10px;
+			padding-bottom: 30px;
+		}
+		.pleca{
+			width: 570px;
+			/*height: 30px;*/
+			border-top:1px solid #006699;
+			border-bottom:1px solid #006699;
+			margin-top: 30px;
+			/*margin-bottom: 10px;*/
+			cursor: pointer;
+		}
+		.pleca h3{
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+		#paging > ul > li{cursor: pointer;}
+
+		.alignR{
+			text-align: right !important;
+		}
+		#divListadoArchivos{
+			margin-top: 20px;
+		}
+		
 	</style>
-	</style>
+	
 </head>
 <body>
 <div id="divMain">
 	<div id="submenu">
 		<ul>
 			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
-			<li id="menuTres" onclick="menuTres()" class="inactivo subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
 
 		</ul>
 	</div>
 	<div class="cuerpo">
 		<!-- <br>
 		<h1>Propiedades</h1> -->
-
-		<div id="listadoPropiedades" class="areaTabla datagrid">
-			<table border="1" >
-				<thead>
-				<tr>
-					<th width="120px">Fecha de Registro</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
-				</tr>
-				</thead>
-				<tfoot>
-					<tr><td colspan="4"><div id="paging"><ul><li><a href="#"><span>Previous</span></a></li><li><a href="#" class="active"><span>1</span></a></li><li><a href="#"><span>2</span></a></li><li><a href="#"><span>3</span></a></li><li><a href="#"><span>4</span></a></li><li><a href="#"><span>5</span></a></li><li><a href="#"><span>Next</span></a></li></ul></div></tr>
-				</tfoot>
-				
-			<!-- </table> -->
-			<!-- <div class="datagrid" style="overflow:auto; height:200px;"> -->
-				<!-- <table border="1" id="listadoPropiedades"> -->
-					<tbody>
+		<div class="areaTabla">
+			<div id="listadoPropiedades" class="datagrid">
+				<table border="1" id="tablaPropiedades">
+					<thead>
 					<tr>
-						<td width="120px"></td>
-						<td width="150px"></td>
-						<td width="150px"></td>
-						<td width="150px"></td>
+						<th width="120px">Fecha de Registro</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
 					</tr>
-					</tbody>
-				</table>
-			<!-- </div> -->
-				
+					</thead>
+					<tfoot>
+						<tr><td colspan="4"><div id="paging">
+							<ul>
+								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+							</ul>
+						</div></td></tr>
+					</tfoot>
+				<!-- </table> -->
+				<!-- <div class="datagrid" style="overflow:auto; height:200px;"> -->
+					<!-- <table border="1" id="listadoPropiedades"> -->
+						<tbody>
+						<tr>
+							<td width="120px"></td>
+							<td width="150px"></td>
+							<td width="150px"></td>
+							<td width="150px"></td>
+						</tr>
+						</tbody>
+					</table>
+				<!-- </div> -->
 					
-
+				
+			</div>
+			<br>
 			<input type="button" value="Nuevo Registro" onclick="limpiaCampos()">
-			
-
 		</div>
-
+			
 			
 
 		<!-- <br><br> -->
@@ -507,58 +581,85 @@
 					<td colspan="3"><label>Valor Real Actual: </label><input type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: </label><input type="text" id="txtPropiedadesMontoInquilino"></td>
 				</tr>
 			</table>
-			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> <br>
-			
-			<input type="button" value="Guardar Registro" onclick="guardaRegistro()">
-
+			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> <br><br>
+			<input type="button" id="btnguardaRegistro" value="Guardar Registro" onclick="guardaRegistro(1)">
 		</div>
-			
-		<div id="areaRegCaracteriticas" >
-			<h3>Registro de Caracteristicas</h3>
 
-			Caracteristica: <select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select>    Valor:<input type="text" id="txtPropiedadesCaracteristicaValor"> <br>
-			<input type="button" value="Agregar" id="btnAgregaCaract">
-			<br>
-			<table id="listadoCaracteristicas" border="1">
-				<tr>
-					<td>Caracteristica</td><td>Valor</td>
+		<div id="plecaRegCaracteriticas" class="pleca" onclick="muestraOcultaArchivos('areaRegCaracteriticas')"><h3>Registro de Caracteristicas</h3></div>
+
+		<div id="areaRegCaracteriticas" >
+			<table border="0">
+				<tr id="fila1">
+					<td colspan="5"></td>
+				</tr>
+				<tr id="fila2">
+					<td><label>Caracteristica: </label></td><td colspan="2"><select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select></td><td><label>Valor: </label></td><td> <input type="text" id="txtPropiedadesCaracteristicaValor"></td>
+				</tr>
+				<tr id="fila3">
+					<td colspan="2"><input type="button" value="Agregar Caracteristica" id="btnAgregaCaract"></td>
+					<td colspan="3">
+						<div class="datagrid">
+						<table id="listadoCaracteristicas">
+							<thead>
+							<tr>
+								<th>Caracteristica</th><th>Valor</th>
+							</tr>
+							</thead>
+							<tr></tr>
+						</table>
+						</div>
+					</td>
 				</tr>
 			</table>
+			
+
+			   
+			
 		</div>
-		<div id="areaArchivos" >
+		<div id="plecaArchivos" class="pleca" onclick="muestraOcultaArchivos('areaArchivos')"><h3>Agregar Archivos</h3></div>
+		<div id="areaArchivos">
 			<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
-				
-				<select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="doc1">Documento 1</option><option value="doc2">Documento 2</option></select>
-				<br><br>
-				<input type="file" size="60" name="myfile" id="myfile">
-				<br><br>
-				Descripción:<br> <textarea id="descripcionFile"></textarea>
-				<br><br>
-				<input type="submit" value="Cargar Archivo">
+				<table border ="0" id="tablaCargaArchivos">
+					
+					<tr>
+						<td><label>Tipo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="doc1">Documento 1</option><option value="doc2">Documento 2</option></select></td>
+						<td><label>Descripción: </label><br> <textarea cols="40" rows="1" id="descripcionFile"></textarea></td>
+						
+					</tr>
+					<tr>
+						<td><input type="file" size="60" name="myfile" id="myfile"></td>
+						
+						<td><input type="submit" value="Cargar Archivo"></td>
+					</tr>
+					<tr>
+						<td>
+							
+						</td>
+						<td><div id="progress"><div id="bar"></div><div id="percent">0%</div ><br><!-- <div id="message"></div> --></div></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="datagrid" id="divListadoArchivos">
+								<table id="listadoArchivos">
+									<thead>
+									<tr>
+										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th>
+									</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</td>
+					</tr>
+					
+				</table>
 				
 				<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
 				<input type="hidden" value="propiedades" name="subdir">
-				
 			 </form>
-			 
-			 <br>
-			  <div id="progress">
-			        <div id="bar"></div>
-			        <div id="percent">0%</div >
-			</div>
-			<br/>
-			 
-			<div id="message"></div>
-			 <br>
-			<table border="1" id="listadoArchivos">
-				<tr>
-					<td>Tipo Documento</td><td>Descripción</td>
-				</tr>
-			</table>
+			
 		</div>
 	</div>
 </div>
-		
-	
 </body>
 </html>

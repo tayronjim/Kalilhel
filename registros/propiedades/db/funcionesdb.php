@@ -3,7 +3,7 @@
 
 	function recuperaPropiedades(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, nombre, monto_inquilino FROM propiedades");
+		$resultado = $mysqli->query("SELECT clave, fechaRegistro, nombre, monto_inquilino FROM propiedades");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
@@ -80,7 +80,35 @@
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
-		echo $siguienteClave;
+	}
+	function actualizaPropiedad($cadena){
+		$datos = explode(')+(',$cadena);
+
+		$nombre = 			$datos[0];
+		$tipo =				$datos[1];
+		$propietario =		$datos[2];
+		$pagaM =			$datos[3];
+		$direccion =		$datos[4];
+		$nExt = 			$datos[5];
+		$nInt = 			$datos[6];
+		$colonia = 			$datos[7];
+		$cp =				$datos[8];
+		$ciudad =			$datos[9];
+		$estado =			$datos[10];
+		$valorGInicial= 	$datos[11];
+		$moneda =			$datos[12];
+		$cambio =			$datos[13];
+		$fechaAdquisicion=	$datos[14];
+		$valorRActual =		$datos[15];
+		$montoInquilino=	$datos[16];
+		$clave=				$datos[17];
+
+		$query = "UPDATE `propiedades` SET   `nombre`='".$nombre."', `tipo_propiedad`=".$tipo.", `propietario`=".$propietario.", `paga_mantenimiento`=".$pagaM.", `direccion`='".$direccion."', `ext`='".$nExt."', `int`='".$nInt."', `colonia`='".$colonia."', `cp`='".$cp."', `ciudad`='".$ciudad."', `estado`=".$estado.", `valor_inicial`=".$valorGInicial.", `tipo_moneda`='".$moneda."', `cambio`=".$cambio.", `adquisicion`='".$fechaAdquisicion."' where clave= ".$clave;
+
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		echo $query;
 	}
 	function agregaCaract($valores){
 		list($claveP, $ClaveC, $valor) = split('@', $valores);

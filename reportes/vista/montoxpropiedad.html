@@ -2,7 +2,10 @@
 <html>
 <head>
 	<title></title>
-	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/kalilhel/css/general.css">
+	<link rel="stylesheet" type="text/css" href="/kalilhel/css/tabla.css">
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
 		$.ajax({
@@ -35,10 +38,32 @@
 	</script>
 </head>
 <body>
-<table border="1" id="tablaReporte">
-	<tr>
-		<th>Propiedad</th><th>Fin de Contrato</th><th>Monto de Renta</th>
-	</tr>
-</table>
-</body>
+<div class="cuerpo">
+	<div class="datagrid">
+		<table border="1" id="tablaReporte">
+			<thead>
+				<tr>
+					<th>Propiedad</th><th>Fin de Contrato</th><th>Monto de Renta</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr><td colspan="3"><div id="paging">
+					<!-- <ul>
+						<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+						<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+						<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+					</ul> -->
+				</div></td></tr>
+			</tfoot>
+				<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</body>
+</div>
 </html>

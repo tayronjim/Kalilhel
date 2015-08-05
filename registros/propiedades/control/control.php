@@ -10,6 +10,7 @@
 		case 'almacenaArchivos': almacenaArchivos($_POST['cadena']); break;
 		case 'muestraArchivos': muestraArchivos($_POST['clave']); break;
 		case 'guardaRegistro': guardaRegistro($_POST['cadena']); break;
+		case 'actualizaRegistro': actualizaRegistro($_POST['cadena']); break;
 		case 'cargaTipoPropiedad': cargaTipoPropiedad(); break;
 		case 'cargaPropietario': cargaPropietario(); break;
 		case 'cargaEstados': cargaEstados(); break;
@@ -76,10 +77,11 @@
 	}
 	function buscaCaracteristicas($clavePropiedad){
 		$listaCaracteristica = buscaCaractPropiedad($clavePropiedad);
-		$caracteristicas = "";
+		$caracteristicas = "<tbody>";
 		while($row = mysqli_fetch_object($listaCaracteristica)){
-			$caracteristicas .= '<tr id="carac_'.$row->clave.'"><td>'.$row->nombre.'</td><td>'.$row->valor.'</td></tr>';
+			$caracteristicas .= '<tr id="carac_'.$row->clave.'"><td>'.$row->nombre.'</td><td  class="alignR">'.$row->valor.'</td></tr>';
 		}
+		$caracteristicas .= "</tbody>";
 		print $caracteristicas;
 	}
 	function agregaCaracteristica($valores){
@@ -100,14 +102,18 @@
 	}
 	function muestraArchivos($clave){
 		$listaArchivos = listaArchivos($clave);
-		$filasArchivos = "";
+		$filasArchivos = "<tbody>";
 		while($row = mysqli_fetch_object($listaArchivos)){
 			$filasArchivos .= '<tr id="tr'.$row->tipo_documento.'"><td>'.$row->tipo_documento.'</td><td>'.$row->descripcion.'</td><td><a href="../../../uploads/propiedades/'.$row->nombre_archivo.'" target="_BLANK">Abrir Archivo</a></td></tr>';
 		}
+		$filasArchivos .= "</tbody>";
 		print $filasArchivos;
 	}
 	function guardaRegistro($cadena){
 		// $datos = explode(').(',$cadena);
 		$respAgregaPropiedad = agregaPropiedad($cadena);
+	}
+	function actualizaRegistro($cadena){
+		$respAgregaPropiedad = actualizaPropiedad($cadena);
 	}
 ?>

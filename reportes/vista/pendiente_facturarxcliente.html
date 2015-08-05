@@ -3,7 +3,10 @@
 <meta charset="UTF-8">
 <head>
 	<title>Reporte - Listado de Rentas Pendientes de Facturar</title>
-	<script type="text/javascript" src="../../js/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/kalilhel/css/general.css">
+	<link rel="stylesheet" type="text/css" href="/kalilhel/css/tabla.css">
+	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
 		$("#divFecha1").hide();
@@ -85,35 +88,56 @@
 		$filas += "<td>SubTotal</td>";
 		$filas += "<td>"+$totalMonto+"</td>";
 		$filas += "</tr>";
-		$("#tablaReporte").html('<tr><th>Cliente</th><th>Mes</th><th>Monto de Renta</th></tr>');
-		$("#tablaReporte").append($filas);
+		$("#tablaReporte tbody").html('');
+		$("#tablaReporte tbody").append($filas);
 		}
 	</script>
 </head>
 <body>
-<table>
-	<tr>
-		<td>Filtro:</td><td></td><td></td>
-	</tr>
-	<tr>
-		<td>Mostrar: <select id="filtroFechas">
-				<option value="1">Todo</option>
-				<option value="2">Este mes</option>
-				<option value="3">Este año</option>
-				<option value="4">Dia exacto</option>
-				<option value="5">Entre fechas</option>
-			</select>
-		</td>
-		<td><div id="divFecha1"><input type="date" id="filtroFecha1" class="filtroFecha"></div></td><td><div id="divFecha2"> y <input type="date" id="filtroFecha2" class="filtroFecha"></div></td>
-	</tr>
-</table>
-<br><br>
+<div class="cuerpo">
+	<table>
+		<tr>
+			<td>Filtro:</td><td></td><td></td>
+		</tr>
+		<tr>
+			<td>Mostrar: <select id="filtroFechas">
+					<option value="1">Todo</option>
+					<option value="2">Este mes</option>
+					<option value="3">Este año</option>
+					<option value="4">Dia exacto</option>
+					<option value="5">Entre fechas</option>
+				</select>
+			</td>
+			<td><div id="divFecha1"><input type="date" id="filtroFecha1" class="filtroFecha"></div></td><td><div id="divFecha2"> y <input type="date" id="filtroFecha2" class="filtroFecha"></div></td>
+		</tr>
+	</table>
+	<br><br>
 
- 
-<table border="1" id="tablaReporte">
-	<tr>
-		<th>Cliente</th><th>Mes</th><th>Monto de Renta</th>
-	</tr>
-</table>
+	<div class="datagrid">
+		<table border="0" id="tablaReporte">
+			<thead>
+				<tr>
+					<th>Cliente</th><th>Mes</th><th>Monto de Renta</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr><td colspan="3"><div id="paging">
+					<!-- <ul>
+						<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+						<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+						<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+					</ul> -->
+				</div></td></tr>
+			</tfoot>
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 </body>
 </html>
