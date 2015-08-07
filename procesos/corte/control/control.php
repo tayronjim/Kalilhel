@@ -2,8 +2,9 @@
 	include ('../db/funcionesdb.php');
 	$funsion = $_POST['funsion'];
 	switch ($funsion) {
-		case 'listaFacturas': listaFacturas(); break;
+		case 'listaFacturas': listaFacturas($_POST['fechaFiltro']); break;
 		case 'subeCambios': subeCambios($_POST['cadena']); break;
+		case 'listaPeriodos': listaPeriodos(); break;
 
 		
 		default:
@@ -11,7 +12,7 @@
 			break;
 	}
 
-	function listaFacturas(){
+	function listaFacturas($fecha){
 		
 		$resultado = "";
 		$cantidadCortes =mysqli_fetch_object(buscaCortes());
@@ -24,7 +25,7 @@
 			}
 		}
 		else{
-			$res = listadoFacturasCorte();
+			$res = listadoFacturasCorte($fecha);
 			while ($row = mysqli_fetch_object($res)) {
 				$checked1 = "";
 				$checked2 = "";
@@ -41,5 +42,18 @@
 		
 		$resultado = cambiosCorte($cadena);
 		echo $resultado;
+	}
+
+	function listaPeriodos(){
+		$res = enlistaPeriodos();
+		$resultado = "";
+		
+		while ($row = mysqli_fetch_object($res)) {
+			$corte = substr($row->corte,0,4)."-".substr($row->corte,4,6);
+			$resultado .= "<option value='".$row->corte."'>".$corte."</option>";
+			
+		}
+		echo $resultado;
+
 	}
 ?>

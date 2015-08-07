@@ -9,13 +9,13 @@ class Database{
 		$mysqli = connectdb();
 		$queryComprueba = $mysqli->query("SELECT id from contactos where clave =".$clientes->clave);
 		$count = mysqli_num_rows($queryComprueba);
-		echo "->".$count."<-";
+		// echo "->".$count."<-";
 		if($count>0){
-			$query = "UPDATE `contactos` SET `fechaRegistro`='".$fechaRegistro."', `clave`=".$clientes->clave.", `clave_contacto`=0, `clave_padre`=0, `tipoCliente`=1, `nombre`='".$clientes->nombre."', `email`='".$clientes->email."', `telefonoCasa`='".$clientes->telefonoCasa."', `telefonoCel`='".$clientes->telefonoCel."', `telefonoOficina`='".$clientes->telefonoOficina."', `rfc`='".$clientes->rfc."', `direccion`='".$clientes->direccion."', `ext`='".$clientes->ext."', `int`='".$clientes->int."', `colonia`='".$clientes->colonia."', `cp`='".$clientes->cp."', `ciudad`='".$clientes->ciudad."', `estado`='".$clientes->estado."',  `moroso`='".$clientes->moroso."', `metododepago`='".$clientes->metododepago."' where clave =".$clientes->clave;
+			$query = "UPDATE `contactos` SET `fechaRegistro`='".$fechaRegistro."', `clave`=".$clientes->clave.", `clave_contacto`=0, `clave_padre`=0, `tipoCliente`=1, `nombre`='".$clientes->nombre."', `email`='".$clientes->Email."', `telefonoCasa`='".$clientes->telefonoCasa."', `telefonoCel`='".$clientes->telefonoCel."', `telefonoOficina`='".$clientes->telefonoOficina."', `rfc`='".$clientes->rfc."', `direccion`='".$clientes->direccion."', `ext`='".$clientes->ext."', `int`='".$clientes->int."', `colonia`='".$clientes->colonia."', `cp`='".$clientes->cp."', `ciudad`='".$clientes->ciudad."', `estado`='".$clientes->estado."',  `moroso`='".$clientes->moroso."', `metododepago`='".$clientes->metododepago."' where clave =".$clientes->clave;
 		}
 		else{
 			$query = "INSERT INTO `contactos` (`fechaRegistro`, `clave`, `clave_contacto`, `clave_padre`, `tipoCliente`, `nombre`, `email`, `telefonoCasa`, `telefonoCel`, `telefonoOficina`, `rfc`, `direccion`, `ext`, `int`, `colonia`, `cp`, `ciudad`, `estado`,  `moroso`, `metododepago`)
-					VALUES ('".$fechaRegistro."', ".$clientes->clave.", 0, 0, 1, '".$clientes->nombre."', '".$clientes->email."', '".$clientes->telefonoCasa."', '".$clientes->telefonoCel."', '".$clientes->telefonoOficina."', '".$clientes->rfc."', '".$clientes->direccion."', '".$clientes->ext."', '".$clientes->int."', '".$clientes->colonia."', '".$clientes->cp."', '".$clientes->ciudad."', '".$clientes->estado."', '".$clientes->moroso."', '".$clientes->metododepago."')";
+					VALUES ('".$fechaRegistro."', ".$clientes->clave.", 0, 0, 1, '".$clientes->nombre."', '".$clientes->Email."', '".$clientes->telefonoCasa."', '".$clientes->telefonoCel."', '".$clientes->telefonoOficina."', '".$clientes->rfc."', '".$clientes->direccion."', '".$clientes->ext."', '".$clientes->int."', '".$clientes->colonia."', '".$clientes->cp."', '".$clientes->ciudad."', '".$clientes->estado."', '".$clientes->moroso."', '".$clientes->metododepago."')";
 		
 		}
 		$resultadoClientes = $mysqli->query($query);
@@ -25,19 +25,23 @@ class Database{
 	}
 
 	function insertaContactos($subvalue,$fechaRegistro){
-		$fechaRegistro = arrglaFecha($fechaRegistro);
-		if($subvalue->tipoCliente=="CONTACTO")$tipoCliente=2;
-		if($subvalue->tipoCliente=="FIADOR")$tipoCliente=3;
+		// $ = arrglaFecha($fechaRegistro);
+		switch ($subvalue->tipoCliente) {
+			case "CONTACTO": $tipoCliente=2; break;
+			case "FIADOR": $tipoCliente=3; break;
+			
+			default: $tipoCliente=2; break;
+		}
 		
 		$mysqli = connectdb();
 		$queryComprueba = $mysqli->query("SELECT count(id) from contactos where clave_contacto =".$subvalue->clave_contacto.";");
 		$count = mysqli_num_rows($queryComprueba);
 		if($count>0){
-			$query = "UPDATE `contactos` SET `fechaRegistro`='".$fechaRegistro."', `clave`= 0, `clave_contacto`=".$subvalue->clave_contacto.", `clave_padre`=".$subvalue->clave_padre.", `tipoCliente`=".$tipoCliente.", `nombre`='".$subvalue->nombre."', `email`='".$subvalue->email."', `telefonoCasa`='".$subvalue->telefonoCasa."', `telefonoCel`='".$subvalue->telefonoCel."', `telefonoOficina`='".$subvalue->telefonoOficina."', `rfc`='".$subvalue->rfc."', `direccion`='".$subvalue->direccion."', `ext`='".$subvalue->ext."', `int`='".$subvalue->int."', `colonia`='".$subvalue->colonia."', `cp`='".$subvalue->cp."', `ciudad`='".$subvalue->ciudad."', `estado`='".$subvalue->estado."',  `moroso`='".$subvalue->moroso."', `metododepago`='".$subvalue->metododepago."' where clave =".$clientes->clave;
+			$query = "UPDATE `contactos` SET `fechaRegistro`='".$fechaRegistro."', `clave`= 0, `clave_contacto`=".$subvalue->clave_contacto.", `clave_padre`=".$subvalue->clave_padre.", `tipoCliente`=".$tipoCliente.", `nombre`='".$subvalue->nombre."', `email`='".$subvalue->Email."', `telefonoCasa`='".$subvalue->telefonoCasa."', `telefonoCel`='".$subvalue->telefonoCel."', `telefonoOficina`='".$subvalue->telefonoOficina."', `direccion`='".$subvalue->direccion."', `ext`='".$subvalue->ext."', `int`='".$subvalue->int."', `colonia`='".$subvalue->colonia."', `cp`='".$subvalue->cp."', `ciudad`='".$subvalue->ciudad."', `estado`='".$subvalue->estado."' where clave =".$subvalue->clave_contacto;
 		}
 		else{
 			$query = "INSERT INTO `contactos` (`fechaRegistro`, `clave`, `clave_contacto`, `clave_padre`, `tipoCliente`, `nombre`, `email`, `telefonoCasa`, `telefonoCel`, `telefonoOficina`, `rfc`, `direccion`, `ext`, `int`, `colonia`, `cp`, `ciudad`, `estado`,  `moroso`, `metododepago`)
-					VALUES ('".$fechaRegistro."', 0, ".$subvalue->clave_contacto.", ".$subvalue->clave_padre.", ".$tipoCliente.", '".$subvalue->nombre."', '".$subvalue->email."', '".$subvalue->telefonoCasa."', '".$subvalue->telefonoCel."', '".$subvalue->telefonoOficina."', 'xxxxxxxxxxxx', '".$subvalue->direccion."', '".$subvalue->ext."', '".$subvalue->int."', '".$subvalue->colonia."', '".$subvalue->cp."', '".$subvalue->ciudad."', '".$subvalue->estado."', 'NULL', 'NULL')";
+					VALUES ('".$fechaRegistro."', 0, ".$subvalue->clave_contacto.", ".$subvalue->clave_padre.", ".$tipoCliente.", '".$subvalue->nombre."', '".$subvalue->Email."', '".$subvalue->telefonoCasa."', '".$subvalue->telefonoCel."', '".$subvalue->telefonoOficina."', 'xxxxxxxxxxxx', '".$subvalue->direccion."', '".$subvalue->ext."', '".$subvalue->int."', '".$subvalue->colonia."', '".$subvalue->cp."', '".$subvalue->ciudad."', '".$subvalue->estado."', 'NULL', 'NULL')";
 		
 		}
 		$resultado = $mysqli->query($query);
@@ -70,12 +74,13 @@ class Database{
 		return $resultado;
 	}
 
-	function registraEvento($modulo, $accion, $fecha){
-		$fechaEvento = arrglaFecha($fecha);
+	function registraEvento($modulo, $accion){
+		
 		$mysqli = connectdb();
-		$query = "INSERT INTO `registro_actualizacion` (`modulo`,`accion`, `fechaSincronizacion`) VALUES ('".$modulo."','".$accion."',NOW())";
+		$query = "INSERT INTO `registro_actualizacion` (`modulo`,`accion`, `fechaSincronizacion`) VALUES ('".$modulo."','".$accion."',NOW());";
 		$resultadoReg = $mysqli->query($query);
 		unconnectdb($mysqli);
+		return $resultadoReg;
 	}
 
 	function ultimaSinc(){

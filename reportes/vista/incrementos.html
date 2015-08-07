@@ -8,6 +8,18 @@
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
+	// $(function () {
+ //             var $win = $(window);
+ 
+ //             $win.scroll(function () {
+ //                 if ($win.scrollTop() == 0)
+ //                     alert('Scrolled to Page Top');
+ //                 else if ($win.height() + $win.scrollTop()
+ //                                == $(document).height()) {
+ //                     alert('Scrolled to Page Bottom');
+ //                 }
+ //             });
+ //         });
 		(function($) {  
 		    $.get = function(key)   {  
 		        key = key.replace(/[\[]/, '\\[');  
@@ -25,7 +37,15 @@
 		})(jQuery);
 	$(document).ready(function(){
 		$a = $.get('v');
-		if($a == 'completa'){$("#btnCompleta").hide();}
+		if($a == 'completa'){$("#btnCompleta").hide(); $(".datagrid").width($("#tablaReporte").width()); }
+		// $(window).scroll(function() {
+		//     var height = $(window).scrollTop();
+		//     $("#txtBuscaXCliente").val(height);
+		//     if(height  > some_number) {
+		//         // do something
+		//     }
+		// });
+		// $(".datagrid").width($("#tablaReporte").width());
 		$.ajax({
  			type: "POST",
  			url: "../control/control.php",
@@ -83,13 +103,13 @@
 		$("#tablaReporte").append($filas);
 	}
 	function nuevaVentana(){
-		window.open("incrementos.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1000, height=700");
-		return false;
+		window.open("incrementos.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=850, height=700");
 	}
 	</script>
 	<style type="text/css">
 	#pantallaNueva{
 		float: right;
+		margin-right: 10px;
 	}
 	#filtros{
 		float: left;
@@ -97,23 +117,24 @@
 	#cabecera{
 		width: 100%;
 		height: 50px;
+		min-width: 
 	}
 	</style>
 </head>
 <body>
 <div class="cuerpo">
+	<div class="titulo"><h2>Incrementos</h2></div>
 	<div id="cabecera">
-		<div id="filtros">Filtro: <br>
+		<div id="filtros">
 		Clientes: <input type="text" id="txtBuscaXCliente"></div>
 		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
 	</div>
-	
-	<br><br>
+	<br>
 	<div class="datagrid">
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th>Clientes</th><th>Fecha Inicio Contrato</th><th>Fecha Fin Contrato</th><th>Fecha Renovación</th><th>Renta Actual</th>
+					<th style="min-width:155px; max-width:245px; width:245px;">Clientes</th><th style="min-width:85px;">Fecha Inicio Contrato</th><th style="min-width:85px;">Fecha Fin Contrato</th><th style="min-width:85px;">Fecha Renovación</th><th style="min-width:75px;">Renta Actual</th>
 				</tr>
 			</thead>
 			<tfoot>

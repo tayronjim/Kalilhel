@@ -7,16 +7,28 @@
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
+		(function($) {  
+		    $.get = function(key)   {  
+		        key = key.replace(/[\[]/, '\\[');  
+		        key = key.replace(/[\]]/, '\\]');  
+		        var pattern = "[\\?&]" + key + "=([^&#]*)";  
+		        var regex = new RegExp(pattern);  
+		        var url = unescape(window.location.href);  
+		        var results = regex.exec(url);  
+		        if (results === null) {  
+		            return null;  
+		        } else {  
+		            return results[1];  
+		        }  
+		    }  
+		})(jQuery);
 		$(document).ready(function(){
-			$.ajax({
-	 			type: "POST",
-	 			url: "../control/control.php",
-	 			data: { "funsion" :  "listaFacturas" },
-	 			success: function(data){
-	 				// alert(data);
-	 				$("#listadoRentas").append(data);
-	 			}
-	 		});
+
+			$a = $.get('v');
+			if($a == 'completa'){$("#btnCompleta").hide(); $(".datagrid").width($("#listadoRentas").width());}
+
+			cargaListaCortes('');
+
 	 		$("#listadoRentas").on('click','.checkPagado',function(){
 				if($(this).prop('checked')){
 					$fecha = new Date($.now());
@@ -31,7 +43,37 @@
 					$(this).first().closest("td").next().find(".fechaPagado").val($nuevaFecha);
 				}
 			});
-		});
+
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funsion" :  "listaPeriodos"},
+	 			success: function(data){
+	 				// alert(data);
+	 				$("#slcPer").html(data);
+	 				$sup = $("#slcPer").first('option').val();
+	 				$inf = $("#slcPer option:last-child").val();
+	 				// alert($("#slcPer option:last-child").val());
+	 				$("#slcPeriodo select").attr('LIMITSUP',$sup);
+	 				$("#slcPeriodo select").attr('LIMITINF',$inf);
+	 				// alert(data);
+	 				// $("#listadoRentas").append(data);
+	 			}
+	 		});
+
+		});  // Fin document Ready
+		function cargaListaCortes(fechaFiltro){
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funsion" :  "listaFacturas", "fechaFiltro": fechaFiltro},
+	 			success: function(data){
+	 				// alert(data);
+	 				$("#listadoRentas tbody").html('');
+	 				$("#listadoRentas tbody").append(data);
+	 			}
+	 		});
+		}
 		function subeCambios(){
 			$cadenaObj = '{';
 			$('#listadoRentas tr').next('tr').each(function () {
@@ -60,26 +102,137 @@
 	 			url: "../control/control.php",
 	 			data: { "funsion" :  "subeCambios","cadena":$cadena },
 	 			success: function(data){
-	 				alert(data);
+	 				// alert(data);
 	 				// $("#listadoRentas").append(data);
 	 			}
 	 		});
+	 		
 
+		}
+		function nuevaVentana(){
+			window.open("corte.html?v=completa", "_blank", "toolbar=yes, top=10, left=10, width=1000, height=700");
+		}
+		function periodoAnterior(){
+			$periodoActual = $("#slcPeriodo select").val();
+			if(parseInt($("#slcPeriodo select").attr('LIMITINF')) < parseInt($periodoActual) ){
+				$("#slcPeriodo select").val(--$periodoActual);
+				while($("#slcPeriodo select").val() == null){
+					$("#slcPeriodo select").val(--$periodoActual);
+					
+				}
+				cargaListaCortes($periodoActual);
+				
+			}
+			
+		}
+
+		function periodoSiguiente(){
+			$periodoActual = $("#slcPeriodo select").val()
+			if(parseInt($("#slcPeriodo select").attr('LIMITSUP')) > $periodoActual ){
+				$("#slcPeriodo select").val(++$periodoActual);
+				while($("#slcPeriodo select").val() == null){
+					$("#slcPeriodo select").val(++$periodoActual);
+					
+				}
+				cargaListaCortes($periodoActual);
+			}
+			
 		}
 		
 	</script>
+	<style type="text/css">
+	#pantallaNueva{
+		float: right;
+		margin-right: 10px;
+	}
+	#filtros{
+		float: left;
+	}
+	#cabecera{
+		width: 100%;
+		height: 50px;
+
+	}
+	.btnPeriodo{
+		width: 20px;
+		height: 20px;
+		padding: 1px;
+		padding-top: 5px;
+		background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F));
+		font-weight: bolder;
+		border: 1px solid black;
+		border-radius: 3px;
+		color: #ffffff;
+		cursor: pointer;
+	}
+	#slcPeriodo{
+	   /*width: 240px;
+	   height: 34px;
+	   overflow: hidden;
+	   background: url(/kalilhel/css/img/down_arrow_select.jpg) no-repeat right #ddd;
+	   border: 1px solid #ccc;*/
+	   width: 70px;
+		position: relative;
+	}
+	#slcPeriodo select{
+		width: 100%;
+	background: #F3F3F3;
+	color: #585757;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 100%;
+	border: 1px solid #C1C1C1;
+	border-radius: 0;
+	height: 30px;
+	-webkit-appearance: none;
+	}
+	
+	#slcPeriodo:after {
+		width: 0px;
+	}
+	#x-slcPeriodo:after {
+	width: 30px;
+	height: 30px;
+	display: block;
+	content: '';
+	position: absolute;
+	top: 0;right: 0;
+	pointer-events: none;
+	border-bottom: 1px solid #C1C1C1;
+	border-top: 1px solid #C1C1C1;
+	border-right: 1px solid #C1C1C1;
+	background:#ebebeb;
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg');
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), -moz-linear-gradient(top,#dfdfdf 0%,#f6f6f6 100%);
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), -webkit-gradient(linear,left top,left bottom,color-stop(0%,#dfdfdf),color-stop(100%,#f6f6f6));
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), -webkit-linear-gradient(top,#dfdfdf 0%,#f6f6f6 100%);
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), -o-linear-gradient(top,#dfdfdf 0%,#f6f6f6 100%);
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), -ms-linear-gradient(top,#dfdfdf 0%,#f6f6f6 100%);
+	background-image: url('/kalilhel/css/img/down_arrow_select.jpg'), linear-gradient(top,#dfdfdf 0%,#f6f6f6 100%);
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+	input[type='text']{
+		width: 50px;
+	}
+
+	</style>
 </head>
 <body>
-<table>
-	<tr>
-		<td>Filtros</td>
-	</tr>
-	<tr>
-		<td>Clave de Renta:</td><td><input type="text"></td>
-	</tr>
-	<tr>
-		<td>Propiedad:</td><td><input type="text"></td>
-	</tr>
+<div class="cuerpo">
+	<div class="titulo"><h2>Cortes</h2></div>
+	<div id="cabecera">
+		<div id="filtros">
+			<!-- <table>
+				<tr>
+					<td>Clave de Renta:</td><td><input type="text"></td>
+				</tr>
+				<tr>
+					<td>Propiedad:</td><td><input type="text"></td>
+				</tr> -->
 	<!-- <tr>
 		<td>Fecha:</td><td><select>
 			<option>Este mes</option> -->
@@ -93,49 +246,72 @@
 		<!-- </select></td> -->
 		<!-- <td><input type="date"> - <input type="date"></td> -->
 	<!-- </tr> -->
-	<tr>
-		<td>Facturado</td><td><input type="radio" name="facturado" value="si">SI<br><input type="radio" name="facturado" value="no">NO<br><input type="radio" name="facturado" value="todo">TODO<!-- <select><option>Todo</option><option>SI</option><option>NO</option></select> --></td>
-	</tr>
-	<tr>
-		<td>Pagado:</td><td><input type="radio" name="pagado" value="si">SI<br><input type="radio" name="pagado" value="no">NO<br><input type="radio" name="pagado" value="todo">TODO<!-- <select><option>Todo</option><option>SI</option><option>NO</option></select> --></td>
-	</tr>
+				<!-- <tr>
+					<td>Facturado</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
+				</tr>
+				<tr>
+					<td>Pagado:</td><td><select><option>Todo</option><option>SI</option><option>NO</option></select></td>
+				</tr>
 
-</table>
-<input type="button" class="periodoFlecha" value="<<" id="btnPerPrev"><select id="slcPeriodo"><option value="201508">201508</option><option value="201507">201507</option><option value="201506">201506</option></select><input type="button" class="periodoFlecha" value=">>" id="btnPerSig">
-<div class="datagrid">
-	<table border="1" id="listadoRentas">
-		<thead>
-			<tr>
-				<th>Clave de Renta</th><th>Propiedad</th><th>Fecha de Corte</th><th>Facturado</th><th>No. Factura</th><th>Pagado</th><th>Fecha de Pago</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr id="trBusqueda">
-				<td><input type="text"></td>
-				<td><input type="text"></td>
-				<td><input type="date"></td>
-				<td><input type="checkbox"></td>
-				<td><input type="text"></td>
-				<td><input type="checkbox"></td>
-				<td><input type="date"></td>
-			</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="7">
-					<div id="paging">
-						<ul>
-							<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
-							<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
-							<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
-						</ul>
-					</div>
-				</td>
-			</tr>
-		</tfoot>
+			</table> -->
+			<table>
+				<tr>
+					<td colspan="3" style="text-align: center;"> Periodo </td>
+				</tr>
+				<tr>
+					<td><div id="btnPeriodoIzq" onclick="periodoAnterior();" class="btnPeriodo"> << </div><!-- <input type="button" class="periodoFlecha" value="<<" id="btnPerPrev"> --></td> <td> <div id="slcPeriodo"> <select id="slcPer" LIMITSUP="" LIMITINF=""></select></div></td><td><!-- <input type="button" class="periodoFlecha" value=">>" id="btnPerSig"> --><div id="btnPeriodoDer" onclick="periodoSiguiente();" class="btnPeriodo"> >> </div></td>
+				</tr>
+			</table>
 			
-	</table>
+		</div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+	
+	</div>
+	<br>
+	<div class="datagrid">
+		<table border="0" id="listadoRentas">
+			<thead>
+				<tr>
+					<th style="min-width:60px; width:60px;">Clave de Renta</th><th style="min-width:200px; width:200px;">Propiedad</th><th style="min-width:85px; width:85px;">Fecha de Corte</th><th style="min-width:90px; width:90px;">Facturado</th><th style="min-width:75px; width:75px;">No. Factura</th><th style="min-width:85px; width:85px;">Pagado</th><th style="min-width:85px; width:85px;">Fecha de Pago</th>
+				</tr>
+				<!-- <tr id="trBusqueda">
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+					<td><input type="date"></td>
+					<td><input type="checkbox"></td>
+					<td><input type="text"></td>
+					<td><input type="checkbox"></td>
+					<td><input type="date"></td>
+				</tr> -->
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7">
+						<div id="paging">
+							<ul>
+								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
+								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+				
+		</table>
+	</div>
+	<input type="button" value="Guardar Cambios" onclick="subeCambios()">
 </div>
-<input type="button" value="Guardar Cambios" onclick="subeCambios()">
 </body>
 </html>

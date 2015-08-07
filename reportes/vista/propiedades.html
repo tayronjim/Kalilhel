@@ -8,7 +8,25 @@
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
+	(function($) {  
+		    $.get = function(key)   {  
+		        key = key.replace(/[\[]/, '\\[');  
+		        key = key.replace(/[\]]/, '\\]');  
+		        var pattern = "[\\?&]" + key + "=([^&#]*)";  
+		        var regex = new RegExp(pattern);  
+		        var url = unescape(window.location.href);  
+		        var results = regex.exec(url);  
+		        if (results === null) {  
+		            return null;  
+		        } else {  
+		            return results[1];  
+		        }  
+		    }  
+		})(jQuery);
 	$(document).ready(function(){
+		$a = $.get('v');
+		if($a == 'completa'){$("#btnCompleta").hide(); $(".datagrid").width($("#tablaReporte").width());}
+		// $(".datagrid").width($("#tablaReporte").width());
 		$.ajax({
  			type: "POST",
  			url: "../control/control.php",
@@ -70,25 +88,45 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function nuevaVentana(){
+		window.open("propiedades.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=830, height=700");
+	}
 	</script>
+	<style type="text/css">
+	#pantallaNueva{
+		float: right;
+		margin-right: 10px;
+	}
+	#filtros{
+		float: left;
+	}
+	#cabecera{
+		width: 100%;
+		height: 50px;
+	}
+	</style>
 </head>
 <body>
-<div class="cuerpo">
-	<table>
-		<tr>
-			<td>Filtro:</td>
-		</tr>
-		<tr>
-			<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td>
-		</tr>
-	</table>
 
-	 <br>
+<div class="cuerpo">
+	
+	<div class="titulo"><h2>Propiedades</h2></div>
+	<div id="cabecera">
+		<div id="filtros">
+			<table>
+				<tr>
+					<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td>
+				</tr>
+			</table>
+		</div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+	</div>
+	<br>
 	<div class="datagrid">
-		<table border="1" id="tablaReporte">
+		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th>Propiedad</th><th>Propietario</th><th>Costo de Adquisición</th><th>% Rend. Mensual</th><th>% Rend. Anual</th><th>Generado al día</th><th>Costo por Recuperar</th>
+					<th style="min-width:120px; max-width:180px; width:150px;">Propiedad</th><th style="min-width:100px; width:100px;">Propietario</th><th style="min-width:80px; width:80px;">Costo de Adquisición</th><th style="min-width:60px; width:60px;">% Rend. Mensual</th><th style="min-width:60px; width:60px;">% Rend. Anual</th><th style="min-width:75px; width:75px;">Generado al día</th><th style="min-width:85px; width:85px;">Costo por Recuperar</th>
 				</tr>
 			</thead>
 			<tfoot>

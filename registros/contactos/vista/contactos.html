@@ -16,7 +16,7 @@
 		$pagina = 0;
 	 	$cadena=""; 
 		$(document).ready(function(){
-			
+			$(".datagrid").width($("#listadoClientes").width());
 			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-1);
 			$(window).resize(function(){
 				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
@@ -98,7 +98,7 @@
 	 				$("#txtContactoCol").val($respObj.Contacto[$tipo].colonia);
 	 				$("#txtContactoCP").val($respObj.Contacto[$tipo].cp);
 	 				$("#txtContactoCiudad").val($respObj.Contacto[$tipo].ciudad);
-	 				$("#SlcContactoEstado").val($respObj.Contacto[$tipo].estado);
+	 				$("#txtContactoEstado").val($respObj.Contacto[$tipo].estado);
 	 				muestraArchivos($respObj.Contacto[$tipo].clave);
 				}
 				catch(err){}
@@ -121,15 +121,15 @@
 	 				agregaFilaContactos(0);
 	 			}
 	 		});
-	 		$.ajax({
-	 			type: "POST",
-	 			url: "../control/control.php",
-	 			data: { "funcion" :  "cargaEstados" },
-	 			success: function(data){
-	 				$("#SlcContactoEstado").append(data);
+	 		// $.ajax({
+	 		// 	type: "POST",
+	 		// 	url: "../control/control.php",
+	 		// 	data: { "funcion" :  "cargaEstados" },
+	 		// 	success: function(data){
+	 		// 		$("#SlcContactoEstado").append(data);
 	 				
-	 			}
-	 		});
+	 		// 	}
+	 		// });
 	 		$("#listadoClientes").on("dblclick", "tr", function(){
 	 			// alert("doble");
 	 		});
@@ -206,7 +206,7 @@
 	 				$("#txtContactoCol").val(obj.Contacto[1].colonia);
 	 				$("#txtContactoCP").val(obj.Contacto[1].cp);
 	 				$("#txtContactoCiudad").val(obj.Contacto[1].ciudad);
-	 				$("#SlcContactoEstado").val(obj.Contacto[1].estado);
+	 				$("#txtContactoEstado").val(obj.Contacto[1].estado);
 	 				// $("#divArchivos").show();
 	 				$respObj = obj;
 	 				// delete obj;
@@ -377,8 +377,8 @@
 				<table border="1" id="listadoClientes">
 					<thead>
 					<tr>
-						<th>Nombre</th>
-						<th>Email</th>
+						<th style="min-width:270px; max-width:270px; width:270px;">Nombre</th>
+						<th style="min-width:200px; max-width:250px; width:250px;">Email</th>
 					</tr>
 					<thead>
 					<tfoot>
@@ -419,7 +419,7 @@
 						<td class="tdlabel"><label>Colonia: </label></td><td colspan="3"><input type="text" id="txtContactoCol" value=""  disabled> <label>CP: </label><input type="text" id="txtContactoCP" value="" disabled></td><td class="tdlabel"></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Ciudad: </label></td><td><input type="text" id="txtContactoCiudad" disabled></td><td class="tdlabel"><label>Estado: </label></td><td colspan="2"> <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select></td>
+						<td class="tdlabel"><label>Ciudad: </label></td><td><input type="text" id="txtContactoCiudad" disabled></td><td class="tdlabel"><label>Estado: </label></td><td colspan="2"> <input type="text" id="txtContactoEstado" value = ""><!-- <select id="SlcContactoEstado"><option>Selecciona un Estado</option> </select> --></td>
 					</tr>
 				</table>
 				

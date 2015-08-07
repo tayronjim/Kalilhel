@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
 		$arregloTabla = new Array();
-		$filasxPagina = 10;
+		$filasxPagina = 7;
 		$cont = 0;
 		$pagina = 0;
 
@@ -221,7 +221,7 @@
 		function agregaFilaPropiedades(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
-				$('#listaPropiedades tr:last').after("<tr onclick='muestraRentaPropiedad("+$arregloTabla[i].id+");muestraArchivos("+$arregloTabla[i].id+");'><td>"+$arregloTabla[i].propiedad+"</td><td>"+$arregloTabla[i].arrendatario+"</td><td>"+$arregloTabla[i].inicioContrato+"</td><td>Fin de Contrato</td><td>"+$arregloTabla[i].montoActual+"</td></tr>");
+				$('#listaPropiedades tr:last').after("<tr onclick='muestraRentaPropiedad("+$arregloTabla[i].id+");muestraArchivos("+$arregloTabla[i].id+");'><td>"+$arregloTabla[i].propiedad+"</td><td>"+$arregloTabla[i].arrendatario+"</td><!--<td>"+$arregloTabla[i].inicioContrato+"</td>--><td>"+$arregloTabla[i].fechaTerminoContrato+"</td><td>"+$arregloTabla[i].montoActual+"</td></tr>");
 			}
 		}
 		function cuentaFilas(){
@@ -246,7 +246,7 @@
 			};	
 		}
 		function limpiaTabla(ini){
-			$("#listaPropiedades tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>');
+			$("#listaPropiedades tbody").html('<tr><!--<td></td>--><td></td><td></td><td></td><td></td></tr>');
 			agregaFilaPropiedades(ini);
 		}
 
@@ -558,11 +558,11 @@
 			<table border="0" id="listaPropiedades">
 				<thead>
 				<tr>
-					<th>Propiedad</th><th>Arrendatario</th><th>Inicio de Contrato</th><th>Fin de Contrato</th><th>Renta Actual</th>
+					<th style="min-width:175px; max-width:175px; width:175px;">Propiedad</th><th style="min-width195px; max-width:195px; width:195px;">Arrendatario</th><!-- <th>Inicio de Contrato</th> --><th style="min-width:75px; max-width:75px; width:75px;">Fin de Contrato</th><th style="min-width:65px; max-width:65px; width:65px;">Renta Actual</th>
 				</tr>
 				</thead>
 				<tfoot>
-					<tr><td colspan="5"><div id="paging">
+					<tr><td colspan="4"><div id="paging">
 						<ul>
 							<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
 							<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
@@ -572,7 +572,7 @@
 				</tfoot>
 					<tbody>
 					<tr>
-						<td></td>
+						<!--<td></td>-->
 						<td></td>
 						<td></td>
 						<td></td>

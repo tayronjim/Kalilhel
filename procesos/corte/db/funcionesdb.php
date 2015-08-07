@@ -9,8 +9,12 @@
 		$resultado = queryGeneral($query);
 		return $resultado;
 	}
-	 function listadoFacturasCorte(){
-	 	$query="select propiedades.nombre as propiedad, cortes.* from `cortes` left join propiedades on propiedades.clave = cortes.`clavePropiedad` where corte = DATE_FORMAT(NOW(),'%Y%m');";
+	 function listadoFacturasCorte($filtro){
+	 	$fecha = "";
+	 	if($filtro != ''){$fecha = $filtro;}
+	 	else $fecha = "DATE_FORMAT(NOW(),'%Y%m')";
+	 		
+	 	$query="select propiedades.nombre as propiedad, cortes.* from `cortes` left join propiedades on propiedades.clave = cortes.`clavePropiedad` where corte = ".$fecha.";";
 		$resultado = queryGeneral($query);
 		return $resultado;
 	 }
@@ -32,7 +36,7 @@
 			// if($value['pagado']=='true'){$pagado = 1;}if($value['pagado']=='false'){$pagado = 0;}
 			$query = "UPDATE cortes SET pagado=".$value['pagadoCheck']." ,fechaPago=".$value['pagadoFecha']." WHERE claveRenta=".$key;
 			$resultado = queryGeneral($query);
-			echo $query;
+			echo $resultado;
 		}
 		// $query = "UPDATE cortes SET pagado=1 ,fechaPago='2015-07-22' WHERE id=17";
 		// $resultado = queryGeneral($query);
@@ -44,5 +48,11 @@
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
 		return $resultado;
+	}
+
+	function enlistaPeriodos(){
+		$query = "select corte from cortes group by corte order by corte DESC;";
+		$resultado = queryGeneral($query);
+		return $resultado;	
 	}
 ?>

@@ -12,7 +12,7 @@
 			break;
 	}
 	function sincClientes(){
-		$xmlClientes = simplexml_load_file("xml/xml20150716_ClientesXML.xml");
+		$xmlClientes = simplexml_load_file("xml/xml20150806_ClientesXML.xml");
 		$objeto = (object) array();
 
 		   foreach ($xmlClientes as $xml){
@@ -44,7 +44,6 @@
 								'tipoCliente' => $xml->TipodeContacto,
 								'nombre' => $xml->NombreNombre." ".$xml->NombreApellidoPaterno." ".$xml->NombreApellidoMaterno,
 								'Email' => $xml->email,
-								'tipoCliente' => $xml->TipodeContacto,
 								'telefonoCasa' => "(".$xml->TelefonoCasaClaveLD.") ".$xml->TelefonoCasaTelefono,
 								'telefonoCel' => "(".$xml->MovilClaveLD.") ".$xml->MovilTelefono,
 								'telefonoOficina' => "(".$xml->TelefonoTrabajoClaveLD.") ".$xml->TelefonoTrabajoTelefono,
@@ -65,40 +64,45 @@
 				
 			}
 
-		    $regFlag = 1;
+		    $regFlag = 0;
 		    // registraEvento("clientes","descarga",$clientes->ultimaFecha);
+		    // print_r($arrayClientes);
 			foreach ($arrayClientes as $key => $reg) {
-				foreach ($reg as $key => $value) {
+				
+				foreach ($reg as $key2 => $value) {
+					
 					// $clientesJSON = json_encode($value);
 					$ultimaSinc = ultimaSinc();
-					$fecha1 = new DateTime($value->ultimaFecha);
+					$nuevaUltimaFecha = arrglaFecha($value->ultimaFecha);
+					$fecha1 = new DateTime($nuevaUltimaFecha);
+
 					$fecha2 = new DateTime($ultimaSinc);
 					$interval = $fecha1->diff($fecha2); // fecha2 - fecha1
 					
 					if($interval->invert=="1"){ // [invert] => 0 [y] => 0 [m] => 0 [d] => 0 [h] => 1 [i] => 0 [s] => 0 
 						$resultado = insertaClientes($value);
-						if($resultado == 1 && $regFlag==1){
-							registraEvento("clientes","descarga",$value->ultimaFecha);
-							$regFlag=0;
-						}
-						echo "%########%";
-						foreach ($value->contacto as $key => $subvalue) {
-							if($subvalue->clave_contacto>0){
-								$res=insertaContactos($subvalue,$value->ultimaFecha);
-								if($res == 1 && $regFlag==1){
-									registraEvento("contactos","descarga",$value->ultimaFecha);
-									$regFlag=0;
-								}
+						if($resultado == 1) $regFlag=1;
+
+						foreach ($value->contacto as $key3 => $subvalue) {
+							if($subvalue->clave_contacto != '0'){
+								$res=insertaContactos($subvalue,arrglaFecha($value->fechaRegistro));
+								if($res == 1) $regFlag=1;
+								// if($res == 1 && $regFlag==1){
+								// 	// registraEvento("contactos","descarga");
+								// 	$regFlag=0;
+								// }
 							}
 							
 						}
 						
 					}
-
-				
-				echo "<br>";	
+	
 				}
 					
+			}
+			if($regFlag==1){
+				$r = registraEvento("clientes","descarga");
+				$regFlag=0;
 			}
 			
 			// print_r($arrendatario);
@@ -107,11 +111,18 @@
 	}
 
 	function sincPropiedades(){
-		$xmlPropiedades = simplexml_load_file("xml/xml20150716_PropiedadesXML.xml");
+		$regFlag = 0;
+		$xmlPropiedades = simplexml_load_file("xml/xml20150806_PropiedadesXML.xml");
 
 		foreach ($xmlPropiedades as $key => $value) {
 			$resultado = insertaPropiedades($value);
+			if($resultado == 1) $regFlag=1;
 		}
+		if($regFlag==1){
+			$r = registraEvento("propiedades","descarga");
+			$regFlag=0;
+		}
+		
 		// fechaRegistro
 		// clave 				.Propiedad
 		// nombre 				.NombrePropiedad

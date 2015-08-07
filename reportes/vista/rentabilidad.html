@@ -8,7 +8,24 @@
 	<script type="text/javascript" src="/kalilhel/js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="/kalilhel/js/jquery.form.js"></script>
 	<script type="text/javascript">
+	(function($) {  
+		    $.get = function(key)   {  
+		        key = key.replace(/[\[]/, '\\[');  
+		        key = key.replace(/[\]]/, '\\]');  
+		        var pattern = "[\\?&]" + key + "=([^&#]*)";  
+		        var regex = new RegExp(pattern);  
+		        var url = unescape(window.location.href);  
+		        var results = regex.exec(url);  
+		        if (results === null) {  
+		            return null;  
+		        } else {  
+		            return results[1];  
+		        }  
+		    }  
+		})(jQuery);
 	$(document).ready(function(){
+		$a = $.get('v');
+		if($a == 'completa'){$("#btnCompleta").hide(); $(".datagrid").width($("#tablaReporte").width());}
 		$.ajax({
  			type: "POST",
  			url: "../control/control.php",
@@ -29,7 +46,7 @@
  			url: "../control/control.php",
  			data: { "funcion" :  "filtraTablaRentabilidad", "txtFiltroCliente": $txtFiltroCliente, "txtFiltroEmpresa": $txtFiltroEmpresa},
  			success: function(data){
- 				$("#tablaReporte").html('<tr><th># CLIENTE</th><th>NOMBRE</th><th>EMPRESA</th><th>DESCRIPCION</th><th> INVERSION </th><th> MONEDA </th><th>FECHA DE COMPRA</th><th> INGRESOS GENERADOS</th><th> INVERSIÓN RECUPERADA </th><th> PENDIENTE POR RECUPERAR </th><th>RENTABILIDAD</th></tr>');
+ 				$("#tablaReporte").html('<tr><!-- <th># CLIENTE</th> --><th>NOMBRE</th><th>EMPRESA</th><th>DESCRIPCION</th><th> INVERSION </th><th> MONEDA </th><th>FECHA DE COMPRA</th><th> INGRESOS GENERADOS</th><th> INVERSIÓN RECUPERADA </th><th> PENDIENTE POR RECUPERAR </th><th>RENTABILIDAD</th></tr>');
  				listaTabla(data);
  			}
  		});
@@ -55,7 +72,7 @@
 			if(isNaN($rentabilidad) || $rentabilidad==null){$rentabilidad = '';}
 
 			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
-			$filas += "<td>"+obj.Reporte[key].clave+"</td>";
+			// $filas += "<td>"+obj.Reporte[key].clave+"</td>";
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
 			$filas += "<td>"+obj.Reporte[key].descripcion+"</td>";
@@ -72,28 +89,50 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function nuevaVentana(){
+		window.open("rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1300, height=700");
+	}
 	</script>
+	<style type="text/css">
+	#pantallaNueva{
+		float: right;
+		margin-right: 10px;
+	}
+	#filtros{
+		float: left;
+	}
+	#cabecera{
+		width: 100%;
+		height: 50px;
+	}
+	</style>
 </head>
 <body>
-<table>
-	<tr>
-		<td>Filtro:</td>
-	</tr>
-	<tr>
-		<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
-	</tr>
-</table>
-<br>
+		
 <div class="cuerpo">
+	<div class="titulo"><h2>Rentabilidad</h2></div>
+	<div id="cabecera">
+		<div id="filtros">
+			<table>
+			
+			<tr>
+				<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
+			</tr>
+		</table>
+
+		</div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+	</div>
+	<br>
 	<div class="datagrid">
 		<table border="1" id="tablaReporte">
 			<thead>
 				<tr>
-					<th># CLIENTE</th><th>NOMBRE</th><th>EMPRESA</th><th>DESCRIPCION</th><th> INVERSION </th><th> MONEDA </th><th>FECHA DE COMPRA</th><th> INGRESOS GENERADOS</th><th> INVERSIÓN RECUPERADA </th><th> PENDIENTE POR RECUPERAR </th><th>RENTABILIDAD</th>
+					<!-- <th># CLIENTE</th> --><th style="min-width:155px; max-width:245px; width:245px;">NOMBRE</th><th style="min-width:100px; width:100px;">EMPRESA</th><th style="min-width:130px; width:130px;">DESCRIPCION</th><th style="min-width:90px; width:90px;"> INVERSION </th><th style="min-width:60px; width:60px;"> MONEDA </th><th style="min-width:75px; width:75px;">FECHA DE COMPRA</th><th style="min-width:85px; width:85px;"> INGRESOS GENERADOS</th><th style="min-width:95px; width:95px;"> INVERSIÓN RECUPERADA </th><th style="min-width:90px; width:90px;"> PENDIENTE X RECUPERAR </th><th style="min-width:100px; width:100px;">RENTABILIDAD</th>
 				</tr>
 			</thead>
 			<tfoot>
-				<tr><td colspan="11"><div id="paging">
+				<tr><td colspan="10"><div id="paging">
 					<!-- <ul>
 						<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
 						<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
@@ -103,7 +142,7 @@
 			</tfoot>
 				<tbody>
 				<tr>
-					<td></td>
+					<!-- <td></td> -->
 					<td></td>
 					<td></td>
 					<td></td>
