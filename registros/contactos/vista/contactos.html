@@ -16,7 +16,7 @@
 		$pagina = 0;
 	 	$cadena=""; 
 		$(document).ready(function(){
-			$(".datagrid").width($("#listadoClientes").width());
+			// $(".datagrid").width($("#listadoClientes").width());
 			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-1);
 			$(window).resize(function(){
 				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus());
@@ -374,10 +374,10 @@
 
 			<div id="areaTabla">
 				<div class="datagrid">
-				<table border="1" id="listadoClientes">
+				<table border="0" id="listadoClientes">
 					<thead>
 					<tr>
-						<th style="min-width:270px; max-width:270px; width:270px;">Nombre</th>
+						<th>Nombre</th>
 						<th style="min-width:200px; max-width:250px; width:250px;">Email</th>
 					</tr>
 					<thead>
