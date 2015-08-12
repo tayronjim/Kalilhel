@@ -11,7 +11,7 @@
 	 <script type="text/javascript">
 	 	$respObj = null;
 	 	$arregloTabla = new Array();
-		$filasxPagina = 8;
+		$filasxPagina = 10;
 		$cont = 0;
 		$pagina = 0;
 	 	$cadena=""; 
@@ -84,7 +84,7 @@
 				$tipo = $("#SlcTipoCliente").val();
 
 				$(":input[type='text']").val('');
-				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
+				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
 				try{
 					$("#claveNombreFile").val($respObj.Contacto[$tipo].clave);
 	 				$("#txtContactoClave").val($respObj.Contacto[$tipo].clave);
@@ -177,7 +177,7 @@
 
 		function muestraContacto(clave){
 				
-				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
+				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -234,7 +234,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" : "almacenaArchivos", "cadena": $cadena },
 	 			success: function(data){
-	 				alert(data);
+	 				// alert(data);
 	 				
 	 				
 	 			}
@@ -364,9 +364,9 @@
 <div id="divMain">
 	<div id="submenu">
 		<ul>
-			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
-			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-list-alt"><div>Listado Clientes</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-list-ul"><div>Formulario</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-file-text"><div>Archivos</div></i></li>
 
 		</ul>
 	</div>
@@ -454,7 +454,7 @@
 								<table id="listadoArchivos">
 									<thead>
 									<tr>
-										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th>
+										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
 									</tr>
 									</thead>
 								</table>
@@ -465,7 +465,7 @@
 				</table>
 				
 				<input type="hidden" value="0" name="claveNombreFile" id="claveNombreFile">
-				<input type="hidden" value="propiedades" name="subdir">
+				<input type="hidden" value="contactos" name="subdir">
 			 </form>
 			
 		</div>

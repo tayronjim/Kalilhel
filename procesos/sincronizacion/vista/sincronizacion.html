@@ -30,6 +30,19 @@
  			}
  		});
 	}
+	function syncRentas(){
+		$.ajax({
+ 			type: "POST",
+ 			url: "../control/control.php",
+ 			data: { "funsion" :  "syncRentas" },
+ 			success: function(data){
+ 				// alert(data);
+ 				console.log(data);
+ 				// alert("Propiedades Sincronziados");
+ 			}
+ 		});
+		
+	}
 	</script>
 </head>
 <body>
@@ -42,6 +55,11 @@
 	</tr>
 	<tr>
 		<td>Descargar Catalogo de Propiedades</td><td><input type="button" onclick="sincPropiedades();" value="Descargar" id="btnDescargaPropiedades"></td>
+	</tr>
+	<tr>
+		<td>
+			<input type="button" value="rentas" onclick="syncRentas();">
+		</td>
 	</tr>
 </table>
 

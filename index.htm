@@ -5,10 +5,10 @@
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="css/general.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
-<link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+<!-- <link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> -->
 <!-- <link href="css/font-awesome.css" rel="stylesheet"> 
 <link href="css/font-awesome4.css" rel="stylesheet"> -->
-<link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="css/font-awesome.min.css" rel="stylesheet"> 
 <!-- <link href="css/font-awesome.min.css" rel="stylesheet"> -->
 	<style type="text/css">
 		
@@ -27,6 +27,16 @@
 		}
 		
 	</script>
+	<style type="text/css">
+	body{
+		background: #f9f9f9;
+	}
+	#logo{
+		position: relative;
+		top: 20px;
+		left: 20px;
+	}
+	</style>
 </head>
 <body>
 <div id="main">
@@ -35,11 +45,11 @@
 
 		<ul>
 
-			<li><a></a></li> <!-- keep this empty for border line-->
+			<li><a style="height:53px"></a></li> <!-- keep this empty for border line-->
 
 			
 
-			<li><a href="#"><i class="fa fa-home icon-large"></i>Home</a></li>
+			<li><a href="home.html" target="pantallaPrincipal"><i class="fa fa-home icon-large"></i>Home</a></li>
 			<li><a href="#"><i class="fa fa-desktop icon-large"></i>Registros</a>
 
 
@@ -81,15 +91,15 @@
 				</div>
 			</li>
 			<li><a href="procesos/sincronizacion/vista/sincronizacion.html" target="pantallaPrincipal"><i class="fa fa-folder-open icon-large"></i>Actualiza Informacion</a></li>
-			<!-- <li><a href="#"><i class="fa fa-envelope icon-large"></i>Email</a></li> -->
+			
 
-			<li><a href="" onclick="nuevaVentana();"><i class="fa fa-search icon-large"></i>Menu</a>
+			<!-- <li><a href="" onclick="nuevaVentana();"><i class="fa fa-search icon-large"></i>Menu</a> -->
 
 
 				<!-- <div>
 				   <input class="form-control" type="text" placeholder="Search..">
 				</div> -->
-
+				<img src="css/img/logoKalilhel.png" width="75px" height="75px" id="logo">
 			</li>
 
 
@@ -102,7 +112,7 @@
 
 
 
-	<iframe name="pantallaPrincipal" id="pantallaPrincipal"></iframe>
+	<iframe name="pantallaPrincipal" id="pantallaPrincipal" src="home.html"></iframe>
 </div>
 	
 

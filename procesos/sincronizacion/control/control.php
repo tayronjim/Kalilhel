@@ -5,6 +5,7 @@
 	switch ($funsion) {
 		case 'sincClientes': sincClientes(); break;
 		case 'sincPropiedades': sincPropiedades(); break;
+		case 'syncRentas': syncRentas(); break;
 			
 		
 		default:
@@ -15,7 +16,7 @@
 		$xmlClientes = simplexml_load_file("xml/xml20150806_ClientesXML.xml");
 		$objeto = (object) array();
 
-		   foreach ($xmlClientes as $xml){
+		    foreach ($xmlClientes as $xml){
 
 		    	$arrendatario = (object) array(
 					'a'.$xml->IDCliente => (object) array(
@@ -151,6 +152,119 @@
 	
 	// <Rentado></Rentado>
 	}
+
+	function syncRentas(){
+		$regFlag = 0;
+		$duracion = 1;
+		$xmlRentas = simplexml_load_file("xml/xml20150808_HISTORICO.xml");
+		
+		$var = 1;
+		$arrRentas1 = array();
+		foreach ($xmlRentas as $key => $xml) {
+			if ($var == 1) {
+				$duracion = 1;
+				$obj = (object) array(
+					'renta' => array(
+						'cliente' => $xml->IDCliente, 
+						'propiedad' => $xml->PropiedadesPropiedadesPropiedad
+					),
+					'fechaRegistro' => $xml->Fecha,
+					'fechaInicioFacturacion' => $xml->Fecha,
+					'fechaTermino' => $xml->Fecha,
+					'montoInicial' => $xml->ImportetotalMonto,
+					'montoActual' => $xml->ImportetotalMonto,
+					'pagaMantenimiento' => $xml->Pagamantenimiento,
+					'concepto' => $xml->Conceptocompleto,
+					'duracion' => $duracion,
+					'factura' => array( [ 
+							'folio' => $xml->Folio, 
+							'fecha' => $xml->Fecha, 
+							'monto' => $xml->ImportetotalMonto, 
+							'concepto' => $xml->Conceptocompleto
+						]
+						
+					)
+				);
+				$var = 0;
+
+			}
+			else{ 
+				if(intval($xml->IDCliente) == $obj->renta['cliente'] && intval($xml->PropiedadesPropiedadesPropiedad) == $obj->renta['propiedad']){
+					$duracion ++;
+					$obj->fechaTermino = $xml->Fecha;
+					$obj->montoActual = $xml->ImportetotalMonto;
+					$obj->duracion = $duracion;
+					$obj->concepto = $xml->Conceptocompleto;
+					$obj->factura[] = array(
+								'folio' => $xml->Folio, 
+								'fecha' => $xml->Fecha, 
+								'monto' => $xml->ImportetotalMonto, 
+								'concepto' => $xml->Conceptocompleto);
+					
+				}
+				else{
+					$var = 1;
+					$arrRentas1[] = $obj;
+
+				} 
+			
+				
+
+			// $obj->factura[] = array(
+			// 			'folio' => $xml->Folio, 
+			// 			'fecha' => $xml->Fecha, 
+			// 			'monto' => $xml->ImportetotalMonto, 
+			// 			'concepto' => $xml->Conceptocompleto);
+			
+			}
+		}
+		foreach ($arrRentas1 as $key => $arrRentas) {
+			generaRentas($arrRentas);
+			$ultimoIdRenta = buscaUltimaRenta();
+			foreach ($arrRentas->factura as $key2 => $value) {
+				// print_r($arrRentas->renta['propiedad']);
+				generaCortes($value,$ultimoIdRenta,$arrRentas->renta['propiedad']);
+			}
+		}
+		// $fechaRegistro = explode(' ', $arrRentas[0]->fechaRegistro);
+		// $fechaTermino = explode(' ', $arrRentas[0]->fechaTermino);
+		// $fechaInicioFacturacion = explode(' ', $arrRentas[0]->fechaInicioFacturacion);
+		// $fechaFactura = explode(' ', $arrRentas[0]->factura[0]['fecha']);
+		// $montoInicial = str_replace(',','',$arrRentas[0]->montoInicial);
+		// $montoActual = str_replace(',','',$arrRentas[0]->montoActual);
+		// $montoFactura = str_replace(',','',$arrRentas[0]->factura[0]['monto']);
+		// print_r($arrRentas[0]->factura[0]['fecha']);
+		// $q = [0]->factura[0]['fecha'];
+		// print_r($fechaFactura);
+		
+
+		
+
+		// $query = "INSERT INTO `propiedades_renta` (`fechaRegistro`, `clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `tipoDuracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `inicioFacturacion`, `mantenimiento`, `montoMantenimiento`, `consepto`, `clave_estatus`, `fechaTerminoContrato`)
+		// 		VALUES
+		// 		('".arrglaFecha($fechaRegistro[0])."', ".$arrRentas[0]->renta['propiedad'].", ".$arrRentas[0]->renta['cliente'].", '".arrglaFecha($fechaRegistro[0])."', ".$arrRentas[0]->duracion.", 'meses', ".$montoInicial.", ".$montoActual.", 0, 0, 0, '".$fechaInicioFacturacion."', 0, 0, '".$arrRentas[0]->concepto."', 1, '".arrglaFecha($fechaTermino[0])."');";
+		
+		// $query = "select max(id) from propiedades_renta";
+
+		// $query = "INSERT INTO `cortes` (`claveRenta`, `clavePropiedad`, `fechaCorte`, `facturado`, `factura`, `monto`, `pagado`, `fechaPago`, `corte`)
+		// 		VALUES ('renta->id', ".$arrRentas[0]->renta['propiedad'].", '".arrglaFecha($fechaFactura[0])."', 1, '".$arrRentas[0]->factura[0]['folio']."',".$montoFactura.", 0, NULL, DATE_FORMAT('".arrglaFecha($fechaFactura[0])."', '%Y%m'))";
+		
+
+
+
+
+		// echo $query;
+		// {fechaRegistro, inicioFacturacion} - Fecha
+		// Folio
+		// IDCliente
+		// ClienteClientesKalilhelRazonSocial
+		// clave_propiedad - PropiedadesPropiedadesPropiedad
+		// mantenimiento - Pagamantenimiento
+		// consepto - Conceptocompleto
+		// {montoInicial, montoActual} - ImportetotalMonto
+		// clave_estatus - 
+		// fechaTerminoContrato - 
+	}
 			
 	function arrglaFecha($fechaMal){
 		$fechaXML = "13.Oct.14 17:35:04";
@@ -175,7 +289,7 @@
 			case 'Dic': $mes = '12'; break;
 			
 			default:
-				# code...
+				$mes = '01';
 				break;
 		}
 		if(isset($s[1])){

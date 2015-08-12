@@ -2,6 +2,7 @@ body{
 	font-family: arial;
 	margin: 0px;
 	padding: 0px;
+	background: #ffffff;
 }
 h3{
 	font-family: arial;
@@ -107,7 +108,7 @@ div.cuerpo{
 
 }
 .subli i:before {
-    content: "\f005";
+    /*content: "\f005";*/
     font-family: FontAwesome;
     font-style: normal;
     font-weight: normal;
@@ -116,16 +117,18 @@ div.cuerpo{
     color: #000;
     font-size: 25px;
     padding-right: 0.5em;
-    position: absolute;
-    top: 10px;
-    left: 30px;
+    position: relative;
+    top: 20px;
+    /*left: 30px;*/
     /*bottom: 0px;*/
+    margin-left: -20px;
     
 }
 .subli i{
-	padding-top: 13px;
+	margin-top: -7px;
+	/*padding-top: 13px;*/
 	padding-left: 55px;
-	padding-bottom: 15px;
+	/*padding-bottom: 15px;*/
 
 }
 td.alignR{

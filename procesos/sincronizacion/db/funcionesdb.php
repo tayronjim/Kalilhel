@@ -83,6 +83,50 @@ class Database{
 		return $resultadoReg;
 	}
 
+	function generaRentas($arrRentas){
+		$fechaRegistro = explode(' ', $arrRentas->fechaRegistro);
+		$fechaTermino = explode(' ', $arrRentas->fechaTermino);
+		$fechaInicioFacturacion = explode(' ', $arrRentas->fechaInicioFacturacion);
+		$fechaFactura = explode(' ', $arrRentas->factura[0]['fecha']);
+		$montoInicial = str_replace(',','',$arrRentas->montoInicial);
+		$montoActual = str_replace(',','',$arrRentas->montoActual);
+		$montoFactura = str_replace(',','',$arrRentas->factura[0]['monto']);
+
+		$query = "INSERT INTO `propiedades_renta` (`fechaRegistro`, `clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `tipoDuracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `inicioFacturacion`, `mantenimiento`, `montoMantenimiento`, `consepto`, `clave_estatus`, `fechaTerminoContrato`)
+				VALUES
+				('".arrglaFecha($fechaRegistro[0])."', ".$arrRentas->renta['propiedad'].", ".$arrRentas->renta['cliente'].", '".arrglaFecha($fechaRegistro[0])."', ".$arrRentas->duracion.", 'meses', ".$montoInicial.", ".$montoActual.", 0, 0, 0, '".arrglaFecha($fechaInicioFacturacion[0])."', 0, 0, '".$arrRentas->concepto."', 1, '".arrglaFecha($fechaTermino[0])."');";
+		$mysqli = connectdb();
+		$resultadoReg = $mysqli->query($query);
+		// $lastID = $mysqli->insert_id;
+		unconnectdb($mysqli);
+		return $resultadoReg;
+	}
+
+	function buscaUltimaRenta(){
+		$query = "select id from propiedades_renta order by id desc limit 1;";
+		$mysqli = connectdb();
+		$resultadoReg = $mysqli->query($query);
+		unconnectdb($mysqli);
+		$res = mysqli_fetch_object($resultadoReg);
+		return $res->id;
+	}
+
+	function generaCortes($value,$ultimoIdRenta,$propiedad){
+		// print_r($propiedad);
+		$fechaFactura = explode(' ', $value['fecha']);
+		$montoFactura = str_replace(',','',$value['monto']);
+		// print_r($value->factura);
+
+		$query = "INSERT INTO `cortes` (`claveRenta`, `clavePropiedad`, `fechaCorte`, `facturado`, `factura`, `monto`, `pagado`, `fechaPago`, `corte`)
+				VALUES (".$ultimoIdRenta.", ".$propiedad.", '".arrglaFecha($fechaFactura[0])."', 1, '".$value['folio']."',".$montoFactura.", 0, NULL, DATE_FORMAT('".arrglaFecha($fechaFactura[0])."', '%Y%m'))";
+		$mysqli = connectdb();
+		$resultadoReg = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultadoReg;
+		// echo $query;
+
+	}
+
 	function ultimaSinc(){
 		$mysqli = connectdb();
 		$query = "SELECT max(fechaSincronizacion) as fechaSincronizacion FROM registro_actualizacion";
@@ -91,5 +135,7 @@ class Database{
 		unconnectdb($mysqli);
 		return $fecha->fechaSincronizacion;
 	}
+
+
 
 ?>

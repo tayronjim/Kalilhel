@@ -11,7 +11,7 @@
 		return $resultado;
 	}
 	function filtraBuscaPropiedades($txtfiltronombre,$txtfiltrotipo){
-		$filtro1 = "WHERE 1";
+		$filtro1 = "WHERE estatus = 1";
 		if($txtfiltronombre != ""){$filtro1 .= " AND nombre LIKE '%".$txtfiltronombre."%'";}
 		if($txtfiltrotipo != ""){$filtro1 .= " AND tipo_propiedad IN (SELECT id FROM tipo_propiedad WHERE descripcion LIKE '%".$txtfiltrotipo."%')";}
 		$query = "SELECT `propiedades`.*, `tipo_propiedad`.`descripcion` as tipo from propiedades left join tipo_propiedad on tipo_propiedad.`id`=propiedades.`tipo_propiedad` ".$filtro1;
