@@ -82,13 +82,14 @@
 			 			data: { "funcion" :  "filtraArrendatario", "txtfiltronombre": $txtFiltroNombre},
 			 			success: function(data){
 			 				$("#tablaFiltroArrendatario").parent('div').show();
-			 				$("#tablaFiltroArrendatario").html('<tr><th>Nombre</th><th>RFC</th></tr>');
-			 				$("#tablaFiltroArrendatario tr:last").after(data);
+			 				$("#tablaFiltroArrendatario").html('<thead><tr><th>Nombre</th><th>RFC</th></tr></thead><tbody><tr></tr></tbody>');
+			 				$("#tablaFiltroArrendatario tbody tr:last").after(data);
 			 			}
 			 		});
 	 			}
-
+	 			else{$("#tablaFiltroArrendatario").parent('div').hide();} 
 	 		});
+
 	 		$("#listaPropiedades").on('click','td',function(){
 				$("#listaPropiedades td").css('background-color','#ffffff');
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
@@ -505,12 +506,15 @@
 	</script>
 	<style type="text/css">
 		
-		#areaFormularioRentas{
+		#areaFormularioRentas .datagrid{
+			height: 295px; overflow:hiden; margin-top: 15px;
+			position: absolute;
+			z-index: 50;
 
 		}
 		#areaFormularioRentas table{
 			width: 600px;
-			margin-top: 20px;
+			
 		}
 		#areaFormularioRentas label{
 			font-weight: bold;
@@ -541,6 +545,7 @@
 			margin: 3;
 			padding: 0;
 			float: left;
+
 		}
 	</style>
 </head>
@@ -548,8 +553,8 @@
 <div id="divMain">
 	<div id="submenu">
 		<ul>
-			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-list-alt icon-large"><div>Rentas</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli der"><i class="fa fa-list-ul icon-large"><div>Informacion</div></i></li>
 		</ul>
 	</div>
 	<div class="cuerpo">
@@ -603,8 +608,8 @@
 						<input id="txtBuscaPropiedadTipo" class="txtBuscaPropiedad" placeholder="Tipo de Propiedad" type="text" >
 						<br>
 						<div>
-							<div class="datagrid">
-							<table id="tablaFiltroPropiedad" border="1">
+							<div class="datagrid" style="">
+							<table id="tablaFiltroPropiedad" border="0">
 								
 								<thead>
 									<tr><th>Nombre</th><th>Tipo</th><th>Direccion</th></tr>
@@ -628,9 +633,15 @@
 						<input id="txtBuscaClienteNombre" class="txtBuscaCliente" placeholder="Nombre de Cliente" type="text" > 
 						<br>
 						<div>
-							<table id="tablaFiltroArrendatario" border="1">
-								<tr><th>Nombre</th><th>RFC</th></tr>
+							<div class="datagrid" style="">
+							<table id="tablaFiltroArrendatario" border="0">
+								<head>
+									<tr><th>Nombre</th><th>RFC</th></tr>
+								</head>
+								<tbody></tbody>
+								
 							</table>
+							</div>
 						</div>
 					</td>
 				</tr>
@@ -673,7 +684,7 @@
 			<input type="hidden" value="0" id="claveRentaPropiedad">
 			
 			<!-- Estatus: <select><option></option><option></option><option></option></select> -->
-			<br>
+			<br><br>
 			<input type="button" value="Guardar" onclick="guardaRenta()" id="btnGuardaRenta">
 			<input type="button" id="btnTerminaContrato" value="Finalizar Contrato" onclick="terminaContrato()">
 		</div>

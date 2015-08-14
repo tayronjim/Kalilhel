@@ -61,11 +61,11 @@
 	 				// $("#listadoRentas").append(data);
 	 			}
 	 		});
+	 		$(".datagrid").width(633);
 	 		if($a == 'completa'){
-				$("#btnCompleta").hide(); alert()
+				$("#btnCompleta").hide(); 
 				$(".datagrid").width($("#listadoRentas").width());
-				alert($("#listadoRentas").width());
-				alert($(".datagrid").width());
+				
 			}
 
 		});  // Fin document Ready
@@ -76,21 +76,25 @@
 	 			data: { "funsion" :  "listaFacturas", "fechaFiltro": fechaFiltro},
 	 			success: function(data){
 	 				// alert(data);
-	 				$("#listadoRentas tbody").html('');
+	 				$("#listadoRentas tbody").html('<tr></tr>');
 	 				$("#listadoRentas tbody").append(data);
 	 			}
 	 		});
 		}
 		function subeCambios(){
 			$cadenaObj = '{';
-			$('#listadoRentas tr').next('tr').each(function () {
+			alert($('#listadoRentas tbody').html());
+			$('#listadoRentas tbody tr').next('tr').each(function () {
+				// alert($(this).attr('id'));
 				if($(this).attr('id')!='trBusqueda'){
 					$key = $(this).find("td").eq(0).attr('value');
 					// var pk = $(this).find("td").eq(0).html();
 					$checked = 0;
-					if($(this).find("td").eq(5).find('.checkPagado').prop('checked')){$checked=1;}
+					
 					$fecha = "NULL";
 					if($(this).find("td").eq(6).find('input').attr('type','date').val() != ""){$fecha = "'"+$(this).find("td").eq(6).find('input').attr('type','date').val()+"'";}
+					if($(this).find("td").eq(5).find('.checkPagado').prop('checked')){$checked=1;}
+					else {$fecha = "NULL";}
 					$cadenaObj += '"'+$key+'":{ "pagadoCheck":'+$checked+',"pagadoFecha":"'+$fecha+'"},';
 					
 					// var nombre = $(this).find("td").eq(1).html();
@@ -98,6 +102,7 @@
 					// alert(pk);
 					
 				}
+
 
 			});
 			alert($cadenaObj);
@@ -109,8 +114,12 @@
 	 			url: "../control/control.php",
 	 			data: { "funsion" :  "subeCambios","cadena":$cadena },
 	 			success: function(data){
-	 				// alert(data);
+	 				alert(data);
 	 				// $("#listadoRentas").append(data);
+	 				window.open('corte.html','pantallaPrincipal');
+	 				if($a == 'completa'){
+	 					window.open('corte.html?v=completa','_self');
+	 				}
 	 			}
 	 		});
 	 		
@@ -314,11 +323,11 @@
 				<tr>
 					<td colspan="7">
 						<div id="paging">
-							<ul>
+							<!-- <ul>
 								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
 								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
 								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
-							</ul>
+							</ul> -->
 						</div>
 					</td>
 				</tr>

@@ -134,3 +134,7 @@ div.cuerpo{
 td.alignR{
 	text-align: right;
 }
+
+#paging li{
+	cursor: pointer;
+}

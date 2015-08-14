@@ -26,4 +26,13 @@
 		unconnectdb($mysqli);
 		return $query;
 	}
+
+
+	function actualizaTipo($desc,$alta,$activo,$clave){
+		$query = "UPDATE `tipo_propiedad` SET `descripcion`='".$desc."', `fechaAlta`='".$alta."', `activo`=".$activo." WHERE id = ".$clave;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $query;
+	}
 ?>

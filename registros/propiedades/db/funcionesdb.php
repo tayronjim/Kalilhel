@@ -3,7 +3,10 @@
 
 	function recuperaPropiedades(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, fechaRegistro, nombre, monto_inquilino FROM propiedades");
+		$resultado = $mysqli->query("SELECT propiedades.clave, propiedades.fechaRegistro,propiedades.adquisicion, propiedades.nombre, `tipo_propiedad`.`descripcion` as tipo ,`propietario`.`nombre` as propietario, propiedades.monto_inquilino 
+									FROM propiedades
+									left join propietario on propietario.`clave` = propiedades.`propietario`
+									left join `tipo_propiedad` on `tipo_propiedad`.`id` = propiedades.`tipo_propiedad`");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
@@ -15,7 +18,7 @@
 	}
 	function recuperaTiposPropiedad(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT * FROM tipo_propiedad");
+		$resultado = $mysqli->query("SELECT * FROM tipo_propiedad where activo = 1");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
@@ -108,10 +111,10 @@
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
-		echo $query;
+		return $resultado;
 	}
 	function agregaCaract($valores){
-		list($claveP, $ClaveC, $valor) = split('@', $valores);
+		list($claveP, $ClaveC, $valor) = explode('@', $valores);
 		$query = "INSERT INTO `caracteristicas` (`clave_propiedad`, `clave_caracteristica`, `valor`) VALUES (".$claveP.", ".$ClaveC.", '".$valor."');";
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);

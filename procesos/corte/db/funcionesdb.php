@@ -32,11 +32,12 @@
 	}
 	function cambiosCorte($cadena){
 		foreach ($cadena as $key => $value) {
-			// echo $key;
+			// echo $key."-";
 			// if($value['pagado']=='true'){$pagado = 1;}if($value['pagado']=='false'){$pagado = 0;}
-			$query = "UPDATE cortes SET pagado=".$value['pagadoCheck']." ,fechaPago=".$value['pagadoFecha']." WHERE claveRenta=".$key;
+			$query = "UPDATE cortes SET pagado=".$value['pagadoCheck']." ,fechaPago=".$value['pagadoFecha']." WHERE id=".$key;
+			echo $query;
 			$resultado = queryGeneral($query);
-			echo $resultado;
+			// echo $query2;
 		}
 		// $query = "UPDATE cortes SET pagado=1 ,fechaPago='2015-07-22' WHERE id=17";
 		// $resultado = queryGeneral($query);

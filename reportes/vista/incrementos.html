@@ -74,6 +74,7 @@
 	function listaTabla(data){
 		obj = JSON.parse(data);
 			$filas = "";
+			$id = '0';
 			$.each( obj.Reporte, function(key) {
 
 				$terminoContrato = obj.Reporte[key].fechaTerminoContrato;
@@ -86,9 +87,19 @@
 				if(obj.Reporte[key].inicioContrato == null){$inicioContrato = "0000-00-00";}
 
 				$incrementos = obj.Reporte[key].incrementos;
+
 				if(obj.Reporte[key].incrementos == null){$incrementos = obj.Reporte[key].montoInicial;}
 
-				$filas += "<tr id='renta_"+obj.Reporte[key].id+"'>";
+				if($id != obj.Reporte[key].clave_renta && $id != '0'){
+					$id = obj.Reporte[key].clave_renta;
+					$filas += "<tr><td colspan='5' style='background-color: #006699;'></td></tr>";
+				}
+
+				if($id != obj.Reporte[key].clave_renta && $id == '0'){
+					$id = obj.Reporte[key].clave_renta;
+				}
+				
+				$filas += "<tr id='renta_"+obj.Reporte[key].clave_renta+"'>";
 				// $filas += "<td>"+obj.Reporte[key].id+"</td>";
 				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 				$filas += "<td>"+$inicioContrato+"</td>";
@@ -96,6 +107,9 @@
 				$filas += "<td>"+$fechaRenovacion+"</td>";
 				$filas += "<td>"+$incrementos+"</td>";
 				$filas += "</tr>";
+				// $id = obj.Reporte[key].id;
+				
+			
 									
 
 		  // alert( obj.Reporte[key].id +" - "+ obj.Reporte[key].clave_arrendatario);
@@ -117,7 +131,7 @@
 	#cabecera{
 		width: 100%;
 		height: 50px;
-		min-width: 
+		
 	}
 	</style>
 </head>
@@ -157,6 +171,7 @@
 			</tbody>
 		</table>
 	</div>
+	<br><br>
 </div>
 </body>
 </html>

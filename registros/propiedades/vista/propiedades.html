@@ -137,7 +137,7 @@
 		 				$('#listadoCaracteristicas tbody tr:last').after("<tr><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
 		 			}
 	 			});
-
+	 			$("#txtPropiedadesCaracteristicaValor").val('');
 	 		});
 	 		$("#listadoPropiedades").on('click','td',function(){
 				$("#listadoPropiedades td").css('background-color','#ffffff');
@@ -149,7 +149,7 @@
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
 				$alt = '';
 				// if(i%2==0){ $alt = 'class="alt"';}
-				$('#listadoPropiedades tr:last').after('<tr '+$alt+' onclick="muestraPropiedad('+$arregloTabla[i].clave+'); muestraArchivos('+$arregloTabla[i].clave+')"><td>'+$arregloTabla[i].fechaRegistro+'</td><td>'+$arregloTabla[i].nombre+'</td><td></td><td>'+$arregloTabla[i].monto_inquilino+'</td></tr>');
+				$('#listadoPropiedades tr:last').after('<tr '+$alt+' onclick="muestraPropiedad('+$arregloTabla[i].clave+'); muestraArchivos('+$arregloTabla[i].clave+')"><td>'+$arregloTabla[i].adquisicion+'</td><td>'+$arregloTabla[i].nombre+'</td><td>'+$arregloTabla[i].tipo+'</td><td>'+$arregloTabla[i].propietario+'</td></tr>');
 			}
 			// $(".alt td").css('background', '#E1EEf4');
 			// $(".alt td").css('color', '#00557F');
@@ -163,8 +163,14 @@
 			
 		function muestraPropiedad(clave){
 			// alert(clave);
+			$("#txtPropiedadesCaracteristicaValor").val('');
 			$("#btnguardaRegistro").val('Actualiza Registro');
 			$("#btnguardaRegistro").attr('onclick','guardaRegistro(2)');
+			$("#txtPropiedadesValorActual").prev().show();
+			$("#txtPropiedadesValorActual").show();
+			
+			$("#txtPropiedadesMontoInquilino").prev().show();
+			$("#txtPropiedadesMontoInquilino").show();
 			// alert($("#btnguardaRegistro").attr('onclick'));
 			$.ajax({
 	 			type: "POST",
@@ -234,7 +240,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" : "almacenaArchivos", "cadena": $cadena },
 	 			success: function(data){
-	 				alert(data);
+	 				// alert(data);
 	 			}
 	 		});
 		}
@@ -245,7 +251,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  "muestraArchivos", "clave": clave },
 	 			success: function(data){
-	 				$('#listadoArchivos').html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th></tr></thead>');
+	 				$('#listadoArchivos').html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
 	 				$('#listadoArchivos thead').after(data);
 	 				
 	 			}
@@ -285,7 +291,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funcion" :  $funcion, "cadena":$cadena},
 	 			success: function(data){
-	 				alert(data);
+	 				// alert(data);
 	 				$("#areaRegCaracteriticas").css('visibility', 'visible');
 	 				$("#areaArchivos").css('visibility', 'visible');
 	 				$("#menuTres").removeClass('bloqueado');
@@ -293,6 +299,7 @@
 	 			}
 	 		});
 		}
+		
 		function limpiaCampos(){
 			$("#listadoPropiedades tbody td").css('background-color','#ffffff');
 			$("#btnguardaRegistro").val('Guardar Registro');
@@ -312,12 +319,18 @@
 			$("#txtPropiedadesCP").val('');
 			$("#txtPropiedadesCiudad").val('');
 			$("#txtPropiedadesEstado").val('-1');
-			$("#txtPropiedadesValorInicial").val('');
+			$("#txtPropiedadesValorInicial").val('0');
 			$("#txtPropiedadesMoneda").val('MXN');
-			$("#txtPropiedadesCambio").val('');
-			$("#txtPropiedadesValorActual").val('');
+			$("#txtPropiedadesCambio").val('0');
+
+			$("#txtPropiedadesValorActual").val('0');
+			$("#txtPropiedadesValorActual").prev().hide();
+			$("#txtPropiedadesValorActual").hide();
+			
 			$("#txtPropiedadesAdquisicion").val('');
-			$("#txtPropiedadesMontoInquilino").val('');
+			$("#txtPropiedadesMontoInquilino").val('0');
+			$("#txtPropiedadesMontoInquilino").prev().hide();
+			$("#txtPropiedadesMontoInquilino").hide();
 
 			$("#areaRegCaracteriticas").css('visibility', 'hidden');
 			$("#areaArchivos").css('visibility', 'hidden');
@@ -425,10 +438,10 @@
 			width: 250px;
 		}
 		#txtPropiedadesDireccion{
-			width: 200px;
+			width: 250px;
 		}
 		#txtPropiedadesNE, #txtPropiedadesNI, #txtPropiedadesCP{
-			width: 50px;
+			width: 55px;
 		}
 		#txtPropiedadesCol{
 			width: 170px;
@@ -501,9 +514,9 @@
 <div id="divMain">
 	<div id="submenu">
 		<ul>
-			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-book icon-large"><div>dos</div></i></li>
-			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>tres</div></i></li>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-list-alt icon-large"><div>Listado Propiedades</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli izq"><i class="fa fa-list-ul icon-large"><div>Datos Propiedad</div></i></li>
+			<li id="menuTres" onclick="menuTres()" class="inactivo bloqueado subli der"><i class="fa fa-file-text icon-large"><div>Archivos</div></i></li>
 
 		</ul>
 	</div>
@@ -515,15 +528,15 @@
 				<table border="0" id="tablaPropiedades">
 					<thead>
 					<tr>
-						<th width="120px">Fecha de Registro</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
+						<th width="120px">Fecha de Adquisición</th><th width="150px">Propiedad</th><th width="150px">Tipo de Propiedad</th><th width="150px">Propietario</th>
 					</tr>
 					</thead>
 					<tfoot>
 						<tr><td colspan="4"><div id="paging">
 							<ul>
-								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+								<li><a href="#" onclick="pagPrev()"><span>Anterior</span></a></li>
 								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
-								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+								<li><a href="#" onclick="pagSig()"><span>Siguiente</span></a></li>
 							</ul>
 						</div></td></tr>
 					</tfoot>
@@ -643,7 +656,7 @@
 								<table id="listadoArchivos">
 									<thead>
 									<tr>
-										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th></th>
+										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
 									</tr>
 									</thead>
 									<tbody></tbody>

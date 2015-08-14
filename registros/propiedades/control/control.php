@@ -42,7 +42,7 @@
 		$listaTipos = "";
 		$tipoPropiedad = recuperaTiposPropiedad();
 		while($row = mysqli_fetch_object($tipoPropiedad)){
-			$listaTipos .= '<option value="'.$row->clave_propiedad.'">'.$row->descripcion.'</option>';
+			$listaTipos .= '<option value="'.$row->id.'">'.$row->descripcion.'</option>';
 		}
 		print $listaTipos;
 	}

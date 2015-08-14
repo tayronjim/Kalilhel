@@ -11,7 +11,7 @@
 	<script type="text/javascript">
 
 		$arregloTabla = new Array();
-		$filasxPagina = 5;
+		$filasxPagina = 10;
 		$cont = 0;
 		$pagina = 0;
 
@@ -151,14 +151,35 @@
 			$txtTipoPropDescr = $("#txtTipoPropDescr").val()
 			$txtTipoPropAlta = $("#txtTipoPropAlta").val();
 			$chkTipoPropActivo = $("#chkTipoPropActivo").prop('checked')? '1':'0';
-			// $txtTipoPropClave = $("#txtTipoPropClave").val('');
+			$txtTipoPropClave = $("#txtTipoPropClave").val();
 			// alert($chkTipoPropActivo);
+			if($txtTipoPropClave == 0){$funsion = "GuardaTipoPropiedad";}
+			else {$funsion = "ActualizaTipoPropiedad"}
+			
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
-	 			data: { "funcion" :  "GuardaTipoPropiedad", "desc": $txtTipoPropDescr, "alta": $txtTipoPropAlta, "activo": $chkTipoPropActivo },
+	 			data: { "funcion" :  $funsion, "desc": $txtTipoPropDescr, "alta": $txtTipoPropAlta, "activo": $chkTipoPropActivo , "clave": $txtTipoPropClave},
 	 			success: function(data){
-	 				 alert("Registrado");
+	 				 // alert("Registrado");
+	 				 window.open('tipo.html','pantallaPrincipal');
+	 				 // target="pantallaPrincipal"
+	 				
+	 				// menuDos();
+	 			}
+
+	 		});
+		}
+		function ActualizaTipoPropiedad(){
+			$txtTipoPropDescr = $("#txtTipoPropDescr").val()
+			$txtTipoPropAlta = $("#txtTipoPropAlta").val();
+			$chkTipoPropActivo = $("#chkTipoPropActivo").prop('checked')? '1':'0';
+			$txtTipoPropClave = $("#txtTipoPropClave").val();
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "ActualizaTipoPropiedad", "desc": $txtTipoPropDescr, "alta": $txtTipoPropAlta, "activo": $chkTipoPropActivo, "clave": $txtTipoPropClave},
+	 			success: function(data){
 	 				 window.open('tipo.html','pantallaPrincipal');
 	 				 // target="pantallaPrincipal"
 	 				
@@ -195,8 +216,8 @@
 <div id="divMain">
 	<div id="submenu">
 		<ul>
-			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-book icon-large"><div>Menu Uno</div></i></li>
-			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli der"><i class="fa fa-book icon-large"><div>dos</div></i></li>
+			<li id="menuUno" onclick="menuUno()" class="activo subli izq"><i class="fa fa-list-alt icon-large"><div>Listado Tipos de Propiedad</div></i></li>
+			<li id="menuDos" onclick="menuDos()" class="inactivo bloqueado subli der"><i class="fa fa-list-ul icon-large"><div>Datos</div></i></li>
 
 		</ul>
 	</div>
@@ -240,7 +261,7 @@
 				<tr><td><label>Fecha Alta: </label></td><td><input type="date" id="txtTipoPropAlta"></td></tr>
 				<tr><td><label>Activo: </label></td><td><input type="checkbox" id="chkTipoPropActivo"></td></tr>
 			</table>
-			<input type="hidden" id="txtTipoPropClave">
+			<input type="hidden" id="txtTipoPropClave" value="0">
 			<br>
 			<input type="button" value="Guardar" onclick="GuardaTipoPropiedad();">
 		</div>

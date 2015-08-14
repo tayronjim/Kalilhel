@@ -68,6 +68,7 @@
 
 				$renMensual = ((parseFloat(obj.Reporte[key].monto)/parseFloat(obj.Reporte[key].valor_inicial))*100).toFixed(2);
 				
+				if(obj.Reporte[key].valor_inicial == 0){$renMensual=0}
 
 				$rendAnual = ($renMensual*12).toFixed(2);
 
@@ -151,6 +152,7 @@
 			</tbody>
 		</table>
 	</div>
+	<br><br>
 </div>
 </body>
 </html>

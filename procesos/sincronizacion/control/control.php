@@ -13,7 +13,7 @@
 			break;
 	}
 	function sincClientes(){
-		$xmlClientes = simplexml_load_file("xml/xml20150806_ClientesXML.xml");
+		$xmlClientes = simplexml_load_file("http://hms.hsplatform.com/xml/?xml=vNdUWEYLaCfZsH9A_ClientesXML");
 		$objeto = (object) array();
 
 		    foreach ($xmlClientes as $xml){
@@ -113,7 +113,7 @@
 
 	function sincPropiedades(){
 		$regFlag = 0;
-		$xmlPropiedades = simplexml_load_file("xml/xml20150806_PropiedadesXML.xml");
+		$xmlPropiedades = simplexml_load_file("http://hms.hsplatform.com/xml/?xml=Hhu2VqT3t4qj6nTQ_PropiedadesXML");
 
 		foreach ($xmlPropiedades as $key => $value) {
 			$resultado = insertaPropiedades($value);
