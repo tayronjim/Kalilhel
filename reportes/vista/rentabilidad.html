@@ -46,7 +46,7 @@
  			url: "../control/control.php",
  			data: { "funcion" :  "filtraTablaRentabilidad", "txtFiltroCliente": $txtFiltroCliente, "txtFiltroEmpresa": $txtFiltroEmpresa},
  			success: function(data){
- 				$("#tablaReporte").html('<tr><!-- <th># CLIENTE</th> --><th>NOMBRE</th><th>EMPRESA</th><th>DESCRIPCION</th><th> INVERSION </th><th> MONEDA </th><th>FECHA DE COMPRA</th><th> INGRESOS GENERADOS</th><th> INVERSIÓN RECUPERADA </th><th> PENDIENTE POR RECUPERAR </th><th>RENTABILIDAD</th></tr>');
+ 				$("#tablaReporte tbody").html('');
  				listaTabla(data);
  			}
  		});
@@ -58,8 +58,8 @@
 			// $generado = (parseInt(obj.Reporte[key].rentas)+parseInt(obj.Reporte[key].valor_vendido)-parseInt(obj.Reporte[key].valor_inicial));
 			// $porsGenerado = (($generado/obj.Reporte[key].valor_inicial)*100).toFixed(3);
 			$pendiente = parseFloat(obj.Reporte[key].valor_inicial) - parseFloat(obj.Reporte[key].recuperado);
-			$rentabilidad = (((parseFloat(obj.Reporte[key].valorGeneradoInicial) + parseFloat(obj.Reporte[key].ingresos))/parseFloat(obj.Reporte[key].adquisicion))*100).toFixed(2);
-
+			$rentabilidad = (((parseFloat(obj.Reporte[key].valorGeneradoInicial) + parseFloat(obj.Reporte[key].ingresos))/parseFloat(obj.Reporte[key].valor_inicial))*100).toFixed(2);
+			if (obj.Reporte[key].valor_inicial == 0) {$rentabilidad = 0;}
 
 			$ingresos = obj.Reporte[key].ingresos;
 			if(isNaN(obj.Reporte[key].ingresos) || obj.Reporte[key].ingresos==null){$ingresos = '';}
@@ -69,19 +69,19 @@
 
 			if(isNaN($pendiente) || $pendiente==null){$pendiente = '';}
 
-			if(isNaN($rentabilidad) || $rentabilidad==null){$rentabilidad = '';}
+			if(isNaN($rentabilidad) || $rentabilidad==null || $rentabilidad==0){$rentabilidad = '';}
 
 			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
 			// $filas += "<td>"+obj.Reporte[key].clave+"</td>";
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
 			$filas += "<td>"+obj.Reporte[key].descripcion+"</td>";
-			$filas += "<td>"+obj.Reporte[key].valor_inicial+"</td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+obj.Reporte[key].valor_inicial+"</div></td>";
 			$filas += "<td>"+obj.Reporte[key].tipo_moneda+"</td>";
 			$filas += "<td>"+obj.Reporte[key].adquisicion+"</td>";
-			$filas += "<td>"+$ingresos+"</td>";
-			$filas += "<td>"+$recuperado+"</td>";
-			$filas += "<td>"+$pendiente+"</td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$ingresos+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$recuperado+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$pendiente+"</div></td>";
 			$filas += "<td>"+$rentabilidad+"</td>";
 
 			$filas += "</tr>";

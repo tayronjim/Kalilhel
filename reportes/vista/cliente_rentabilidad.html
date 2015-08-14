@@ -72,7 +72,7 @@
 			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
 			$filas += "<td>"+obj.Reporte[key].cliente+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
-			$filas += "<td>"+$monto+"</td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$monto+"</div></td>";
 			$filas += "<td>"+$rentabilMensual+"</td>";
 			$filas += "<td>"+$retabiAnual+"</td>";
 			$filas += "</tr>";
@@ -80,7 +80,7 @@
 		$("#tablaReporte").append($filas);
 	}
 	function nuevaVentana(){
-		window.open("cliente_rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=750, height=700");
+		window.open("cliente_rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=900, height=700");
 	}
 	</script>
 	<style type="text/css">
@@ -117,7 +117,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:200px; width:245px;">Cliente</th><th style="min-width:100px; width:100px;">Empresa</th><th style="min-width:85px; width:85px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
+					<th style="min-width:355px; width:355px;">Cliente</th><th style="min-width:120px; width:120px;">Empresa</th><th style="min-width:100px; width:100px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
 				</tr>
 			</thead>
 			<tfoot>

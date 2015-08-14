@@ -83,7 +83,7 @@
 		$.each( obj.Reporte, function(key) {
 			if($clave_arrendatario == 0){$clave_arrendatario = obj.Reporte[key].clave_arrendatario;}
 			if(obj.Reporte[key].clave_arrendatario != $clave_arrendatario){
-				$filas += "<tr>";
+				$filas += "<tr style='border-bottom: 1px solid #006699'>";
 				$filas += "<td></td>";
 				$filas += "<td>SubTotal</td>";
 				$filas += "<td>"+$totalMonto+"</td>";
@@ -110,7 +110,7 @@
 		$("#tablaReporte tbody").append($filas);
 		}
 	function nuevaVentana(){
-		window.open("pendiente_facturarxcliente.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=500, height=700");
+		window.open("pendiente_facturarxcliente.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=700, height=700");
 	}
 	</script>
 	<style type="text/css">
@@ -156,7 +156,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:170px; max-width:260px; width:260px;">Cliente</th><th style="min-width:100px; width:100px;">Mes</th><th style="min-width:100px; max-width:110px; width:110px;">Monto de Renta</th>
+					<th style="min-width:350px; max-width:350px; width:350px;">Cliente</th><th style="min-width:100px; width:100px;">Mes</th><th style="min-width:100px; max-width:110px; width:110px;">Monto de Renta</th>
 				</tr>
 			</thead>
 			<tfoot>

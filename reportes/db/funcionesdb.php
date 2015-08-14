@@ -23,7 +23,7 @@
 		// $filtroFecha = "";
 		$query ="SELECT cortes.corte, rentas.clave_arrendatario, contactos.nombre, cortes.monto
 				from cortes 
-					inner join propiedades_renta as rentas on cortes.`clavePropiedad`=rentas.`clave_propiedad` 
+					inner join propiedades_renta as rentas on cortes.`claveRenta`=rentas.`id` 
 					left join contactos on contactos.clave = rentas.`clave_arrendatario`
 				where cortes.facturado=0 ".$filtroFecha." 
 				group by contactos.nombre, cortes.corte
@@ -37,7 +37,7 @@
 	function repMontoXPropiedad(){
 		$query ="SELECT renta.id, renta.clave_propiedad, propiedades.nombre,renta.fechaTerminoContrato, renta.montoActual 
 				from propiedades_renta as renta
-					left join propiedades on propiedades.`clave` = renta.`clave_propiedad`;";
+					inner join propiedades on propiedades.`clave` = renta.`clave_propiedad`;";
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);

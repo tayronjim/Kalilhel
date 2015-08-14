@@ -43,7 +43,7 @@
  					$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
  					$filas += "<td>"+obj.Reporte[key].fechaTerminoContrato+"</td>";
  					
- 					$filas += "<td>"+$montoActual+"</td>";
+ 					$filas += "<td><div style='float:left'>$</div> <div style='float:right'>"+$montoActual+"</div></td>";
  					
  					$filas += "</tr>";
  					// id,clave_propiedad,fechaTerminoContrato,montoActual
@@ -54,7 +54,7 @@
  		});
 	});
 	function nuevaVentana(){
-		window.open("montoxpropiedad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=550, height=700");
+		window.open("montoxpropiedad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=700, height=700");
 	}
 	</script>
 	<style type="text/css">
@@ -83,7 +83,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:240px; width:240px;">Propiedad</th><th style="min-width:100px; width:100px;">Fin de Contrato</th><th style="min-width:100px; width:100px;">Monto de Renta</th>
+					<th style="min-width:370px; width:370px;">Propiedad</th><th style="min-width:100px; width:100px;">Fin de Contrato</th><th style="min-width:100px; width:100px;">Monto de Renta</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -104,6 +104,7 @@
 			</tbody>
 		</table>
 	</div>
+	<br><br>
 	</body>
 </div>
 </html>

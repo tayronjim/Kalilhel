@@ -79,18 +79,18 @@
 				$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
 				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 				$filas += "<td>"+obj.Reporte[key].propietario+"</td>";
-				$filas += "<td>"+$inicial+"</td>";
-				$filas += "<td>"+$renMensual+"</td>";
-				$filas += "<td>"+$rendAnual+"</td>";
-				$filas += "<td>"+$generado+"</td>";
-				$filas += "<td>"+$recuperado+"</td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$inicial+"</div></td>";
+				$filas += "<td><div style='float:right'>"+$renMensual+" %</div></td>";
+				$filas += "<td><div style='float:right'>"+$rendAnual+" %</div></td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$generado+"</div></td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$recuperado+"</div></td>";
 				$filas += "</tr>";
 				
 		});
 		$("#tablaReporte").append($filas);
 	}
 	function nuevaVentana(){
-		window.open("propiedades.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=830, height=700");
+		window.open("propiedades.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1100, height=700");
 	}
 	</script>
 	<style type="text/css">
@@ -127,7 +127,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:120px; max-width:180px; width:150px;">Propiedad</th><th style="min-width:100px; width:100px;">Propietario</th><th style="min-width:80px; width:80px;">Costo de Adquisición</th><th style="min-width:60px; width:60px;">% Rend. Mensual</th><th style="min-width:60px; width:60px;">% Rend. Anual</th><th style="min-width:75px; width:75px;">Generado al día</th><th style="min-width:85px; width:85px;">Costo por Recuperar</th>
+					<th style="min-width:190px; max-width:340px; width:340px;">Propiedad</th><th style="min-width:120px; width:120px;">Propietario</th><th style="min-width:100px; width:100px;">Costo de Adquisición</th><th style="min-width:60px; width:60px;">% Rend. Mensual</th><th style="min-width:60px; width:60px;">% Rend. Anual</th><th style="min-width:100px; width:100px;">Generado al día</th><th style="min-width:100px; width:100px;">Costo por Recuperar</th>
 				</tr>
 			</thead>
 			<tfoot>

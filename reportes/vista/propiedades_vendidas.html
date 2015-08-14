@@ -43,7 +43,7 @@
 		 			url: "../control/control.php",
 		 			data: { "funcion" :  "filtraTablaVendidas", "txtfiltroPropiedad": $txtfiltroPropiedad},
 		 			success: function(data){
-		 				$("#tablaReporte").html('<tr><th>Propiedad</th><th>Suma de Rentas Generadas</th><th>Monto de Venta</th><th>Costo de Adquisición</th><th>Cantidad Generada</th><th>% Generado</th></tr>');
+		 				$("#tablaReporte tbody").html('');
 		 				listaTabla(data);
 		 			}
 		 		});
@@ -57,13 +57,14 @@
 		$.each( obj.Reporte, function(key) {
 			$generado = (parseInt(obj.Reporte[key].rentas)+parseInt(obj.Reporte[key].valor_vendido)-parseInt(obj.Reporte[key].valor_inicial));
 			$porsGenerado = (($generado/obj.Reporte[key].valor_inicial)*100).toFixed(3);
+			if(obj.Reporte[key].valor_inicial==0){$porsGenerado = 0;}
 			$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
-			$filas += "<td>$ "+parseFloat(obj.Reporte[key].rentas).toFixed(2)+"</td>";
-			$filas += "<td>$ "+parseFloat(obj.Reporte[key].valor_vendido).toFixed(2)+"</td>";
-			$filas += "<td>$ "+parseFloat(obj.Reporte[key].valor_inicial).toFixed(2)+"</td>";
-			$filas += "<td>$ "+parseFloat($generado).toFixed(2)+"</td>";
-			$filas += "<td>"+$porsGenerado+" %</td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].rentas).toFixed(2)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].valor_vendido).toFixed(2)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].valor_inicial).toFixed(2)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat($generado).toFixed(2)+"</div></td>";
+			$filas += "<td><div style='float:right'>"+$porsGenerado+" %</div></td>";
 			
 			$filas += "</tr>";
 			 // propiedades.valor_inicial, propiedades.valor_vendido, SUM(cortes.`monto`) as rentas
@@ -71,7 +72,7 @@
 		$("#tablaReporte").append($filas);
 	}
 	function nuevaVentana(){
-		window.open("propiedades_vendidas.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=800, height=700");
+		window.open("propiedades_vendidas.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1000, height=700");
 	}
 	</script>
 	<style type="text/css">
@@ -102,7 +103,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:200px; width:200px;">Propiedad</th><th style="min-width:100px; width:100px;">Suma de Rentas Generadas</th><th style="min-width:80px; max-width:100px; width:100px;">Monto de Venta</th><th style="min-width:80px; max-width:100px; width:100px;">Costo de Adquisición</th><th style="min-width:85px; max-width:100px; width:100px;">Cantidad Generada</th><th style="min-width:80px; width:80px;">% Generado</th>
+					<th style="min-width:370px; width:370px;">Propiedad</th><th style="min-width:100px; width:100px;">Suma de Rentas Generadas</th><th style="min-width:100px; max-width:100px; width:100px;">Monto de Venta</th><th style="min-width:100px; max-width:100px; width:100px;">Costo de Adquisición</th><th style="min-width:100px; max-width:100px; width:100px;">Cantidad Generada</th><th style="min-width:80px; width:80px;">% Generado</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -115,14 +116,7 @@
 				</div></td></tr>
 			</tfoot>
 				<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
+				
 			</tbody>
 		</table>
 	</div>
