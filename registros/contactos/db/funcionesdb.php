@@ -3,7 +3,7 @@
 	
 	function recuperaContactos(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, tipoCliente, nombre, email FROM contactos WHERE tipoCliente=1");
+		$resultado = $mysqli->query("SELECT clave, tipoCliente, nombre, email FROM contactos WHERE tipoCliente=1 order by nombre");
 		unconnectdb($mysqli);
 		return $resultado;
 	}

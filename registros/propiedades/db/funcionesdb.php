@@ -6,7 +6,7 @@
 		$resultado = $mysqli->query("SELECT propiedades.clave, propiedades.fechaRegistro,propiedades.adquisicion, propiedades.nombre, `tipo_propiedad`.`descripcion` as tipo ,`propietario`.`nombre` as propietario, propiedades.monto_inquilino 
 									FROM propiedades
 									left join propietario on propietario.`clave` = propiedades.`propietario`
-									left join `tipo_propiedad` on `tipo_propiedad`.`id` = propiedades.`tipo_propiedad`");
+									left join `tipo_propiedad` on `tipo_propiedad`.`id` = propiedades.`tipo_propiedad` order by propiedades.nombre");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
@@ -173,5 +173,12 @@
 		$row = mysqli_fetch_object($resultado);
 		unconnectdb($mysqli);
 		return $row->clave;
+	}
+	function eliminaProp($clave,$valor){
+		$query = "UPDATE propiedades set estatus = 6, valor_vendido = ".$valor." where clave =".$clave;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
 	}
 ?>

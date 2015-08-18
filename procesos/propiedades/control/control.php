@@ -53,7 +53,7 @@
 			$datetime2 = date_create(date("Y-m-d"));
 			$interval = date_diff($datetime1, $datetime2);
 			$dif = $interval->format('%R%a');
-			$resultado .= $row->id.").(".$row->clave_propiedad.").(".$row->clave_arrendatario.").(".$row->inicioContrato.").(".$row->duracion.").(".$row->montoInicial.").(".$row->montoActual.").(".$row->deposito.").(".$row->regresaDeposito.").(".$row->gracia.").(".$row->mantenimiento.").(".$row->montoMantenimiento.").(".$row->consepto.").(".$row->observaciones.").(".$row->clave_estatus.").(".$row->propiedad.").(".$row->arrendatario.").(".$row->tipo.").(".$row->fechaRenovacion.").(".$row->fechaTerminoContrato.").(".$dif.").(".$row->inicioFacturacion;
+			$resultado .= $row->id.").(".$row->clave_propiedad.").(".$row->clave_arrendatario.").(".$row->inicioContrato.").(".$row->duracion.").(".$row->montoInicial.").(".$row->montoActual.").(".$row->deposito.").(".$row->regresaDeposito.").(".$row->gracia.").(".$row->mantenimiento.").(".$row->montoMantenimiento.").(".$row->consepto.").(".$row->observaciones.").(".$row->clave_estatus.").(".$row->propiedad.").(".$row->arrendatario.").(".$row->tipo.").(".$row->fechaRenovacion.").(".$row->fechaTerminoContrato.").(".$dif.").(".$row->inicioFacturacion.").(".$row->monedaMonto.").(".$row->monedaDep.").(".$row->monedaMant;
 		}
 		echo $resultado;
 

@@ -136,6 +136,13 @@ class Database{
 		return $fecha->fechaSincronizacion;
 	}
 
-
+	function actualizaCosto($obj){
+		$mysqli = connectdb();
+		$monto = str_replace(',','',$obj->factura['monto']);
+		$query = "UPDATE cortes set monto = ". $monto ." where factura = ". $obj->factura['folio'] ;
+		$res = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $query;
+	}
 
 ?>

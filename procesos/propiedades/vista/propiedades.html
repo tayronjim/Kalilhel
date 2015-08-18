@@ -97,6 +97,8 @@
 			$("#checkRenovar").click(function(){
 				if($("#checkRenovar").is(':checked')){
 					$("#fechaRenovacion").prop('disabled','');
+					$("#montoActual").prop('disabled','');
+					
 					$("#duracionContrato").prop('disabled', false);
 					$("#tipoDuracion").prop('disabled', false);
 					var today = new Date();
@@ -114,6 +116,7 @@
 				}
 				else{
 					$("#fechaRenovacion").prop('disabled','disabled');
+					$("#montoActual").prop('disabled','disabled');
 					$("#duracionContrato").prop('disabled', true);
 					$("#tipoDuracion").prop('disabled', true);
 				}
@@ -308,6 +311,9 @@
 			$montoMantenimiento = $("#montoMantenimiento").val();
 			$areaConcepto = $("#areaConcepto").val();
 			$areaObservaciones = $("#areaObservaciones").val();
+			$txtInicialMoneda = $("#txtInicialMoneda").val();
+			$txtMantenimientoMoneda = $("#txtMantenimientoMoneda").val();
+			$txtDepositoMoneda = $("#txtDepositoMoneda").val();
 			
 			$tipoDuracion = $("#tipoDuracion").val();
 			if($tipoDuracion == "meses"){
@@ -331,6 +337,8 @@
 			$cadena += $pagaMantenimiento+").("+$montoMantenimiento+").("+$areaConcepto+").(";
 			$cadena += $areaObservaciones+").("+$fechaFin+").("+$fechaRenovacion+").("+$montoActual+").(";
 			$cadena += $claveRentaPropiedad+").("+$checkRenovar+").("+$tipoDuracion+").(";
+			$cadena += $txtInicialMoneda+").("+$txtMantenimientoMoneda+").("+$txtDepositoMoneda+").(";
+
 			alert($cadena);
 			$.ajax({
 	 			type: "POST",
@@ -395,6 +403,9 @@
 	 					// 19 $row->fechaTerminoContrato
 	 					// 20 $dif
 	 					// 21 $row->inicioFacturacion
+	 					// 22 $row->monedaMonto
+	 					// 23 $row->monedaDep
+	 					// 24 $row->monedaMant
 	 					
 	 					$("#claveRentaPropiedad").val($valores[0]);
 	 					$("#hideClavePropiedad").val($valores[1]);
@@ -415,6 +426,10 @@
 						$("#fechaRenovacion").val($valores[18]);
 						$("#fechaFin").val($valores[19]);
 						$("#fechaInicioFacturacion").val($valores[21]);
+						$("#txtInicialMoneda").val($valores[22]);
+						$("#txtActualMoneda").val($valores[22]);
+						$("#txtMantenimientoMoneda").val($valores[24]);
+						$("#txtDepositoMoneda").val($valores[23]);
 						if(parseInt($valores[20]) >= 0 || $valores[18] != ''){ 
 							$("#trRenovar").show();
 						}
@@ -500,6 +515,8 @@
 			$("#checkRenovar").attr('checked',false);
 			$("#fechaFin").val('');
 			$("#tdMontoActual").hide();
+			$(".moneda").val('MXN');
+
 			menuDos();
 		}
 
@@ -513,7 +530,7 @@
 
 		}
 		#areaFormularioRentas table{
-			width: 600px;
+			width: 640px;
 			
 		}
 		#areaFormularioRentas label{
@@ -546,6 +563,29 @@
 			padding: 0;
 			float: left;
 
+		}
+		#montoInicial{
+			width: 70px;
+		}
+		#montoActual{
+			width: 70px;
+		}
+		#montoDeposito{
+			width: 70px;
+		}
+		#montoMantenimiento{
+			width: 70px;
+		}
+		select{
+			margin-left: 5px;
+			/*border: 1px solid;*/
+			-webkit-appearance: none;
+			padding: 3px;
+			padding-left: 6px;
+			padding-right: 6px;
+		}
+		select:after{
+			width: 0px;
 		}
 	</style>
 </head>
@@ -646,39 +686,39 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td width="42%">
 						<label>Inicio de Contrato: </label><input type="date" id="inicioContrato" >
 					</td>
-					<td>
+					<td colspan="2">
 						<label>Duración: </label><input type="text" id="duracionContrato" value="0">  <select id="tipoDuracion"><option value="meses"><label>Meses</label></option><option value="anios">Años</option></select>
 					</td>
 				</tr>
 				<tr id="trRenovar">
 					<td><label>Renovar Contrato: </label><input type="checkbox" id="checkRenovar"></td>
-					<td><label>Fecha de Renovacion:</label><input type="date" id="fechaRenovacion" disabled></td>
+					<td colspan="2"><label>Fecha de Renovacion:</label><input type="date" id="fechaRenovacion" disabled></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label>Fin de Contrato: </label><input type="date" id="fechaFin" disabled></td>
+					<td colspan="3"><label>Fin de Contrato: </label><input type="date" id="fechaFin" disabled></td>
 				</tr>
 				
 				<tr>
-					<td><label>Costo Inicial: $</label><input type="text" id="montoInicial"></td>
-					<td id="tdMontoActual"><label>Monto Actual: $</label><input type="text" id="montoActual" disabled></td>
+					<td><label>Monto Inicial: $</label><input type="text" id="montoInicial"><select class="moneda" id="txtInicialMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
+					<td id="tdMontoActual"><label>Monto Actual: $</label><input type="text" id="montoActual" disabled><select class="moneda" id="txtActualMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
 				</tr>
 				<tr>
-					<td><label>Deposito: $</label><input type="text" id="montoDeposito"></td><td><label>Se Regresa Desposito: </label><select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select></td>
+					<td><label>Deposito: $</label><input type="text" id="montoDeposito"><select class="moneda" id="txtDepositoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td><label>Se Regresa Desposito: </label><select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select></td>
 				</tr>
 				<tr>
 					<td><label>Tiempo de Gracia: </label><input type="text" id="tiempoGracia" value="0"> <label>Meses</label></td><td><label>Inicio de Facturacion </label><input type="date" id="fechaInicioFacturacion" disabled></td>
 				</tr>
 				<tr>
-					<td><label>Mantenimeinto: </label><select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select></td><td><label>Monto del Mantenimiento: $</label><input type="text" id="montoMantenimiento" value="0" disabled></td>
+					<td><label>Mantenimeinto: </label><select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select></td><td colspan="2"><label>Monto del Mantenimiento: $</label><input type="text" id="montoMantenimiento" value="0" disabled><select class="moneda" id="txtMantenimientoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label>Consepto: </label><textarea rows="1" cols="70" id="areaConcepto"></textarea></td>
+					<td colspan="3"><label>Consepto: </label><textarea rows="1" cols="70" id="areaConcepto"></textarea></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label>Observaciones: </label><textarea rows="1" cols="70" id="areaObservaciones"></textarea></td>
+					<td colspan="3"><label>Observaciones: </label><textarea rows="1" cols="70" id="areaObservaciones"></textarea></td>
 				</tr>
 			</table>
 			<input type="hidden" value="0" id="claveRentaPropiedad">

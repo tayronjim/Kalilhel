@@ -14,6 +14,7 @@
 		case 'cargaTipoPropiedad': cargaTipoPropiedad(); break;
 		case 'cargaPropietario': cargaPropietario(); break;
 		case 'cargaEstados': cargaEstados(); break;
+		case 'eliminaPropiedad': eliminaPropiedad($_POST['clave'],$_POST['valor']); break;
 		
 		
 		default:
@@ -115,5 +116,8 @@
 	}
 	function actualizaRegistro($cadena){
 		$respAgregaPropiedad = actualizaPropiedad($cadena);
+	}
+	function eliminaPropiedad($clave,$valor){
+		$elimina = eliminaProp($clave,$valor);
 	}
 ?>

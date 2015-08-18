@@ -44,6 +44,17 @@
 		// return $resultado;
 	}
 
+	function enlistaPeriodos(){
+		$query = "select corte from cortes group by corte order by corte DESC;";
+		$resultado = queryGeneral($query);
+		return $resultado;	
+	}
+
+	function actualizaFac($facturas){
+		$query = "UPDATE cortes SET facturado = 1, factura=".$facturas->folio.", monto=".$facturas->monto." where clavePropiedad = ".$facturas->propiedad." AND corte = DATE_FORMAT('".$facturas->fecha."', '%Y%m') AND factura is NULL;";
+		$resultado = queryGeneral($query);
+	}
+
 	function queryGeneral($query){
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
@@ -51,9 +62,5 @@
 		return $resultado;
 	}
 
-	function enlistaPeriodos(){
-		$query = "select corte from cortes group by corte order by corte DESC;";
-		$resultado = queryGeneral($query);
-		return $resultado;	
-	}
+	
 ?>

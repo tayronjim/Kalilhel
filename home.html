@@ -11,9 +11,24 @@
 	<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			syncClientes();
 			
 		});
-		
+		function syncClientes(){
+			$("#sc").html('Sincronizando clientes....  ');
+			$.ajax({
+	 			type: "POST",
+	 			url: "procesos/sincronizacion/control/control.php",
+	 			data: { "funsion" :  "sincClientes" },
+	 			success: function(data){
+	 				// alert(data);
+	 				// console.log(data);
+	 				// alert(data);
+	 				$("#sc").append(data);
+	 			}
+
+	 		});
+		}
 		
 	</script>
 	<style type="text/css">
@@ -31,11 +46,16 @@
 		margin-bottom: 0;
 		
 	}
+	.msngs{
+		margin-left: 10px;
+		margin-top: 10px;
+		color: #b0935b;
+	}
 	</style>
 </head>
 <body>
 <img src="css/img/logoKalilhel_1.png" id="fondoKalilhel">
-
+<label class="msngs" id="sc"></label>
 	
 
 </body>

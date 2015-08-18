@@ -26,6 +26,11 @@
 			$("#areaRegCaracteriticas").hide();
 			$("#plecaArchivos").hide();
 			$("#plecaRegCaracteriticas").hide();
+			$(".vender1 label").hide();
+			$(".vender1 input").hide();
+			$(".vender2 label").hide();
+			$(".vender2 input").hide();
+
 			
 			var options = { 
 			    beforeSend: function() 
@@ -143,7 +148,32 @@
 				$("#listadoPropiedades td").css('background-color','#ffffff');
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
 			});
+			$("#chkVender").click(function(){
+				$checkVender = $("#chkVender").is(':checked') ? 1 : 0;	
+				if($checkVender){
+					$(".vender2 label").show();
+					$(".vender2 input").show();
+				}
+				else{
+					$(".vender2 label").hide();
+					$(".vender2 input").hide();
+				}
+			});
+			
 		});
+		function eliminaPropiedad(){
+			$clave = $("#txtPropiedadesClave").val();
+			$valor = $("#txtVenta").val();
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "eliminaPropiedad", "clave":$clave, "valor":$valor },
+	 			success: function(data){
+	 				// alert(data);
+	 				window.open('propiedades.html','pantallaPrincipal');
+	 			}
+	 		});
+		}
 		function agregaFilaPropiedades(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
@@ -172,6 +202,7 @@
 			$("#txtPropiedadesMontoInquilino").prev().show();
 			$("#txtPropiedadesMontoInquilino").show();
 			// alert($("#btnguardaRegistro").attr('onclick'));
+
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -203,6 +234,19 @@
 					$("#txtPropiedadesValorActual").val(obj.Propiedad[0].valor_actual);
 					$("#txtPropiedadesAdquisicion").val(obj.Propiedad[0].adquisicion);
 					$("#txtPropiedadesMontoInquilino").val(obj.Propiedad[0].monto_inquilino);
+					$("#txtPropiedadesEstatus").val(obj.Propiedad[0].estatus);
+					// alert($("#txtPropiedadesEstatus").val());
+					if($("#txtPropiedadesEstatus").val()==1){
+						// alert("muestra")
+						$(".vender1 *").show();
+						// $(".vender1 input").show();
+					}
+					else{
+						// alert("ocultca");
+						$(".vender1 *").hide();
+						// $(".vender1 input").hide();
+					}
+					if($("#txtPropiedadesEstatus").val()==6){}
 	 
 	 				$("#areaRegCaracteriticas").css('visibility', 'visible');
 	 				$("#areaArchivos").css('visibility', 'visible');
@@ -210,6 +254,17 @@
 	 				$("#bar").width('0%');
 			        $("#percent").html('0%');
 			        // $("#message").html('');
+			        if (obj.Propiedad[0].estatus == 6) {
+			        	$(".vender2 *").show();
+			        	$("#txtVenta").val(obj.Propiedad[0].valor_vendido);
+			        	$("#areaFormulario *").attr('disabled','disabled');
+			        	$("#areaFormulario input[type='button']").hide();
+
+			        }else{
+			        	$(".vender2 *").hide();
+			        	$("#btnguardaRegistro").show();
+			        	$("#areaFormulario *").attr('disabled',false);
+			        }
 	 				menuDos();
 	 			}
 	 		});
@@ -417,6 +472,7 @@
 				limpiaTabla($pagina+$filasxPagina);
 			}
 		}
+
 	 </script>
 	 <style>
 	 	body{
@@ -446,7 +502,7 @@
 		#txtPropiedadesCol{
 			width: 170px;
 		}
-		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino{
+		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino, #txtGeneradoInicial, #txtVenta{
 			width: 80px;
 		}
 		
@@ -505,6 +561,17 @@
 		}
 		#divListadoArchivos{
 			margin-top: 20px;
+		}
+		select{
+			margin-left: 0px;
+			/*border: 1px solid;*/
+			-webkit-appearance: none;
+			padding: 3px;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		select:after{
+			width: 0px;
 		}
 		
 	</style>
@@ -582,7 +649,8 @@
 					<td colspan="6"><label>Estado: </label><select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select></td>
 				</tr>
 				<tr>
-					<td colspan="6"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
+					<td colspan="3"><label>Valor Generado Inicial</label><input type="text" id="txtGeneradoInicial"></td>
+					<td colspan="3"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
 				</tr>
 				<tr>
 					<td colspan="6"><label>Fecha Adquisición: </label><input type="date" id="txtPropiedadesAdquisicion"></td>
@@ -594,8 +662,17 @@
 					<td colspan="3"><label>Valor Real Actual: </label><input type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: </label><input type="text" id="txtPropiedadesMontoInquilino"></td>
 				</tr>
 			</table>
-			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> <br><br>
-			<input type="button" id="btnguardaRegistro" value="Guardar Registro" onclick="guardaRegistro(1)">
+			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> 
+			<input type="hidden" id="txtPropiedadesEstatus"> 
+			<table>
+				<tr>
+					<td colspan="1" width="135px"><input type="button" id="btnguardaRegistro" value="Guardar Registro" onclick="guardaRegistro(1)"></td>
+					<td colspan="2" class="vender1" width="87px"><label>Vender </label><input type="checkbox" id="chkVender"></td>
+					<td colspan="2" class="vender2" width="213px"><label>Valor de Venta: </label><input type="text" id="txtVenta"></td>
+					<td class="vender2" width="147px"><input style="margin-left:10px" type="button" id="btnVender" value="Vender" onclick="eliminaPropiedad()"></td>
+				</tr>
+			</table>
+			
 		</div>
 
 		<div id="plecaRegCaracteriticas" class="pleca" onclick="muestraOcultaArchivos('areaRegCaracteriticas')"><h3>Registro de Caracteristicas</h3></div>
