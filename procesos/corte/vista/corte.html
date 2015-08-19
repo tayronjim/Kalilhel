@@ -54,6 +54,7 @@
 	 				$("#slcPer").html(data);
 	 				$sup = $("#slcPer").first('option').val();
 	 				$inf = $("#slcPer option:last-child").val();
+	 			
 	 				// alert($("#slcPer option:last-child").val());
 	 				$("#slcPeriodo select").attr('LIMITSUP',$sup);
 	 				$("#slcPeriodo select").attr('LIMITINF',$inf);
@@ -83,7 +84,7 @@
 		}
 		function subeCambios(){
 			$cadenaObj = '{';
-			alert($('#listadoRentas tbody').html());
+			// alert($('#listadoRentas tbody').html());
 			$('#listadoRentas tbody tr').next('tr').each(function () {
 				// alert($(this).attr('id'));
 				if($(this).attr('id')!='trBusqueda'){
@@ -105,7 +106,7 @@
 
 
 			});
-			alert($cadenaObj);
+			// alert($cadenaObj);
 			$cadenaObj += '"fin":[]}';
 			$cadena = jQuery.parseJSON($cadenaObj);
 
@@ -114,7 +115,7 @@
 	 			url: "../control/control.php",
 	 			data: { "funsion" :  "subeCambios","cadena":$cadena },
 	 			success: function(data){
-	 				alert(data);
+	 				// alert(data);
 	 				// $("#listadoRentas").append(data);
 	 				window.open('corte.html','pantallaPrincipal');
 	 				if($a == 'completa'){
@@ -130,7 +131,9 @@
 		}
 		function periodoAnterior(){
 			$periodoActual = $("#slcPeriodo select").val();
+
 			if(parseInt($("#slcPeriodo select").attr('LIMITINF')) < parseInt($periodoActual) ){
+				// alert("");
 				$("#slcPeriodo select").val(--$periodoActual);
 				while($("#slcPeriodo select").val() == null){
 					$("#slcPeriodo select").val(--$periodoActual);
