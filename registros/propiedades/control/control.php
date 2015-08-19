@@ -80,7 +80,7 @@
 		$listaCaracteristica = buscaCaractPropiedad($clavePropiedad);
 		$caracteristicas = "<tbody>";
 		while($row = mysqli_fetch_object($listaCaracteristica)){
-			$caracteristicas .= '<tr id="carac_'.$row->clave.'"><td>'.$row->nombre.'</td><td  class="alignR">'.$row->valor.'</td></tr>';
+			$caracteristicas .= '<tr id="carac_'.$row->id.'"><td>'.$row->nombre.'</td><td  class="alignR">'.$row->valor.'</td></tr>';
 		}
 		$caracteristicas .= "</tbody>";
 		print $caracteristicas;

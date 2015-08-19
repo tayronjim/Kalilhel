@@ -39,13 +39,13 @@
 
 	function listadoCaracteristicas(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, nombre, tipo FROM lista_caracteristicas");
+		$resultado = $mysqli->query("SELECT id, clave, nombre, tipo FROM lista_caracteristicas");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
 	function buscaCaractPropiedad($clavePropiedad){
 		$mysqli = connectdb();
-		$query  = "select carac.clave, lista.nombre,carac.valor,lista.tipo from caracteristicas as carac";
+		$query  = "select lista.id as id, carac.clave, lista.nombre,carac.valor,lista.tipo from caracteristicas as carac";
 		$query .= " inner join lista_caracteristicas as lista on lista.clave=carac.clave_caracteristica";
 		$query .= " where carac.clave_propiedad=".$clavePropiedad;
 		$resultado = $mysqli->query($query);

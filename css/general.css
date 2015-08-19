@@ -38,18 +38,18 @@ div.cuerpo{
 	margin-left:10px;
 	margin-top:20px;
 }
-#areaFormulario table{
+#areaFormulario table,.areaFormulario table{
 	width: 600px;
 	margin-top: 20px;
 }
-#areaFormulario label{
+#areaFormulario label,.areaFormulario label{
 	font-weight: bold;
 	font-size: 13px;
 	font-family: arial;
 	margin-left: 10px;
 	margin-right: 5px;
 }
-#areaFormulario td{
+#areaFormulario td,.areaFormulario td{
 	padding-top: 10px;
 	padding-bottom: 10px;
 }

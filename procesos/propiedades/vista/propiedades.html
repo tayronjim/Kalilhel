@@ -137,8 +137,25 @@
 			$("#tiempoGracia").change(function(){
 				autoInicioFac();
 			});
-			
-		});
+			$(".cantidadNumerica").blur(function(){
+				$valor = $(this).val();
+				$valor = parseFloat($valor.replace(/,/g, '')).toFixed(2);
+				$(this).val(addCommas($valor));
+				// alert($valores);
+			});
+		});// Fin de Document Ready
+		
+		function addCommas(nStr){
+			nStr += '';
+			x = nStr.split('.');
+			x1 = x[0];
+			x2 = x.length > 1 ? '.' + x[1] : '';
+			var rgx = /(\d+)(\d{3})/;
+			while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2');
+			}
+			return x1 + x2;
+		}
 
 		function autoInicioFac(){
 
@@ -225,7 +242,7 @@
 		function agregaFilaPropiedades(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
-				$('#listaPropiedades tr:last').after("<tr onclick='muestraRentaPropiedad("+$arregloTabla[i].id+");muestraArchivos("+$arregloTabla[i].id+");'><td>"+$arregloTabla[i].propiedad+"</td><td>"+$arregloTabla[i].arrendatario+"</td><!--<td>"+$arregloTabla[i].inicioContrato+"</td>--><td>"+$arregloTabla[i].fechaTerminoContrato+"</td><td>"+$arregloTabla[i].montoActual+"</td></tr>");
+				$('#listaPropiedades tr:last').after("<tr onclick='muestraRentaPropiedad("+$arregloTabla[i].id+");muestraArchivos("+$arregloTabla[i].id+");'><td>"+$arregloTabla[i].propiedad+"</td><td>"+$arregloTabla[i].arrendatario+"</td><!--<td>"+$arregloTabla[i].inicioContrato+"</td>--><td>"+$arregloTabla[i].fechaTerminoContrato+"</td><td>$"+addCommas($arregloTabla[i].montoActual)+"</td></tr>");
 			}
 		}
 		function cuentaFilas(){
@@ -412,13 +429,13 @@
 						$("#hideClaveArrendatario").val($valores[2]);
 						$("#inicioContrato").val($valores[3]);
 						$("#duracionContrato").val($valores[4]);
-						$("#montoInicial").val($valores[5]);
-						$("#montoActual").val($valores[6]);
-						$("#montoDeposito").val($valores[7]);
+						$("#montoInicial").val(addCommas($valores[5]));
+						$("#montoActual").val(addCommas($valores[6]));
+						$("#montoDeposito").val(addCommas($valores[7]));
 						$("#tiempoGracia").val($valores[9]);
 						$("#regresaDeposito").val($valores[8]);
 						$("#pagaMantenimiento").val($valores[10]);
-						$("#montoMantenimiento").val($valores[11]);
+						$("#montoMantenimiento").val(addCommas($valores[11]));
 						$("#areaConcepto").val($valores[12]);
 						$("#areaObservaciones").val($valores[13]);
 						$("#lblPropiedad").text($valores[17]+" - "+$valores[15]);
@@ -702,29 +719,29 @@
 				</tr>
 				
 				<tr>
-					<td><label>Monto Inicial: $</label><input type="text" id="montoInicial"><select class="moneda" id="txtInicialMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
-					<td id="tdMontoActual"><label>Monto Actual: $</label><input type="text" id="montoActual" disabled><select class="moneda" id="txtActualMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
+					<td><label>Monto Inicial: $</label><input type="text" class="cantidadNumerica" id="montoInicial"><select class="moneda" id="txtInicialMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
+					<td id="tdMontoActual"><label>Monto Actual: $</label><input type="text" class="cantidadNumerica" id="montoActual" disabled><select class="moneda" id="txtActualMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
 				</tr>
 				<tr>
-					<td><label>Deposito: $</label><input type="text" id="montoDeposito"><select class="moneda" id="txtDepositoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td><label>Se Regresa Desposito: </label><select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select></td>
+					<td><label>Deposito: $</label><input type="text" id="montoDeposito" class="cantidadNumerica"><select class="moneda" id="txtDepositoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td><label>Se Regresa Desposito: </label><select id="regresaDeposito"><option value="0">NO</option><option value="1">SI</option></select></td>
 				</tr>
 				<tr>
 					<td><label>Tiempo de Gracia: </label><input type="text" id="tiempoGracia" value="0"> <label>Meses</label></td><td><label>Inicio de Facturacion </label><input type="date" id="fechaInicioFacturacion" disabled></td>
 				</tr>
 				<tr>
-					<td><label>Mantenimeinto: </label><select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select></td><td colspan="2"><label>Monto del Mantenimiento: $</label><input type="text" id="montoMantenimiento" value="0" disabled><select class="moneda" id="txtMantenimientoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
+					<td><label>Mantenimeinto: </label><select id="pagaMantenimiento"><option value="0">NO</option><option value="1">SI</option></select></td><td colspan="2"><label>Monto del Mantenimiento: $</label><input class="cantidadNumerica" type="text" id="montoMantenimiento" value="0" disabled><select class="moneda" id="txtMantenimientoMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Consepto: </label><textarea rows="1" cols="70" id="areaConcepto"></textarea></td>
+					<td colspan="3"><label>Consepto: </label><textarea rows="3" cols="70" id="areaConcepto" disabled></textarea></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Observaciones: </label><textarea rows="1" cols="70" id="areaObservaciones"></textarea></td>
+					<td colspan="3"><label>Observaciones: </label><textarea rows="2" cols="70" id="areaObservaciones"></textarea></td>
 				</tr>
 			</table>
 			<input type="hidden" value="0" id="claveRentaPropiedad">
 			
 			<!-- Estatus: <select><option></option><option></option><option></option></select> -->
-			<br><br>
+			
 			<input type="button" value="Guardar" onclick="guardaRenta()" id="btnGuardaRenta">
 			<input type="button" id="btnTerminaContrato" value="Finalizar Contrato" onclick="terminaContrato()">
 		</div>

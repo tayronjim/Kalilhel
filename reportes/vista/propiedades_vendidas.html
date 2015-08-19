@@ -51,6 +51,17 @@
 
  		});
 	});
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function listaTabla(data){
 		obj = JSON.parse(data);
 		$filas = "";
@@ -60,10 +71,10 @@
 			if(obj.Reporte[key].valor_inicial==0){$porsGenerado = 0;}
 			$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].rentas).toFixed(2)+"</div></td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].valor_vendido).toFixed(2)+"</div></td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat(obj.Reporte[key].valor_inicial).toFixed(2)+"</div></td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+parseFloat($generado).toFixed(2)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas(parseFloat(obj.Reporte[key].rentas).toFixed(2))+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas(parseFloat(obj.Reporte[key].valor_vendido).toFixed(2))+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas(parseFloat(obj.Reporte[key].valor_inicial).toFixed(2))+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas(parseFloat($generado).toFixed(2))+"</div></td>";
 			$filas += "<td><div style='float:right'>"+$porsGenerado+" %</div></td>";
 			
 			$filas += "</tr>";

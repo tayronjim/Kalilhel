@@ -59,6 +59,17 @@
  		
 	});
 	
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 
 	function buscaDatos(tipoFiltro){
 	
@@ -86,7 +97,7 @@
 				$filas += "<tr style='border-bottom: 1px solid #006699'>";
 				$filas += "<td></td>";
 				$filas += "<td>SubTotal</td>";
-				$filas += "<td>"+$totalMonto+"</td>";
+				$filas += "<td>"+addCommas($totalMonto)+"</td>";
 				$filas += "</tr>";
 				$totalMonto = 0;
 				$totalMonto += parseInt(obj.Reporte[key].monto);
@@ -98,13 +109,13 @@
 			$filas += "<tr>";
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 			$filas += "<td>"+obj.Reporte[key].corte+"</td>";
-			$filas += "<td>"+obj.Reporte[key].monto+"</td>";
+			$filas += "<td>"+addCommas(obj.Reporte[key].monto)+"</td>";
 			$filas += "</tr>";
 		});
 		$filas += "<tr>";
 		$filas += "<td></td>";
 		$filas += "<td>SubTotal</td>";
-		$filas += "<td>"+$totalMonto+"</td>";
+		$filas += "<td>"+addCommas($totalMonto)+"</td>";
 		$filas += "</tr>";
 		$("#tablaReporte tbody").html('');
 		$("#tablaReporte tbody").append($filas);

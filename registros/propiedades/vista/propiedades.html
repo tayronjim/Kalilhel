@@ -39,6 +39,7 @@
 			        $("#bar").width('0%');
 			        // $("#message").html("");
 			        $("#percent").html("0%");
+
 			    },
 			    uploadProgress: function(event, position, total, percentComplete) 
 			    {
@@ -65,7 +66,7 @@
 					$nombre_archivo = $tipo_documento+"_"+$clave_propiedad+"."+$extension;
 			        almacenaArchivos($cadena);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tbody tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody ').append('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			        $("#myfile").val('');
 			        $("#descripcionFile").val('');
 			    },
@@ -133,21 +134,28 @@
 	 			$valorCaract = $("#txtPropiedadesCaracteristicaValor").val();
 
 	 			$campos = $clavePropiedad+"@"+$valueCaract+"@"+$valorCaract;
-
-	 			$.ajax({
-		 			type: "POST",
-		 			url: "../control/control.php",
-		 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
-		 			success: function(data){
-		 				$('#listadoCaracteristicas tbody tr:last').after("<tr><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
-		 			}
-	 			});
-	 			$("#txtPropiedadesCaracteristicaValor").val('');
+	 			if($valueCaract != -1){
+	 				$.ajax({
+			 			type: "POST",
+			 			url: "../control/control.php",
+			 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
+			 			success: function(data){
+			 				$("#listadoCaracteristicas tbody tr#carac_"+$("#slcPropiedadesCaracteristicas").val()).remove();
+			 				$('#listadoCaracteristicas tbody').append("<tr id='carac_"+$("#slcPropiedadesCaracteristicas").val()+"'><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
+			 			}
+		 			});
+		 			$("#txtPropiedadesCaracteristicaValor").val('');
+	 			}
+	 			else{alert("Seleccione una Caracteristica")}
+		 			
+	 			
 	 		});
+
 	 		$("#listadoPropiedades").on('click','td',function(){
 				$("#listadoPropiedades td").css('background-color','#ffffff');
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
 			});
+
 			$("#chkVender").click(function(){
 				$checkVender = $("#chkVender").is(':checked') ? 1 : 0;	
 				if($checkVender){
@@ -159,8 +167,28 @@
 					$(".vender2 input").hide();
 				}
 			});
+			$(".moneda").blur(function(){
+				$valor = $(this).val();
+				$valor = parseFloat($valor.replace(/,/g, '')).toFixed(2);
+				$(this).val(addCommas($valor));
+				// alert($valores);
+			});
 			
-		});
+		}); //Fin Document Ready
+
+		
+		function addCommas(nStr){
+			nStr += '';
+			x = nStr.split('.');
+			x1 = x[0];
+			x2 = x.length > 1 ? '.' + x[1] : '';
+			var rgx = /(\d+)(\d{3})/;
+			while (rgx.test(x1)) {
+				x1 = x1.replace(rgx, '$1' + ',' + '$2');
+			}
+			return x1 + x2;
+		}
+
 		function eliminaPropiedad(){
 			$clave = $("#txtPropiedadesClave").val();
 			$valor = $("#txtVenta").val();
@@ -228,12 +256,14 @@
 					$("#txtPropiedadesCP").val(obj.Propiedad[0].cp);
 					$("#txtPropiedadesCiudad").val(obj.Propiedad[0].ciudad);
 					$("#txtPropiedadesEstado").val(obj.Propiedad[0].estado);
-					$("#txtPropiedadesValorInicial").val(obj.Propiedad[0].valor_inicial);
+					$("#txtPropiedadesValorInicial").val(addCommas(obj.Propiedad[0].valor_inicial));
 					$("#txtPropiedadesMoneda").val(obj.Propiedad[0].tipo_moneda);
 					$("#txtPropiedadesCambio").val(obj.Propiedad[0].cambio);
-					$("#txtPropiedadesValorActual").val(obj.Propiedad[0].valor_actual);
+					$("#txtPropiedadesValorActual").val(addCommas(obj.Propiedad[0].valor_actual));
 					$("#txtPropiedadesAdquisicion").val(obj.Propiedad[0].adquisicion);
-					$("#txtPropiedadesMontoInquilino").val(obj.Propiedad[0].monto_inquilino);
+					$("#txtgeneradoinicial").val(addCommas(obj.Propiedad[0].valorGeneradoInicial));
+
+					$("#txtPropiedadesMontoInquilino").val(addCommas(obj.Propiedad[0].monto_inquilino));
 					$("#txtPropiedadesEstatus").val(obj.Propiedad[0].estatus);
 					// alert($("#txtPropiedadesEstatus").val());
 					if($("#txtPropiedadesEstatus").val()==1){
@@ -472,6 +502,15 @@
 				limpiaTabla($pagina+$filasxPagina);
 			}
 		}
+		function submitFile(){
+			if($("#myfile").val()==''){
+				alert("No se a seleccionado archivo");
+			}
+			else{
+				$("#myForm").submit();	
+			}
+			
+		}
 
 	 </script>
 	 <style>
@@ -649,17 +688,17 @@
 					<td colspan="6"><label>Estado: </label><select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Valor Generado Inicial</label><input type="text" id="txtGeneradoInicial"></td>
+					<td colspan="3"><label>Valor Generado Inicial: $</label><input class="moneda" type="text" id="txtGeneradoInicial"></td>
 					<td colspan="3"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
 				</tr>
 				<tr>
 					<td colspan="6"><label>Fecha Adquisición: </label><input type="date" id="txtPropiedadesAdquisicion"></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label>Valor Inicial $</label><input type="text" id="txtPropiedadesValorInicial"> </td><td colspan="2"><label>Moneda: </label><select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td colspan="2"><label>Tipo de Cambio: </label><input type="text" id="txtPropiedadesCambio"></td>
+					<td colspan="2"><label>Valor Inicial $</label><input class="moneda" type="text" id="txtPropiedadesValorInicial"> </td><td colspan="2"><label>Moneda: </label><select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td colspan="2"><label>Tipo de Cambio: </label><input type="text" id="txtPropiedadesCambio"></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Valor Real Actual: </label><input type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: </label><input type="text" id="txtPropiedadesMontoInquilino"></td>
+					<td colspan="3"><label>Valor Real Actual: $</label><input class="moneda" type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: $</label><input class="moneda" type="text" id="txtPropiedadesMontoInquilino"></td>
 				</tr>
 			</table>
 			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> 
@@ -683,7 +722,7 @@
 					<td colspan="5"></td>
 				</tr>
 				<tr id="fila2">
-					<td><label>Caracteristica: </label></td><td colspan="2"><select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select></td><td><label>Valor: </label></td><td> <input type="text" id="txtPropiedadesCaracteristicaValor"></td>
+					<td><label>Caracteristica: </label></td><td colspan="2"><select id="slcPropiedadesCaracteristicas"><option value="-1">Seleccione una Caracteristica</option></select></td><td><label>Valor: </label></td><td> <input type="text" id="txtPropiedadesCaracteristicaValor"></td>
 				</tr>
 				<tr id="fila3">
 					<td colspan="2"><input type="button" value="Agregar Caracteristica" id="btnAgregaCaract"></td>
@@ -719,7 +758,7 @@
 					<tr>
 						<td><input type="file" size="60" name="myfile" id="myfile"></td>
 						
-						<td><input type="submit" value="Cargar Archivo"></td>
+						<td><input type="button" onclick="submitFile()" value="Cargar Archivo"></td>
 					</tr>
 					<tr>
 						<td>

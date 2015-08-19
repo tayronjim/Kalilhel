@@ -41,6 +41,17 @@
  		});
 		
 	});
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function filtra(){
 		$txtFiltroCliente = $("#txtFiltroCliente").val();
 		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
@@ -72,7 +83,7 @@
 			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
 			$filas += "<td>"+obj.Reporte[key].cliente+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$monto+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($monto)+"</div></td>";
 			$filas += "<td>"+$rentabilMensual+"</td>";
 			$filas += "<td>"+$retabiAnual+"</td>";
 			$filas += "</tr>";
@@ -105,7 +116,7 @@
 		<div id="filtros">
 			<table>
 				<tr>
-					<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
+					<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
 				</tr>
 			</table>
 		</div>
@@ -117,7 +128,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:355px; width:355px;">Cliente</th><th style="min-width:120px; width:120px;">Empresa</th><th style="min-width:100px; width:100px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
+					<th style="min-width:355px; width:355px;">Cliente</th><th style="min-width:120px; width:120px;">Propietario</th><th style="min-width:100px; width:100px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
 				</tr>
 			</thead>
 			<tfoot>

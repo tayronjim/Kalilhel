@@ -71,7 +71,7 @@
 		}
 
 		function limpiaTabla(ini){
-			$("#listadoTipoPropiedad tbody").html('<tr><td></td><td></td><td></td><td></td></tr>');
+			$("#listadoTipoPropiedad tbody").html('<tr><td></td><td></td><td></td> <!-- <td></td> --> </tr>');
 			agregaFilaTipoPropiedad(ini);
 		}
 
@@ -79,7 +79,7 @@
 		function agregaFilaTipoPropiedad(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
-				$('#listadoTipoPropiedad tbody tr:last').after('<tr onclick="muestraTipoPropiedad('+$arregloTabla[i].id+')"><td>'+$arregloTabla[i].id+'</td><td>'+$arregloTabla[i].descripcion+'</td><td>'+$arregloTabla[i].activo+'</td><td>'+$arregloTabla[i].fechaAlta+'</td></tr>');
+				$('#listadoTipoPropiedad tbody tr:last').after('<tr onclick="muestraTipoPropiedad('+$arregloTabla[i].id+')"><td>'+$arregloTabla[i].id+'</td><td>'+$arregloTabla[i].descripcion+'</td><td>'+$arregloTabla[i].activo+'</td> <!-- <td>'+$arregloTabla[i].fechaAlta+'</td> --> </tr>');
 			}
 				
 		}
@@ -96,7 +96,7 @@
 	 				// obj.Propiedad[$v1];
 	 				$("#txtTipoPropClave").val(obj.Propiedad[0].id);
 	 				$("#txtTipoPropDescr").val(obj.Propiedad[0].descripcion);
-	 				$("#txtTipoPropAlta").val(obj.Propiedad[0].fechaAlta);
+	 				// $("#txtTipoPropAlta").val(obj.Propiedad[0].fechaAlta);
 	 				if(obj.Propiedad[0].activo==1){
 	 					$("#chkTipoPropActivo").prop('checked', true);
 	 				}
@@ -144,12 +144,12 @@
 			$("#txtTipoPropDescr").val('')
 			$("#txtTipoPropAlta").val('');
 			$("#chkTipoPropActivo").attr('checked',true);
-			// $("#txtTipoPropClave").val('');
+			$("#txtTipoPropClave").val('');
 			menuDos();
 		}
 		function GuardaTipoPropiedad(){
 			$txtTipoPropDescr = $("#txtTipoPropDescr").val()
-			$txtTipoPropAlta = $("#txtTipoPropAlta").val();
+			$txtTipoPropAlta = "";
 			$chkTipoPropActivo = $("#chkTipoPropActivo").prop('checked')? '1':'0';
 			$txtTipoPropClave = $("#txtTipoPropClave").val();
 			// alert($chkTipoPropActivo);
@@ -231,12 +231,12 @@
 						<th style="width: 40px;">Clave</th>
 						<th>Descripción</th>
 						<th style="width: 40px;">Activo</th>
-						<th style="width: 100px;">Fecha Alta</th>
+						<!-- <th style="width: 100px;">Fecha Alta</th> -->
 						
 					</tr>
 					</thead>
 					<tfoot>
-					<tr><td colspan="4"><div id="paging">
+					<tr><td colspan="3"><div id="paging">
 						<ul>
 							<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
 							<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
@@ -246,7 +246,7 @@
 					</tfoot>
 					<tbody>
 					<tr>
-						<td></td><td></td><td></td><td></td>
+						<td></td><td></td><td></td>
 					</tr>
 					</tbody>
 
@@ -258,7 +258,7 @@
 		<div id="areaFormulario">
 			<table border="0">	
 				<tr><td width="100px"><label>Descripción: </label></td><td><input type="text" id="txtTipoPropDescr"></td></tr>
-				<tr><td><label>Fecha Alta: </label></td><td><input type="date" id="txtTipoPropAlta"></td></tr>
+				<!-- <tr><td><label>Fecha Alta: </label></td><td><input type="date" id="txtTipoPropAlta"></td></tr> -->
 				<tr><td><label>Activo: </label></td><td><input type="checkbox" id="chkTipoPropActivo"></td></tr>
 			</table>
 			<input type="hidden" id="txtTipoPropClave" value="0">

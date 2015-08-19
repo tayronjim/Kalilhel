@@ -38,6 +38,17 @@
  		});
 		
 	});
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function filtra(){
 		
 		$txtFiltroPropiedad = $("#txtFiltroPropiedad").val();
@@ -79,11 +90,11 @@
 				$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
 				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 				$filas += "<td>"+obj.Reporte[key].propietario+"</td>";
-				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$inicial+"</div></td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($inicial)+"</div></td>";
 				$filas += "<td><div style='float:right'>"+$renMensual+" %</div></td>";
 				$filas += "<td><div style='float:right'>"+$rendAnual+" %</div></td>";
-				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$generado+"</div></td>";
-				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$recuperado+"</div></td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($generado)+"</div></td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($recuperado)+"</div></td>";
 				$filas += "</tr>";
 				
 		});

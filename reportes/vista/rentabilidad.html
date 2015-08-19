@@ -37,6 +37,17 @@
  		});
 		
 	});
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function filtra(){
 		$txtFiltroCliente = $("#txtFiltroCliente").val();
 		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
@@ -76,12 +87,12 @@
 			$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
 			$filas += "<td>"+obj.Reporte[key].descripcion+"</td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+obj.Reporte[key].valor_inicial+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas(obj.Reporte[key].valor_inicial)+"</div></td>";
 			$filas += "<td>"+obj.Reporte[key].tipo_moneda+"</td>";
 			$filas += "<td>"+obj.Reporte[key].adquisicion+"</td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$ingresos+"</div></td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$recuperado+"</div></td>";
-			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+$pendiente+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($ingresos)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($recuperado)+"</div></td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($pendiente)+"</div></td>";
 			$filas += "<td>"+$rentabilidad+"</td>";
 
 			$filas += "</tr>";
@@ -116,7 +127,7 @@
 			<table>
 			
 			<tr>
-				<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
+				<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
 			</tr>
 		</table>
 
@@ -128,7 +139,7 @@
 		<table border="1" id="tablaReporte">
 			<thead>
 				<tr>
-					<!-- <th># CLIENTE</th> --><th style="min-width:155px; max-width:245px; width:245px;">NOMBRE</th><th style="min-width:100px; width:100px;">EMPRESA</th><th style="min-width:130px; width:130px;">DESCRIPCION</th><th style="min-width:90px; width:90px;"> INVERSION </th><th style="min-width:60px; width:60px;"> MONEDA </th><th style="min-width:75px; width:75px;">FECHA DE COMPRA</th><th style="min-width:85px; width:85px;"> INGRESOS GENERADOS</th><th style="min-width:95px; width:95px;"> INVERSIÓN RECUPERADA </th><th style="min-width:90px; width:90px;"> PENDIENTE X RECUPERAR </th><th style="min-width:100px; width:100px;">RENTABILIDAD</th>
+					<!-- <th># CLIENTE</th> --><th style="min-width:155px; max-width:245px; width:245px;">NOMBRE</th><th style="min-width:100px; width:100px;">PROPIETARIO</th><th style="min-width:130px; width:130px;">DESCRIPCION</th><th style="min-width:100px; width:100px;"> INVERSION </th><th style="min-width:60px; width:60px;"> MONEDA </th><th style="min-width:75px; width:75px;">FECHA DE COMPRA</th><th style="min-width:100px; width:100px;"> INGRESOS GENERADOS</th><th style="min-width:100px; width:100px;"> INVERSIÓN RECUPERADA </th><th style="min-width:100px; width:100px;"> PENDIENTE X RECUPERAR </th><th style="min-width:100px; width:100px;">RENTABILIDAD</th>
 				</tr>
 			</thead>
 			<tfoot>
