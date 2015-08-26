@@ -116,6 +116,7 @@
 	}
 	function actualizaRegistro($cadena){
 		$respAgregaPropiedad = actualizaPropiedad($cadena);
+		echo $respAgregaPropiedad;
 	}
 	function eliminaPropiedad($clave,$valor){
 		$elimina = eliminaProp($clave,$valor);

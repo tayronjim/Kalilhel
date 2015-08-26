@@ -203,11 +203,12 @@
 				$fechaArrAnio = parseInt($fechaArr[0]) + parseInt($duracionContrato);
 			}
 				
-			
-			if($fechaArrMes>12){$fechaArrAnio = parseInt($fechaArr[0])+1; $fechaArrMes = $fechaArrMes-12;}
+			$fechaArrAnio = parseInt($fechaArr[0]);
+			while($fechaArrMes>12){$fechaArrAnio = parseInt($fechaArrAnio)+1; $fechaArrMes = $fechaArrMes-12;}
 			if($fechaArrMes<=9){$fechaArrMes="0"+$fechaArrMes;}
 			if($fechaArrMes=='02' && $fechaArr[2]=='29'){$fechaArr[2] = '28';}
 			$fechaFin = $fechaArrAnio+"-"+$fechaArrMes+"-"+$fechaArr[2];
+			console.log($fechaFin);
 			$("#fechaFin").val($fechaFin);
 		}
 		function cuentaMenus(){
@@ -319,13 +320,13 @@
 			
 			$duracionContrato = $("#duracionContrato").val();
 
-			$montoInicial = $("#montoInicial").val();
-			$montoActual = $("#montoActual").val();
-			$montoDeposito = $("#montoDeposito").val();
+			$montoInicial = $("#montoInicial").val().replace(',','');
+			$montoActual = $("#montoActual").val().replace(',','');
+			$montoDeposito = $("#montoDeposito").val().replace(',','');
 			$tiempoGracia = $("#tiempoGracia").val();
 			$regresaDeposito = $("#regresaDeposito").val();
 			$pagaMantenimiento = $("#pagaMantenimiento").val();
-			$montoMantenimiento = $("#montoMantenimiento").val();
+			$montoMantenimiento = $("#montoMantenimiento").val().replace(',','');
 			$areaConcepto = $("#areaConcepto").val();
 			$areaObservaciones = $("#areaObservaciones").val();
 			$txtInicialMoneda = $("#txtInicialMoneda").val();
@@ -379,7 +380,7 @@
 				$("#tiempoGracia").attr('disabled', 'disabled');
 				$("#fechaInicioFacturacion").attr('disabled', 'disabled');
 				$("#montoDeposito").attr('disabled', 'disabled');
-
+				$("#areaConcepto").show();
 				
 					
 				
@@ -533,6 +534,7 @@
 			$("#fechaFin").val('');
 			$("#tdMontoActual").hide();
 			$(".moneda").val('MXN');
+			$("#areaConcepto").hide();
 
 			menuDos();
 		}
@@ -579,7 +581,7 @@
 			margin: 3;
 			padding: 0;
 			float: left;
-
+			cursor: pointer;
 		}
 		#montoInicial{
 			width: 70px;

@@ -261,7 +261,7 @@
 					$("#txtPropiedadesCambio").val(obj.Propiedad[0].cambio);
 					$("#txtPropiedadesValorActual").val(addCommas(obj.Propiedad[0].valor_actual));
 					$("#txtPropiedadesAdquisicion").val(obj.Propiedad[0].adquisicion);
-					$("#txtgeneradoinicial").val(addCommas(obj.Propiedad[0].valorGeneradoInicial));
+					$("#txtGeneradoInicial").val(addCommas(obj.Propiedad[0].valorGeneradoInicial));
 
 					$("#txtPropiedadesMontoInquilino").val(addCommas(obj.Propiedad[0].monto_inquilino));
 					$("#txtPropiedadesEstatus").val(obj.Propiedad[0].estatus);
@@ -358,18 +358,20 @@
 			$cp =				$("#txtPropiedadesCP").val();
 			$ciudad =			$("#txtPropiedadesCiudad").val();
 			$estado =			$("#txtPropiedadesEstado").val();
-			$valorGInicial= 	$("#txtPropiedadesValorInicial").val();
+			$valorGInicial= 	$("#txtGeneradoInicial").val().replace(',','');
+			$valorInicial= 		$("#txtPropiedadesValorInicial").val().replace(',','');
 			$moneda =			$("#txtPropiedadesMoneda").val();
 			$cambio =			$("#txtPropiedadesCambio").val();
 			$fechaAdquisicion=	$("#txtPropiedadesAdquisicion").val();
-			$valorRActual =		$("#txtPropiedadesValorActual").val();
-			$montoInquilino=	$("#txtPropiedadesMontoInquilino").val();
+			$valorRActual =		$("#txtPropiedadesValorActual").val().replace(',','');
+			$montoInquilino=	$("#txtPropiedadesMontoInquilino").val().replace(',','');
 			$PropiedadesClave=	$("#txtPropiedadesClave").val();
+			
 
 			$cadena = 	$nombre+")+("+
 						$tipo+")+("+
 						$propietario+")+("+
-						$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorGInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$montoInquilino+")+("+$PropiedadesClave;
+						$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$montoInquilino+")+("+$PropiedadesClave+")+("+$valorGInicial;
 			// alert($funcion);
 			$.ajax({
 	 			type: "POST",
