@@ -85,7 +85,7 @@
 
 				if(isNaN($renMensual) || $renMensual==null){ $renMensual = ''; $rendAnual=''; }
 
-				$recuperado = $inicial - $generado;
+				$recuperado = ($inicial - $generado).toFixed(2);
 
 				$filas += "<tr id='fila_"+obj.Reporte[key].clave+"'>";
 				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
@@ -159,7 +159,7 @@
 			<table>
 				<tr>
 					<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td>
-					<td rowspan="2"><input type="button" value="PDF" onclick="sacaPDF()"></td>
+					<td rowspan="2"><!-- <input type="button" value="PDF" onclick="sacaPDF()"> --></td>
 				</tr>
 				<tr><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td></tr>
 				
