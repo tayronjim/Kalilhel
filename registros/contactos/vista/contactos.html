@@ -65,7 +65,7 @@
 			        almacenaArchivos($cadena);
 			        // listadoArchivos($clave_cliente);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tbody').append('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody').append('<tr id="tr'+$tipo_documento+'"><td><img src="/kalilhel/css/img/imgElimina.png"></td><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			    },
 			    error: function()
 			    {
@@ -225,7 +225,7 @@
 
 		function muestraContacto(clave){
 				
-				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				$("#listadoArchivos").html('<thead><tr><th></th><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
 				$("#descripcionFile").val('');
 				$("#myfile").val('');
 				$("#bar").width('0%');
@@ -442,6 +442,11 @@
 		#areaFormulario > table > tr > td,.areaFormulario > table > tr > td{
 			padding-bottom: 100px;
 		}
+
+		#listadoArchivos img{
+			width: 16px;
+			height: auto;
+		}
 		
 		select{
 			margin-left: 0px;
@@ -542,9 +547,9 @@
 			<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
 				<table border ="0" id="tablaCargaArchivos">
 					
-					
+					<tr><td colspan="2"><label>Persona: </label><select><option>Arrendatario</option><option>Contacto</option><option>Fiador</option></select></td></tr>
 					<tr>
-						<td><label>Tipo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select></td>
+						<td><label>Tipo de Archivo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select></td>
 						<td><label>Descripción: </label><br> <textarea cols="40" rows="1" id="descripcionFile"></textarea></td>
 						
 					</tr>
@@ -565,7 +570,7 @@
 								<table id="listadoArchivos">
 									<thead>
 									<tr>
-										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
+										<th width="35px"></th><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
 									</tr>
 									</thead>
 									<tbody>

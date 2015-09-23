@@ -13,17 +13,23 @@
 		$filasxPagina = 7;
 		$cont = 0;
 		$pagina = 0;
-
+		function resizeMenu(){
+			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
+			$(window).resize(function(){
+				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
+			});
+		}
 		$(document).ready(function(){
 			// alert(Date.now());
 			$("#areaFormularioRentas").hide();
 			$("#tdBuscaProp").hide();
 			$("#tdBuscaArren").hide();
 			$("#trRenovar").hide();
-			$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
-			$(window).resize(function(){
-				$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
-			});
+			// $("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
+			// $(window).resize(function(){
+			// 	$("#submenu .subli").width((anchoVentana()/cuentaMenus())-cuentaMenus()+1);
+			// });
+			resizeMenu();
 			$("#tablaFiltroPropiedad").parent('div').hide();
 			$("#tablaFiltroArrendatario").parent('div').hide();
 			$("#pagaMantenimiento").change(function(){
@@ -224,14 +230,18 @@
 			return $anchoVentana;
 		}
 		function menuUno(){
+			resizeMenu();
 			$("#menuUno").removeClass('inactivo').addClass('activo');
 			$("#menuDos").removeClass('activo').addClass('inactivo');
 			$(".areaTabla").show();
 			$("#areaFormularioRentas").hide();
+
 			
 		}
 		function menuDos(){
+
 			if (!$("#menuDos").hasClass('bloqueado')){
+				resizeMenu();
 				$("#menuUno").removeClass('activo').addClass('inactivo');
 				$("#menuDos").removeClass('inactivo').addClass('activo');
 				$(".areaTabla").hide();
@@ -606,6 +616,12 @@
 		select:after{
 			width: 0px;
 		}
+		/*#submenu li{
+			width: 49%;
+		}*/
+		#nuevaRenta{
+			margin-top: 8px;
+		}
 	</style>
 </head>
 <body>
@@ -645,7 +661,7 @@
 				</tbody>
 			</table>
 			</div>
-			<br>
+			
 			<input type="button" id="nuevaRenta" value="Nuevo" onclick="limpiaRegistros();">
 		</div>
 
@@ -737,7 +753,7 @@
 					<td colspan="3"><label>Consepto: </label><textarea rows="3" cols="70" id="areaConcepto" disabled></textarea></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Observaciones: </label><textarea rows="2" cols="70" id="areaObservaciones"></textarea></td>
+					<td colspan="3"><label>Observaciones: </label><textarea rows="2" cols="65" id="areaObservaciones"></textarea></td>
 				</tr>
 			</table>
 			<input type="hidden" value="0" id="claveRentaPropiedad">

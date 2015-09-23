@@ -14,6 +14,9 @@
 		case 'filtraTablaPropiedad': filtraTablaPropiedad($_POST['txtFiltroPropiedad'],$_POST['txtFiltroPropietario']); break;
 		case 'filtraTablaRentabilidad': filtraTablaRentabilidad($_POST['txtFiltroCliente'],$_POST['txtFiltroEmpresa']); break;
 		case 'filtraTablaClienteRentabilidad': filtraTablaClienteRentabilidad($_POST['txtFiltroCliente'],$_POST['txtFiltroEmpresa']); break;
+		
+
+		
 
 	}
 	function reporteIncrementos(){
@@ -155,4 +158,5 @@
 		$struct = array("Reporte" => $var);
 		print json_encode($struct);
 	}
+	
 ?>

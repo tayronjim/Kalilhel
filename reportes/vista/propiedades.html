@@ -103,6 +103,37 @@
 	function nuevaVentana(){
 		window.open("propiedades.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1100, height=700");
 	}
+	function sacaPDF(){
+		$txtFiltroPropiedad = $("#txtFiltroPropiedad").val();
+		$txtFiltroPropietario = $("#txtFiltroPropietario").val();
+		
+		$header={};
+		$header.h1={};
+		$header.h1.w='190';
+		$header.h1.titulo = 'Propiedad';
+		$header.h2={};
+		$header.h2.w='120';
+		$header.h2.titulo = 'Propietario';
+		$header.h3={};
+		$header.h3.w='100';
+		$header.h3.titulo = 'Costo de Adquisición';
+		$header.h4={};
+		$header.h4.w='60';
+		$header.h4.titulo = '% Rend. Mensual';
+		$header.h5={};
+		$header.h5.w='60';
+		$header.h5.titulo = '% Rend. Anual';
+		$header.h6={};
+		$header.h6.w='100';
+		$header.h6.titulo = 'Generado al día';
+		$header.h7={};
+		$header.h7.w='100';
+		$header.h7.titulo = 'Costo por Recuperar';
+		
+		var win = window.open('../control/reportes.php?reporte=propiedades&', '_blank');
+		win.focus();
+  		
+	}
 	</script>
 	<style type="text/css">
 	#pantallaNueva{
@@ -127,10 +158,14 @@
 		<div id="filtros">
 			<table>
 				<tr>
-					<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td>
+					<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td>
+					<td rowspan="2"><input type="button" value="PDF" onclick="sacaPDF()"></td>
 				</tr>
+				<tr><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td></tr>
+				
 			</table>
 		</div>
+		
 		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
 	</div>
 	<br>
