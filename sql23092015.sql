@@ -1495,9 +1495,6 @@ CREATE TABLE `documentos` (
 -- Volcado de datos para la tabla `documentos`
 --
 
-INSERT INTO `documentos` (`id`, `clave_cliente`, `clave_propiedad`, `tipo_documento`, `nombre_archivo`, `descripcion`, `tipo_archivo`) VALUES
-(1, 45, NULL, 'ife', 'ife_45.jpeg', 'asd', '--'),
-(2, 45, NULL, 'comprDomicilio', 'comprDomicilio_45.jpg', 'kjh', '--');
 
 -- --------------------------------------------------------
 

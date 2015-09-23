@@ -230,22 +230,23 @@
 			return $anchoVentana;
 		}
 		function menuUno(){
-			resizeMenu();
+			
 			$("#menuUno").removeClass('inactivo').addClass('activo');
 			$("#menuDos").removeClass('activo').addClass('inactivo');
 			$(".areaTabla").show();
 			$("#areaFormularioRentas").hide();
-
+			resizeMenu();
 			
 		}
 		function menuDos(){
 
 			if (!$("#menuDos").hasClass('bloqueado')){
-				resizeMenu();
+				
 				$("#menuUno").removeClass('activo').addClass('inactivo');
 				$("#menuDos").removeClass('inactivo').addClass('activo');
 				$(".areaTabla").hide();
 				$("#areaFormularioRentas").show();
+				resizeMenu();
 			}
 			
 		}
@@ -469,9 +470,10 @@
 						// 	$("#checkRenovar").attr('disabled', false);
 						// 	$("#fechaRenovacion").attr('disabled', false);
 						// }
-	 				
+	 				resizeMenu();
 	 			}
 	 		});
+		
 				
 		}
 		function muestraArchivos(){
@@ -762,7 +764,9 @@
 			
 			<input type="button" value="Guardar" onclick="guardaRenta()" id="btnGuardaRenta">
 			<input type="button" id="btnTerminaContrato" value="Finalizar Contrato" onclick="terminaContrato()">
+
 		</div>
+		<br>
 	</div>
 </div>
 </body>
