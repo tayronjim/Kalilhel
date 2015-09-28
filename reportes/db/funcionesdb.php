@@ -56,7 +56,7 @@
 	function repPropiedad($txtFiltroPropiedad,$txtFiltroPropietario){
 		$query ="SELECT prop.`clave`, prop.`nombre`, propietario.nombre as `propietario`, (prop.`valor_inicial` * prop.cambio) as valor_inicial, SUM(cortes.`monto`) as generado, cortes.`monto`
 				from `propiedades` as prop
-					inner join cortes on cortes.`clavePropiedad`= prop.`clave`
+					left join cortes on cortes.`clavePropiedad`= prop.`clave`
 					left join propietario on propietario.`clave` = prop.`propietario`
 				WHERE prop.`nombre` LIKE '%".$txtFiltroPropiedad."%' and `propietario` LIKE '%".$txtFiltroPropietario."%'
 				GROUP BY prop.clave;";

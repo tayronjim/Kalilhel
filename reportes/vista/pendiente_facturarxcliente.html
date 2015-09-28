@@ -120,6 +120,13 @@
 		$("#tablaReporte tbody").html('');
 		$("#tablaReporte tbody").append($filas);
 		}
+	function sacaPDF(){
+		
+		
+		var win = window.open('../control/reportes.php?reporte=pendientexcliente', '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("pendiente_facturarxcliente.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=700, height=700");
 	}
@@ -128,6 +135,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -154,7 +162,7 @@
 	<div class="titulo"><h2>Pendiente por Facturar</h2></div>
 	<div id="cabecera">
 		<div id="filtros">
-			<table>
+	<!-- <table>
 		
 		<tr>
 			<td>Mostrar: <select id="filtroFechas">
@@ -167,9 +175,9 @@
 			</td>
 			<td><div id="divFecha1"><input type="date" id="filtroFecha1" class="filtroFecha"></div></td><td><div id="divFecha2"> y <input type="date" id="filtroFecha2" class="filtroFecha"></div></td>
 		</tr>
-	</table>
+	</table> -->
 		</div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	

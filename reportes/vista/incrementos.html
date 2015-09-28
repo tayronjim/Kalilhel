@@ -139,6 +139,15 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtBuscaXCliente = $("#txtBuscaXCliente").val();
+		
+		
+		
+		var win = window.open('../control/reportes.php?reporte=incrementos&filtroCliente='+$txtBuscaXCliente, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("incrementos.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1100, height=800");
 	}
@@ -147,6 +156,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -164,7 +174,7 @@
 	<div id="cabecera">
 		<div id="filtros">
 		Clientes: <input type="text" id="txtBuscaXCliente"></div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">

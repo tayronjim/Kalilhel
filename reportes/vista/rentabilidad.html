@@ -69,6 +69,7 @@
 			// $generado = (parseInt(obj.Reporte[key].rentas)+parseInt(obj.Reporte[key].valor_vendido)-parseInt(obj.Reporte[key].valor_inicial));
 			// $porsGenerado = (($generado/obj.Reporte[key].valor_inicial)*100).toFixed(3);
 			$pendiente = parseFloat(obj.Reporte[key].valor_inicial) - parseFloat(obj.Reporte[key].recuperado);
+			$pendiente = $pendiente.toFixed(2);
 			$rentabilidad = (((parseFloat(obj.Reporte[key].valorGeneradoInicial) + parseFloat(obj.Reporte[key].ingresos))/parseFloat(obj.Reporte[key].valor_inicial))*100).toFixed(2);
 			if (obj.Reporte[key].valor_inicial == 0) {$rentabilidad = 0;}
 
@@ -100,6 +101,14 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
+		$txtFiltroCliente = $("#txtFiltroCliente").val();
+		
+		var win = window.open('../control/reportes.php?reporte=rentabilidad&filtroEmpresa='+$txtFiltroEmpresa+'&filtroCliente='+$txtFiltroCliente, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1300, height=700");
 	}
@@ -108,6 +117,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -132,7 +142,7 @@
 		</table>
 
 		</div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">

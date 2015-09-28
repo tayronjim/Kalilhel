@@ -64,6 +64,13 @@
 		}
 		return x1 + x2;
 	}
+	function sacaPDF(){
+		
+		
+		var win = window.open('../control/reportes.php?reporte=rentasactuales', '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("montoxpropiedad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=700, height=700");
 	}
@@ -72,6 +79,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -87,7 +95,7 @@
 	<div class="titulo"><h2>Rentas Actuales por Propiedad</h2></div>
 	<div id="cabecera">
 		<div id="filtros"></div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">

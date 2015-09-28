@@ -82,6 +82,14 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtBuscaXPropiedad = $("#txtBuscaXPropiedad").val();
+		
+		
+		var win = window.open('../control/reportes.php?reporte=propiedadesvendidas&filtroPropiedad='+$txtBuscaXPropiedad, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("propiedades_vendidas.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1000, height=700");
 	}
@@ -90,6 +98,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -107,7 +116,7 @@
 		<div id="filtros">
 			Propiedades: <input type="text" id="txtBuscaXPropiedad">
 		</div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">

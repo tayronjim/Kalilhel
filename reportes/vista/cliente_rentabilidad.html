@@ -61,7 +61,7 @@
  			url: "../control/control.php",
  			data: { "funcion" :  "filtraTablaClienteRentabilidad", "txtFiltroCliente": $txtFiltroCliente, "txtFiltroEmpresa": $txtFiltroEmpresa},
  			success: function(data){
- 				$("#tablaReporte").html('<tr><th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual</th></tr>');
+ 				$("#tablaReporte").html('<thead><tr><th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual</th></tr></thead>');
  				listaTabla(data);
  			}
  		});
@@ -90,6 +90,14 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtFiltroCliente = $("#txtFiltroCliente").val();
+		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
+		
+		var win = window.open('../control/reportes.php?reporte=clienterentabilidad&filtrocliente='+$txtFiltroCliente+'&filtroPropietario='+$txtFiltroEmpresa, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
 		window.open("cliente_rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=900, height=700");
 	}
@@ -98,6 +106,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -120,7 +129,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	

@@ -59,7 +59,7 @@
  			url: "../control/control.php",
  			data: { "funcion" :  "filtraTablaPropiedad", "txtFiltroPropiedad": $txtFiltroPropiedad, "txtFiltroPropietario": $txtFiltroPropietario},
  			success: function(data){
- 				$("#tablaReporte").html('<tr><th>Propiedad</th><th>Propietario</th><th>Costo de Adquisición</th><th>% Rend. Mensual</th><th>% Rend. Anual</th><th>Generado al día</th><th>Costo por Recuperar</th></tr>');
+ 				$("#tablaReporte").html('<thead><tr><th>Propiedad</th><th>Propietario</th><th>Costo de Adquisición</th><th>% Rend. Mensual</th><th>% Rend. Anual</th><th>Generado al día</th><th>Costo por Recuperar</th></tr></thead>');
  				listaTabla(data);
  			}
  		});
@@ -107,30 +107,7 @@
 		$txtFiltroPropiedad = $("#txtFiltroPropiedad").val();
 		$txtFiltroPropietario = $("#txtFiltroPropietario").val();
 		
-		$header={};
-		$header.h1={};
-		$header.h1.w='190';
-		$header.h1.titulo = 'Propiedad';
-		$header.h2={};
-		$header.h2.w='120';
-		$header.h2.titulo = 'Propietario';
-		$header.h3={};
-		$header.h3.w='100';
-		$header.h3.titulo = 'Costo de Adquisición';
-		$header.h4={};
-		$header.h4.w='60';
-		$header.h4.titulo = '% Rend. Mensual';
-		$header.h5={};
-		$header.h5.w='60';
-		$header.h5.titulo = '% Rend. Anual';
-		$header.h6={};
-		$header.h6.w='100';
-		$header.h6.titulo = 'Generado al día';
-		$header.h7={};
-		$header.h7.w='100';
-		$header.h7.titulo = 'Costo por Recuperar';
-		
-		var win = window.open('../control/reportes.php?reporte=propiedades&', '_blank');
+		var win = window.open('../control/reportes.php?reporte=propiedades&filtroPropiedad='+$txtFiltroPropiedad+'&filtroPropietario='+$txtFiltroPropietario, '_blank');
 		win.focus();
   		
 	}
@@ -139,6 +116,7 @@
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -159,14 +137,14 @@
 			<table>
 				<tr>
 					<td>Propiedad: </td><td><input type="text" id="txtFiltroPropiedad" onkeyup="filtra()"></td>
-					<td rowspan="2"><!-- <input type="button" value="PDF" onclick="sacaPDF()"> --></td>
+					<td rowspan="2"></td>
 				</tr>
 				<tr><td>Propietario:</td><td><input type="text" id="txtFiltroPropietario" onkeyup="filtra()"></td></tr>
 				
 			</table>
 		</div>
 		
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">
