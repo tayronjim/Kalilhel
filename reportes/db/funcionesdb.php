@@ -4,14 +4,15 @@
 	function repIncrementos($txtfiltronombre){
 		$filtro = "";
 		if($txtfiltronombre != ''){$filtro = " where contactos.nombre LIKE '%".$txtfiltronombre."%'";}
-		$query ="SELECT fechas.clave_renta, contactos.`nombre`, fechas.`inicioContrato`, fechas.`fechaTerminoContrato`, fechas.fechaRenovacion,renta.`montoInicial`, cortes.`monto` as incrementos
+		$query ="SELECT fechas.clave_renta,propiedades.`nombre` as propiedad, contactos.`nombre`, fechas.`inicioContrato`, fechas.`fechaTerminoContrato`, fechas.fechaRenovacion,renta.`montoInicial`, cortes.`monto` as incrementos, renta.monedaMonto
 				from fechas_contratos as fechas
 					left join propiedades_renta as renta on renta.`id` = fechas.`clave_renta`
 					left join cortes on cortes.`claveRenta` = fechas.clave_Renta and cortes.corte = DATE_FORMAT(fechas.fechaRenovacion, '%Y%m')
 					left join contactos on contactos.`clave`=renta.`clave_arrendatario`
+					left join propiedades on propiedades.`clave`=renta.`clave_propiedad`
 				".$filtro."
 				group by fechas.id 
-				order by clave_renta;";
+				order by clave_renta,fechas.id;";
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
@@ -23,7 +24,7 @@
 		// $filtroFecha = "";
 		$query ="SELECT cortes.corte, rentas.clave_arrendatario, contactos.nombre, cortes.monto
 				from cortes 
-					inner join propiedades_renta as rentas on cortes.`clavePropiedad`=rentas.`clave_propiedad` 
+					inner join propiedades_renta as rentas on cortes.`claveRenta`=rentas.`id` 
 					left join contactos on contactos.clave = rentas.`clave_arrendatario`
 				where cortes.facturado=0 ".$filtroFecha." 
 				group by contactos.nombre, cortes.corte
@@ -37,7 +38,7 @@
 	function repMontoXPropiedad(){
 		$query ="SELECT renta.id, renta.clave_propiedad, propiedades.nombre,renta.fechaTerminoContrato, renta.montoActual 
 				from propiedades_renta as renta
-					left join propiedades on propiedades.`clave` = renta.`clave_propiedad`;";
+					inner join propiedades on propiedades.`clave` = renta.`clave_propiedad`;";
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
@@ -53,9 +54,9 @@
 		return $resultado;
 	}
 	function repPropiedad($txtFiltroPropiedad,$txtFiltroPropietario){
-		$query ="SELECT prop.`clave`, prop.`nombre`, propietario.nombre as `propietario`, prop.`valor_inicial`, SUM(cortes.`monto`) as generado, cortes.`monto`
+		$query ="SELECT prop.`clave`, prop.`nombre`, propietario.nombre as `propietario`, (prop.`valor_inicial` * prop.cambio) as valor_inicial, SUM(cortes.`monto`) as generado, cortes.`monto`
 				from `propiedades` as prop
-					inner join cortes on cortes.`clavePropiedad`= prop.`clave`
+					left join cortes on cortes.`clavePropiedad`= prop.`clave`
 					left join propietario on propietario.`clave` = prop.`propietario`
 				WHERE prop.`nombre` LIKE '%".$txtFiltroPropiedad."%' and `propietario` LIKE '%".$txtFiltroPropietario."%'
 				GROUP BY prop.clave;";

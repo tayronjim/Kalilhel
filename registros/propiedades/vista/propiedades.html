@@ -26,6 +26,11 @@
 			$("#areaRegCaracteriticas").hide();
 			$("#plecaArchivos").hide();
 			$("#plecaRegCaracteriticas").hide();
+			$(".vender1 label").hide();
+			$(".vender1 input").hide();
+			$(".vender2 label").hide();
+			$(".vender2 input").hide();
+
 			
 			var options = { 
 			    beforeSend: function() 
@@ -34,6 +39,7 @@
 			        $("#bar").width('0%');
 			        // $("#message").html("");
 			        $("#percent").html("0%");
+
 			    },
 			    uploadProgress: function(event, position, total, percentComplete) 
 			    {
@@ -60,7 +66,7 @@
 					$nombre_archivo = $tipo_documento+"_"+$clave_propiedad+"."+$extension;
 			        almacenaArchivos($cadena);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tbody tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody ').append('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/propiedades/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			        $("#myfile").val('');
 			        $("#descripcionFile").val('');
 			    },
@@ -128,22 +134,74 @@
 	 			$valorCaract = $("#txtPropiedadesCaracteristicaValor").val();
 
 	 			$campos = $clavePropiedad+"@"+$valueCaract+"@"+$valorCaract;
-
-	 			$.ajax({
-		 			type: "POST",
-		 			url: "../control/control.php",
-		 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
-		 			success: function(data){
-		 				$('#listadoCaracteristicas tbody tr:last').after("<tr><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
-		 			}
-	 			});
-	 			$("#txtPropiedadesCaracteristicaValor").val('');
+	 			if($valueCaract != -1){
+	 				$.ajax({
+			 			type: "POST",
+			 			url: "../control/control.php",
+			 			data: { "funcion" :  "agregaCaracteristica","valores": $campos },
+			 			success: function(data){
+			 				$("#listadoCaracteristicas tbody tr#carac_"+$("#slcPropiedadesCaracteristicas").val()).remove();
+			 				$('#listadoCaracteristicas tbody').append("<tr id='carac_"+$("#slcPropiedadesCaracteristicas").val()+"'><td>"+$textCaract+"</td><td class='alignR'>"+$valorCaract+"</td></tr>");
+			 			}
+		 			});
+		 			$("#txtPropiedadesCaracteristicaValor").val('');
+	 			}
+	 			else{alert("Seleccione una Caracteristica")}
+		 			
+	 			
 	 		});
+
 	 		$("#listadoPropiedades").on('click','td',function(){
 				$("#listadoPropiedades td").css('background-color','#ffffff');
 				$(this).parent('tr').children('td').css('background-color','#e8f5bf');
 			});
-		});
+
+			$("#chkVender").click(function(){
+				$checkVender = $("#chkVender").is(':checked') ? 1 : 0;	
+				if($checkVender){
+					$(".vender2 label").show();
+					$(".vender2 input").show();
+				}
+				else{
+					$(".vender2 label").hide();
+					$(".vender2 input").hide();
+				}
+			});
+			$(".moneda").blur(function(){
+				$valor = $(this).val();
+				$valor = parseFloat($valor.replace(/,/g, '')).toFixed(2);
+				$(this).val(addCommas($valor));
+				// alert($valores);
+			});
+			
+		}); //Fin Document Ready
+
+		
+		function addCommas(nStr){
+			nStr += '';
+			x = nStr.split('.');
+			x1 = x[0];
+			x2 = x.length > 1 ? '.' + x[1] : '';
+			var rgx = /(\d+)(\d{3})/;
+			while (rgx.test(x1)) {
+				x1 = x1.replace(rgx, '$1' + ',' + '$2');
+			}
+			return x1 + x2;
+		}
+
+		function eliminaPropiedad(){
+			$clave = $("#txtPropiedadesClave").val();
+			$valor = $("#txtVenta").val();
+			$.ajax({
+	 			type: "POST",
+	 			url: "../control/control.php",
+	 			data: { "funcion" :  "eliminaPropiedad", "clave":$clave, "valor":$valor },
+	 			success: function(data){
+	 				// alert(data);
+	 				window.open('propiedades.html','pantallaPrincipal');
+	 			}
+	 		});
+		}
 		function agregaFilaPropiedades(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
@@ -172,6 +230,7 @@
 			$("#txtPropiedadesMontoInquilino").prev().show();
 			$("#txtPropiedadesMontoInquilino").show();
 			// alert($("#btnguardaRegistro").attr('onclick'));
+
 			$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -197,12 +256,27 @@
 					$("#txtPropiedadesCP").val(obj.Propiedad[0].cp);
 					$("#txtPropiedadesCiudad").val(obj.Propiedad[0].ciudad);
 					$("#txtPropiedadesEstado").val(obj.Propiedad[0].estado);
-					$("#txtPropiedadesValorInicial").val(obj.Propiedad[0].valor_inicial);
+					$("#txtPropiedadesValorInicial").val(addCommas(obj.Propiedad[0].valor_inicial));
 					$("#txtPropiedadesMoneda").val(obj.Propiedad[0].tipo_moneda);
 					$("#txtPropiedadesCambio").val(obj.Propiedad[0].cambio);
-					$("#txtPropiedadesValorActual").val(obj.Propiedad[0].valor_actual);
+					$("#txtPropiedadesValorActual").val(addCommas(obj.Propiedad[0].valor_actual));
 					$("#txtPropiedadesAdquisicion").val(obj.Propiedad[0].adquisicion);
-					$("#txtPropiedadesMontoInquilino").val(obj.Propiedad[0].monto_inquilino);
+					$("#txtGeneradoInicial").val(addCommas(obj.Propiedad[0].valorGeneradoInicial));
+
+					$("#txtPropiedadesMontoInquilino").val(addCommas(obj.Propiedad[0].monto_inquilino));
+					$("#txtPropiedadesEstatus").val(obj.Propiedad[0].estatus);
+					// alert($("#txtPropiedadesEstatus").val());
+					if($("#txtPropiedadesEstatus").val()==1){
+						// alert("muestra")
+						$(".vender1 *").show();
+						// $(".vender1 input").show();
+					}
+					else{
+						// alert("ocultca");
+						$(".vender1 *").hide();
+						// $(".vender1 input").hide();
+					}
+					if($("#txtPropiedadesEstatus").val()==6){}
 	 
 	 				$("#areaRegCaracteriticas").css('visibility', 'visible');
 	 				$("#areaArchivos").css('visibility', 'visible');
@@ -210,6 +284,17 @@
 	 				$("#bar").width('0%');
 			        $("#percent").html('0%');
 			        // $("#message").html('');
+			        if (obj.Propiedad[0].estatus == 6) {
+			        	$(".vender2 *").show();
+			        	$("#txtVenta").val(obj.Propiedad[0].valor_vendido);
+			        	$("#areaFormulario *").attr('disabled','disabled');
+			        	$("#areaFormulario input[type='button']").hide();
+
+			        }else{
+			        	$(".vender2 *").hide();
+			        	$("#btnguardaRegistro").show();
+			        	$("#areaFormulario *").attr('disabled',false);
+			        }
 	 				menuDos();
 	 			}
 	 		});
@@ -273,18 +358,20 @@
 			$cp =				$("#txtPropiedadesCP").val();
 			$ciudad =			$("#txtPropiedadesCiudad").val();
 			$estado =			$("#txtPropiedadesEstado").val();
-			$valorGInicial= 	$("#txtPropiedadesValorInicial").val();
+			$valorGInicial= 	$("#txtGeneradoInicial").val().replace(',','');
+			$valorInicial= 		$("#txtPropiedadesValorInicial").val().replace(',','');
 			$moneda =			$("#txtPropiedadesMoneda").val();
 			$cambio =			$("#txtPropiedadesCambio").val();
 			$fechaAdquisicion=	$("#txtPropiedadesAdquisicion").val();
-			$valorRActual =		$("#txtPropiedadesValorActual").val();
-			$montoInquilino=	$("#txtPropiedadesMontoInquilino").val();
+			$valorRActual =		$("#txtPropiedadesValorActual").val().replace(',','');
+			$montoInquilino=	$("#txtPropiedadesMontoInquilino").val().replace(',','');
 			$PropiedadesClave=	$("#txtPropiedadesClave").val();
+			
 
 			$cadena = 	$nombre+")+("+
 						$tipo+")+("+
 						$propietario+")+("+
-						$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorGInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$montoInquilino+")+("+$PropiedadesClave;
+						$pagaM+")+("+$direccion+")+("+$nExt+")+("+$nInt+")+("+$colonia+")+("+$cp+")+("+$ciudad+")+("+$estado+")+("+$valorInicial+")+("+$moneda+")+("+$cambio+")+("+$fechaAdquisicion+")+("+$valorRActual+")+("+$montoInquilino+")+("+$PropiedadesClave+")+("+$valorGInicial;
 			// alert($funcion);
 			$.ajax({
 	 			type: "POST",
@@ -417,6 +504,16 @@
 				limpiaTabla($pagina+$filasxPagina);
 			}
 		}
+		function submitFile(){
+			if($("#myfile").val()==''){
+				alert("No se a seleccionado archivo");
+			}
+			else{
+				$("#myForm").submit();	
+			}
+			
+		}
+
 	 </script>
 	 <style>
 	 	body{
@@ -446,7 +543,7 @@
 		#txtPropiedadesCol{
 			width: 170px;
 		}
-		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino{
+		#txtPropiedadesValorInicial, #txtPropiedadesCambio, #txtPropiedadesValorActual, #txtPropiedadesMontoInquilino, #txtGeneradoInicial, #txtVenta{
 			width: 80px;
 		}
 		
@@ -505,6 +602,17 @@
 		}
 		#divListadoArchivos{
 			margin-top: 20px;
+		}
+		select{
+			margin-left: 0px;
+			/*border: 1px solid;*/
+			-webkit-appearance: none;
+			padding: 3px;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		select:after{
+			width: 0px;
 		}
 		
 	</style>
@@ -582,20 +690,30 @@
 					<td colspan="6"><label>Estado: </label><select id="txtPropiedadesEstado"><option value="-1">Selecciona un Estado</option></select></td>
 				</tr>
 				<tr>
-					<td colspan="6"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
+					<td colspan="3"><label>Valor Generado Inicial: $</label><input class="moneda" type="text" id="txtGeneradoInicial"></td>
+					<td colspan="3"><label>Paga Mantenimiento: </label><select id="slcPropiedadesMantenimiento"><option value="1">SI</option><option value="0">NO</option></select></td>
 				</tr>
 				<tr>
 					<td colspan="6"><label>Fecha Adquisición: </label><input type="date" id="txtPropiedadesAdquisicion"></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label>Valor Inicial $</label><input type="text" id="txtPropiedadesValorInicial"> </td><td colspan="2"><label>Moneda: </label><select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td colspan="2"><label>Tipo de Cambio: </label><input type="text" id="txtPropiedadesCambio"></td>
+					<td colspan="2"><label>Valor Inicial $</label><input class="moneda" type="text" id="txtPropiedadesValorInicial"> </td><td colspan="2"><label>Moneda: </label><select id="txtPropiedadesMoneda"><option value="MXN">MXN</option><option value="USD">USD</option></select></td><td colspan="2"><label>Tipo de Cambio: </label><input type="text" id="txtPropiedadesCambio"></td>
 				</tr>
 				<tr>
-					<td colspan="3"><label>Valor Real Actual: </label><input type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: </label><input type="text" id="txtPropiedadesMontoInquilino"></td>
+					<td colspan="3"><label>Valor Real Actual: $</label><input class="moneda" type="text" id="txtPropiedadesValorActual"> </td><td colspan="3"><label>Monto por Inquilino Actual: $</label><input class="moneda" type="text" id="txtPropiedadesMontoInquilino"></td>
 				</tr>
 			</table>
-			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> <br><br>
-			<input type="button" id="btnguardaRegistro" value="Guardar Registro" onclick="guardaRegistro(1)">
+			<!-- Clave: --> <input type="hidden" id="txtPropiedadesClave"> 
+			<input type="hidden" id="txtPropiedadesEstatus"> 
+			<table>
+				<tr>
+					<td colspan="1" width="135px"><input type="button" id="btnguardaRegistro" value="Guardar Registro" onclick="guardaRegistro(1)"></td>
+					<td colspan="2" class="vender1" width="87px"><label>Vender </label><input type="checkbox" id="chkVender"></td>
+					<td colspan="2" class="vender2" width="213px"><label>Valor de Venta: </label><input type="text" id="txtVenta"></td>
+					<td class="vender2" width="147px"><input style="margin-left:10px" type="button" id="btnVender" value="Vender" onclick="eliminaPropiedad()"></td>
+				</tr>
+			</table>
+			
 		</div>
 
 		<div id="plecaRegCaracteriticas" class="pleca" onclick="muestraOcultaArchivos('areaRegCaracteriticas')"><h3>Registro de Caracteristicas</h3></div>
@@ -606,7 +724,7 @@
 					<td colspan="5"></td>
 				</tr>
 				<tr id="fila2">
-					<td><label>Caracteristica: </label></td><td colspan="2"><select id="slcPropiedadesCaracteristicas"><option>Seleccione una Caracteristica</option></select></td><td><label>Valor: </label></td><td> <input type="text" id="txtPropiedadesCaracteristicaValor"></td>
+					<td><label>Caracteristica: </label></td><td colspan="2"><select id="slcPropiedadesCaracteristicas"><option value="-1">Seleccione una Caracteristica</option></select></td><td><label>Valor: </label></td><td> <input type="text" id="txtPropiedadesCaracteristicaValor"></td>
 				</tr>
 				<tr id="fila3">
 					<td colspan="2"><input type="button" value="Agregar Caracteristica" id="btnAgregaCaract"></td>
@@ -642,7 +760,7 @@
 					<tr>
 						<td><input type="file" size="60" name="myfile" id="myfile"></td>
 						
-						<td><input type="submit" value="Cargar Archivo"></td>
+						<td><input type="button" onclick="submitFile()" value="Cargar Archivo"></td>
 					</tr>
 					<tr>
 						<td>

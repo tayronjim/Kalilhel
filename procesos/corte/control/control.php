@@ -55,4 +55,30 @@
 		echo $resultado;
 
 	}
+
+	function syncFacturas(){
+		$xmlRentas = simplexml_load_file("xml/xml20150808_HISTORICO.xml");
+		
+		$arrRentas1 = array();
+		foreach ($xmlRentas as $key => $xml) {
+	
+				$obj = (object) array(
+					
+					'cliente' => $xml->IDCliente, 
+					'propiedad' => $xml->PropiedadesPropiedadesPropiedad,
+					'fechaInicioFacturacion' => $xml->Fecha,
+					'concepto' => $xml->Conceptocompleto,
+					'folio' => $xml->Folio, 
+					'fecha' => $xml->Fecha, 
+					'monto' => $xml->ImportetotalMonto, 
+					'concepto' => $xml->Conceptocompleto
+					
+				);
+					$arrRentas1[] = $obj;
+		}
+		foreach ($arrRentas1 as $key => $arrRentas) {
+			actualizaFacturas($arrRentas);
+		}
+		
+	}
 ?>

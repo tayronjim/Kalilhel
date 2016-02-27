@@ -23,6 +23,7 @@
 			});
 			$("#divArchivos").hide();
 			$("#areaFormulario").hide();
+			$(".areaFormulario").hide();
 			$("#areaArchivos").hide();
 
 			// $("#areaRegCaracteriticas").hide();
@@ -64,7 +65,7 @@
 			        almacenaArchivos($cadena);
 			        // listadoArchivos($clave_cliente);
 			        $("#listadoArchivos #tr"+$tipo_documento).remove();
-			        $('#listadoArchivos tbody tr:last').after('<tr id="tr'+$tipo_documento+'"><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
+			        $('#listadoArchivos tbody').append('<tr id="tr'+$tipo_documento+'"><td><img src="/kalilhel/css/img/imgElimina.png"></td><td>'+$tipo_documento+'</td><td>'+$descripcion+'</td><td><a href="../../../uploads/contactos/'+$nombre_archivo+'" target="_BLANK">Abrir Archivo</a></td></tr>');
 			    },
 			    error: function()
 			    {
@@ -84,13 +85,20 @@
 				$tipo = $("#SlcTipoCliente").val();
 
 				$(":input[type='text']").val('');
-				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				// $("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				$(".txtClienteNombre").val(obj.Contacto[1].nombre);
 				try{
 					$("#claveNombreFile").val($respObj.Contacto[$tipo].clave);
 	 				$("#txtContactoClave").val($respObj.Contacto[$tipo].clave);
 					$("#txtContactoNombre").val($respObj.Contacto[$tipo].nombre);
+
 	 				$("#txtContactoEmail").val($respObj.Contacto[$tipo].email);
 	 				$("#txtContactoTelefono").val($respObj.Contacto[$tipo].telefonoCasa);
+	 				
+	 				$("#txtContactoTelefono").attr('telcasa',$respObj.Contacto[$tipo].telefonoCasa);
+	 				$("#txtContactoTelefono").attr('telcel',$respObj.Contacto[$tipo].telefonoCel);
+	 				$("#txtContactoTelefono").attr('teljob',$respObj.Contacto[$tipo].telefonoOficina);
+	 				$("#SlcTipoTelefono").val('telJob');
 	 				$("#txtContactoRfc").val($respObj.Contacto[$tipo].rfc);
 	 				$("#txtContactoDireccion").val($respObj.Contacto[$tipo].direccion);
 	 				$("#txtContactoNE").val($respObj.Contacto[$tipo].ext);
@@ -99,9 +107,11 @@
 	 				$("#txtContactoCP").val($respObj.Contacto[$tipo].cp);
 	 				$("#txtContactoCiudad").val($respObj.Contacto[$tipo].ciudad);
 	 				$("#txtContactoEstado").val($respObj.Contacto[$tipo].estado);
-	 				muestraArchivos($respObj.Contacto[$tipo].clave);
+	 				// muestraArchivos($respObj.Contacto[$tipo].clave);
 				}
 				catch(err){}
+				$(".nombreContacto *").css('visibility','visible');
+				if($tipo==1){$(".nombreContacto *").css('visibility','hidden');}
 					
 			});
 
@@ -141,7 +151,45 @@
 	 				case 'telJob': $("#txtContactoTelefono").val($("#txtContactoTelefono").attr('telJob')); break;
 	 			}
 	 		});
-		});
+		}); // Fin Document Ready
+
+		
+
+		function cambiaContacto($tipo){
+			
+				$(".slcContacto div").removeClass('seleccionado');
+			$("#cont"+$tipo).addClass('seleccionado');
+				$(":input[type='text']").val('');
+				// $("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				$(".txtClienteNombre").val(obj.Contacto[1].nombre);
+				try{
+					// $("#claveNombreFile").val($respObj.Contacto[$tipo].clave);
+
+	 				$("#txtContactoClave").val($respObj.Contacto[$tipo].clave);
+					$("#txtContactoNombre").val($respObj.Contacto[$tipo].nombre);
+
+	 				$("#txtContactoEmail").val($respObj.Contacto[$tipo].email);
+	 				$("#txtContactoTelefono").val($respObj.Contacto[$tipo].telefonoOficina);
+	 				
+	 				$("#txtContactoTelefono").attr('telcasa',$respObj.Contacto[$tipo].telefonoCasa);
+	 				$("#txtContactoTelefono").attr('telcel',$respObj.Contacto[$tipo].telefonoCel);
+	 				$("#txtContactoTelefono").attr('teljob',$respObj.Contacto[$tipo].telefonoOficina);
+	 				$("#SlcTipoTelefono").val('telJob');
+	 				$("#txtContactoRfc").val($respObj.Contacto[$tipo].rfc);
+	 				$("#txtContactoDireccion").val($respObj.Contacto[$tipo].direccion);
+	 				$("#txtContactoNE").val($respObj.Contacto[$tipo].ext);
+	 				$("#txtContactoNI").val($respObj.Contacto[$tipo].int);
+	 				$("#txtContactoCol").val($respObj.Contacto[$tipo].colonia);
+	 				$("#txtContactoCP").val($respObj.Contacto[$tipo].cp);
+	 				$("#txtContactoCiudad").val($respObj.Contacto[$tipo].ciudad);
+	 				$("#txtContactoEstado").val($respObj.Contacto[$tipo].estado);
+	 				// muestraArchivos($respObj.Contacto[$tipo].clave);
+				}
+				catch(err){}
+				$(".nombreContacto *").css('visibility','visible');
+				if($tipo==1){$(".nombreContacto *").css('visibility','hidden');}
+		}
+
 		function agregaFilaContactos(ini){
 			$pagina = ini;
 			for (var i = ini; i <= $cont-1 && i < $filasxPagina+ini; i++) {
@@ -177,7 +225,11 @@
 
 		function muestraContacto(clave){
 				
-				$("#listadoArchivos").html('<thead><tr><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				$("#listadoArchivos").html('<thead><tr><th></th><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th></tr></thead>');
+				$("#descripcionFile").val('');
+				$("#myfile").val('');
+				$("#bar").width('0%');
+		        $("#percent").html("0%");
 				$.ajax({
 	 			type: "POST",
 	 			url: "../control/control.php",
@@ -193,12 +245,13 @@
 	 				$("#claveNombreFile").val(obj.Contacto[1].clave);
 	 				$("#txtContactoClave").val(obj.Contacto[1].clave);
 	 				$("#txtContactoNombre").val(obj.Contacto[1].nombre);
+	 				$(".txtClienteNombre").val(obj.Contacto[1].nombre);
 	 				$("#txtContactoEmail").val(obj.Contacto[1].email);
-	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefonoCasa);
+	 				$("#txtContactoTelefono").val(obj.Contacto[1].telefonoOficina);
 	 				$("#txtContactoTelefono").attr('telcasa',obj.Contacto[1].telefonoCasa);
 	 				$("#txtContactoTelefono").attr('telcel',obj.Contacto[1].telefonoCel);
 	 				$("#txtContactoTelefono").attr('teljob',obj.Contacto[1].telefonoOficina);
-	 				
+	 				$("#SlcTipoTelefono").val('telJob');
 	 				$("#txtContactoRfc").val(obj.Contacto[1].rfc);
 	 				$("#txtContactoDireccion").val(obj.Contacto[1].direccion);
 	 				$("#txtContactoNE").val(obj.Contacto[1].ext);
@@ -208,6 +261,7 @@
 	 				$("#txtContactoCiudad").val(obj.Contacto[1].ciudad);
 	 				$("#txtContactoEstado").val(obj.Contacto[1].estado);
 	 				// $("#divArchivos").show();
+	 				$(".nombreContacto *").css('visibility','hidden');
 	 				$respObj = obj;
 	 				// delete obj;
 
@@ -265,6 +319,7 @@
 			$("#areaTabla").show();
 			$("#areaArchivos").hide();
 			$("#areaFormulario").hide();
+			$(".areaFormulario").hide();
 			// $("#areaRegCaracteriticas").hide();
 		}
 		function menuDos(){
@@ -275,6 +330,7 @@
 				$("#areaTabla").hide();
 				$("#areaArchivos").hide();
 				$("#areaFormulario").show();
+				$(".areaFormulario").show();
 			}
 
 				
@@ -288,6 +344,7 @@
 				$("#areaTabla").hide();
 				$("#areaArchivos").show();
 				$("#areaFormulario").hide();
+				$(".areaFormulario").show();
 			}
 				
 			// $("#areaRegCaracteriticas").show();
@@ -331,8 +388,19 @@
 		}
 		
 		/*////////*/
+		.nombreCliente td{
+			border-bottom: 1px solid !important;
+		}
+		.nombreCliente label{
+			font-size: 15px !important;
+		}
+		.nombreCliente input{
+			font-size: 15px !important;
+			border-bottom: 0px !important;
+			width: 500px !important;
+		}
 		#txtContactoNombre{
-			width: 200px;
+			width: 300px;
 		}
 		#txtContactoNE{
 			width: 50px;
@@ -352,9 +420,44 @@
 		#txtContactoCol{
 			width: 170px;
 		}
+		.slcContacto input{
+			width: 130px !important;
+			height: 25px !important;
+			
+			cursor: pointer;
+		}
+		.slcContacto div{
+			padding-bottom: 5px; 
+			/*border-bottom: 1px solid; */
+			width:140px; 
+			float:left;
+			margin-left: 9px;
+			margin-right: 9px; 
+			text-align: center;
+		}
+		.slcContacto div.seleccionado{
+			border-bottom: 2px solid; 
+		}
 		
-		#areaFormulario > table > tr > td{
+		#areaFormulario > table > tr > td,.areaFormulario > table > tr > td{
 			padding-bottom: 100px;
+		}
+
+		#listadoArchivos img{
+			width: 16px;
+			height: auto;
+		}
+		
+		select{
+			margin-left: 0px;
+			/*border: 1px solid;*/
+			-webkit-appearance: none;
+			padding: 3px;
+			padding-left: 6px;
+			padding-right: 6px;
+		}
+		select:after{
+			width: 0px;
 		}
 			</style>
 	
@@ -384,9 +487,9 @@
 					<tfoot>
 						<tr><td colspan="4"><div id="paging">
 							<ul>
-								<li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
+								<li><a href="#" onclick="pagPrev()"><span>Anterior</span></a></li>
 								<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
-								<li><a href="#" onclick="pagSig()"><span>Next</span></a></li>
+								<li><a href="#" onclick="pagSig()"><span>Siguiente</span></a></li>
 							</ul>
 						</div></tr>
 					</tfoot>
@@ -396,17 +499,27 @@
 				</table>
 				</div>
 			</div>
+			<div class="areaFormulario">
+				<table border="0" style="width:625px;" cellspacing="0">
+					<tr class="nombreCliente">
+						<td class="tdlabel"><label>Nombre: </label></td><td><input type="text" class="txtClienteNombre" value="" disabled></td>
+					</tr>
+				</table>
+			</div>
+			<div id="areaFormulario" >
 
-			<div id="areaFormulario">
-				<table border="0" style="">
+				<table border="0" style="width:625px;" cellspacing="0">
+					<!-- <tr class="nombreCliente">
+						<td class="tdlabel"><label>Nombre: </label></td><td colspan="4"><input type="text" class="txtClienteNombre" value="" disabled></td>
+					</tr> -->
 					<tr style="height: 140px;">
-						<td class="tdlabel"><label>Tipo de Cliente: </label></td><td colspan="2"> <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select></td><td></td><td></td>
+						<td class="tdlabel"><label></label></td><td colspan="4" class="slcContacto"> <!-- <select id="SlcTipoCliente" change="cambiaInfoContacto"><option value="1">Arrendatario</option><option value="2">Contacto</option><option value="3">Fiador</option> </select> --> <div id="cont1" style="" class="seleccionado"><input type="button" value="Arrendatario" onclick="cambiaContacto(1)"></div><div id="cont2"><input type="button" value="Contacto" onclick="cambiaContacto(2)"></div><div id="cont3"><input type="button" value="Fiador" onclick="cambiaContacto(3)"></div></td>
+					</tr>
+					<tr class="nombreContacto">
+						<td class="tdlabel"><label>Nombre: </label></td><td colspan="4"><input type="text" id="txtContactoNombre" value="" disabled></td>
 					</tr>
 					<tr>
-						<td class="tdlabel"><label>Nombre: </label></td><td colspan="2"><input type="text" id="txtContactoNombre" value="" disabled></td><td></td><td></td>
-					</tr>
-					<tr>
-						<td class="tdlabel"><label>Telefono: </label></td><td colspan="2"> <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" value="" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob">Trabajo</option> </select></td>
+						<td class="tdlabel"><label>Telefono: </label></td><td colspan="2"> <input type="text" telcasa="" telcel="" teljob="" id="txtContactoTelefono" value="" disabled> <select id="SlcTipoTelefono"><option value="telHome">Casa</option><option value="telCel">Celular</option><option value="telJob" selected>Trabajo</option> </select></td>
 						<td class="tdlabel"><label>Email: </label></td><td><input type="text" id="txtContactoEmail" value="" disabled></td>
 					</tr>
 					<tr>
@@ -427,13 +540,16 @@
 				
 			</div>
 	
-		<div id="areaArchivos">
-		<div><h3>Agregar Archivos</h3></div>
+		<div id="areaArchivos" >
+		<!-- <div><h3>Agregar Archivos</h3></div> -->
+		
+			
 			<form id="myForm" action="../../../archivos/control/upload.php" method="post" enctype="multipart/form-data">
 				<table border ="0" id="tablaCargaArchivos">
 					
+					<tr><td colspan="2"><label>Persona: </label><select><option>Arrendatario</option><option>Contacto</option><option>Fiador</option></select></td></tr>
 					<tr>
-						<td><label>Tipo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select></td>
+						<td><label>Tipo de Archivo: </label><br><select id="tipoDocumentoFile" name="tipoDocumentoFile"><option value="ife">IFE</option><option value="comprDomicilio">Comprobante de Domicilio</option></select></td>
 						<td><label>Descripción: </label><br> <textarea cols="40" rows="1" id="descripcionFile"></textarea></td>
 						
 					</tr>
@@ -454,9 +570,12 @@
 								<table id="listadoArchivos">
 									<thead>
 									<tr>
-										<th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
+										<th width="35px"></th><th width="150px">Tipo Documento</th><th width="250px">Descripción</th><th width="100px"></th>
 									</tr>
 									</thead>
+									<tbody>
+										<tr></tr>
+									</tbody>
 								</table>
 							</div>
 						</td>

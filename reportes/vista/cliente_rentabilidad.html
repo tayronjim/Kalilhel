@@ -41,6 +41,17 @@
  		});
 		
 	});
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function filtra(){
 		$txtFiltroCliente = $("#txtFiltroCliente").val();
 		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
@@ -50,7 +61,7 @@
  			url: "../control/control.php",
  			data: { "funcion" :  "filtraTablaClienteRentabilidad", "txtFiltroCliente": $txtFiltroCliente, "txtFiltroEmpresa": $txtFiltroEmpresa},
  			success: function(data){
- 				$("#tablaReporte").html('<tr><th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual</th></tr>');
+ 				$("#tablaReporte").html('<thead><tr><th>Cliente</th><th>Empresa</th><th>Generado ( Acumulado )</th><th>Rentabilidad Mensual</th><th> Rentabilidad Anual</th></tr></thead>');
  				listaTabla(data);
  			}
  		});
@@ -72,21 +83,30 @@
 			$filas += "<tr id='fila_"+obj.Reporte[key].rentaID+"'>";
 			$filas += "<td>"+obj.Reporte[key].cliente+"</td>";
 			$filas += "<td>"+obj.Reporte[key].empresa+"</td>";
-			$filas += "<td>"+$monto+"</td>";
+			$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($monto)+"</div></td>";
 			$filas += "<td>"+$rentabilMensual+"</td>";
 			$filas += "<td>"+$retabiAnual+"</td>";
 			$filas += "</tr>";
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtFiltroCliente = $("#txtFiltroCliente").val();
+		$txtFiltroEmpresa = $("#txtFiltroEmpresa").val();
+		
+		var win = window.open('../control/reportes.php?reporte=clienterentabilidad&filtrocliente='+$txtFiltroCliente+'&filtroPropietario='+$txtFiltroEmpresa, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
-		window.open("cliente_rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=750, height=700");
+		window.open("cliente_rentabilidad.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=900, height=700");
 	}
 	</script>
 	<style type="text/css">
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -105,11 +125,11 @@
 		<div id="filtros">
 			<table>
 				<tr>
-					<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Empresa:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
+					<td>Cliente: </td><td><input type="text" id="txtFiltroCliente" onkeyup="filtra()"></td><td>Propietario:</td><td><input type="text" id="txtFiltroEmpresa" onkeyup="filtra()"></td>
 				</tr>
 			</table>
 		</div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	
@@ -117,7 +137,7 @@
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:200px; width:245px;">Cliente</th><th style="min-width:100px; width:100px;">Empresa</th><th style="min-width:85px; width:85px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
+					<th style="min-width:355px; width:355px;">Cliente</th><th style="min-width:120px; width:120px;">Propietario</th><th style="min-width:100px; width:100px;">Generado (Acumulado)</th><th style="min-width:85px; width:85px;">Rentabilidad Mensual</th><th style="min-width:85px; width:85px;"> Rentabilidad Anual </th>
 				</tr>
 			</thead>
 			<tfoot>

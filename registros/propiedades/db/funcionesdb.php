@@ -6,7 +6,7 @@
 		$resultado = $mysqli->query("SELECT propiedades.clave, propiedades.fechaRegistro,propiedades.adquisicion, propiedades.nombre, `tipo_propiedad`.`descripcion` as tipo ,`propietario`.`nombre` as propietario, propiedades.monto_inquilino 
 									FROM propiedades
 									left join propietario on propietario.`clave` = propiedades.`propietario`
-									left join `tipo_propiedad` on `tipo_propiedad`.`id` = propiedades.`tipo_propiedad`");
+									left join `tipo_propiedad` on `tipo_propiedad`.`id` = propiedades.`tipo_propiedad` order by propiedades.nombre");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
@@ -39,13 +39,13 @@
 
 	function listadoCaracteristicas(){
 		$mysqli = connectdb();
-		$resultado = $mysqli->query("SELECT clave, nombre, tipo FROM lista_caracteristicas");
+		$resultado = $mysqli->query("SELECT id, clave, nombre, tipo FROM lista_caracteristicas");
 		unconnectdb($mysqli);
 		return $resultado;
 	}
 	function buscaCaractPropiedad($clavePropiedad){
 		$mysqli = connectdb();
-		$query  = "select carac.clave, lista.nombre,carac.valor,lista.tipo from caracteristicas as carac";
+		$query  = "select lista.id as id, carac.clave, lista.nombre,carac.valor,lista.tipo from caracteristicas as carac";
 		$query .= " inner join lista_caracteristicas as lista on lista.clave=carac.clave_caracteristica";
 		$query .= " where carac.clave_propiedad=".$clavePropiedad;
 		$resultado = $mysqli->query($query);
@@ -66,23 +66,25 @@
 		$cp =				$datos[8];
 		$ciudad =			$datos[9];
 		$estado =			$datos[10];
-		$valorGInicial= 	$datos[11];
+		$valorInicial= 		$datos[11];
 		$moneda =			$datos[12];
 		$cambio =			$datos[13];
 		$fechaAdquisicion=	$datos[14];
 		$valorRActual =		$datos[15];
 		$montoInquilino=	$datos[16];
+		$valorGInicial= 	$datos[18];
 
 		$siguienteClave = ultimaClaveMasUno();
 
 
 
-		$query="INSERT INTO `propiedades` (`fechaRegistro`, `clave`, `nombre`, `tipo_propiedad`, `propietario`, `paga_mantenimiento`, `direccion`, `ext`, `int`, `colonia`, `cp`, `ciudad`, `estado`, `valor_inicial`, `tipo_moneda`, `cambio`, `adquisicion`, `valor_actual`, `monto_inquilino`)
-			VALUES (NOW(), ".$siguienteClave.", '".$nombre."', ".$tipo.", ".$propietario.", ".$pagaM.", '".$direccion."', '".$nExt."', '".$nInt."', '".$colonia."', '".$cp."', '".$ciudad."', ".$estado.", ".$valorGInicial.", '".$moneda."', ".$cambio.", '".$fechaAdquisicion."', ".$valorRActual.", ".$montoInquilino.")";
+		$query="INSERT INTO `propiedades` (`fechaRegistro`, `clave`, `nombre`, `tipo_propiedad`, `propietario`, `paga_mantenimiento`, `direccion`, `ext`, `int`, `colonia`, `cp`, `ciudad`, `estado`, `valor_inicial`, `tipo_moneda`, `cambio`, `adquisicion`, `valor_actual`, `monto_inquilino`,`valorGeneradoInicial`)
+			VALUES (NOW(), ".$siguienteClave.", '".$nombre."', ".$tipo.", ".$propietario.", ".$pagaM.", '".$direccion."', '".$nExt."', '".$nInt."', '".$colonia."', '".$cp."', '".$ciudad."', ".$estado.", ".$valorInicial.", '".$moneda."', ".$cambio.", '".$fechaAdquisicion."', ".$valorRActual.", ".$montoInquilino.",".$valorGInicial.")";
 		// echo $query;
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
+		echo $query;
 	}
 	function actualizaPropiedad($cadena){
 		$datos = explode(')+(',$cadena);
@@ -98,20 +100,21 @@
 		$cp =				$datos[8];
 		$ciudad =			$datos[9];
 		$estado =			$datos[10];
-		$valorGInicial= 	$datos[11];
+		$valorInicial= 		$datos[11];
 		$moneda =			$datos[12];
 		$cambio =			$datos[13];
 		$fechaAdquisicion=	$datos[14];
 		$valorRActual =		$datos[15];
 		$montoInquilino=	$datos[16];
 		$clave=				$datos[17];
+		$valorGInicial= 	$datos[18];
 
-		$query = "UPDATE `propiedades` SET   `nombre`='".$nombre."', `tipo_propiedad`=".$tipo.", `propietario`=".$propietario.", `paga_mantenimiento`=".$pagaM.", `direccion`='".$direccion."', `ext`='".$nExt."', `int`='".$nInt."', `colonia`='".$colonia."', `cp`='".$cp."', `ciudad`='".$ciudad."', `estado`=".$estado.", `valor_inicial`=".$valorGInicial.", `tipo_moneda`='".$moneda."', `cambio`=".$cambio.", `adquisicion`='".$fechaAdquisicion."' where clave= ".$clave;
+		$query = "UPDATE `propiedades` SET   `nombre`='".$nombre."', `tipo_propiedad`=".$tipo.", `propietario`=".$propietario.", `paga_mantenimiento`=".$pagaM.", `direccion`='".$direccion."', `ext`='".$nExt."', `int`='".$nInt."', `colonia`='".$colonia."', `cp`='".$cp."', `ciudad`='".$ciudad."', `estado`=".$estado.", `valor_inicial`=".$valorInicial.", `tipo_moneda`='".$moneda."', `cambio`=".$cambio.", `valorGeneradoInicial`=".$valorGInicial.", `valor_actual`=".$valorRActual.", `adquisicion`='".$fechaAdquisicion."' where clave= ".$clave;
 
 		$mysqli = connectdb();
 		$resultado = $mysqli->query($query);
 		unconnectdb($mysqli);
-		return $resultado;
+		return $query;
 	}
 	function agregaCaract($valores){
 		list($claveP, $ClaveC, $valor) = explode('@', $valores);
@@ -173,5 +176,12 @@
 		$row = mysqli_fetch_object($resultado);
 		unconnectdb($mysqli);
 		return $row->clave;
+	}
+	function eliminaProp($clave,$valor){
+		$query = "UPDATE propiedades set estatus = 6, valor_vendido = ".$valor." where clave =".$clave;
+		$mysqli = connectdb();
+		$resultado = $mysqli->query($query);
+		unconnectdb($mysqli);
+		return $resultado;
 	}
 ?>

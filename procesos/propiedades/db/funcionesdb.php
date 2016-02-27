@@ -19,7 +19,7 @@
 		return $resultado;
 	}
 	function filtroBuscaArrendatario($txtfiltronombre){
-		$query = "SELECT clave,nombre,rfc FROM contactos WHERE nombre LIKE '%".$txtfiltronombre."%'";
+		$query = "SELECT clave,nombre,rfc FROM contactos WHERE nombre LIKE '%".$txtfiltronombre."%' AND activo = 1";
 		$resultado = queryGeneral($query);
 		return $resultado;
 	}
@@ -42,13 +42,18 @@
 			$areaObservaciones = $campos[11];
 			$finContrato = $campos[12];
 			$fechaRenovacion = $campos[13];
+			$montoMoneda = $campos[18];
+			$mantMoneda = $campos[19];
+			$depMoneda = $campos[20];
 			$tipoDuracion = $campos[17];
 			// $claveID = $campos[15];
+			
 
-		$query = "INSERT INTO `propiedades_renta` (`fechaRegistro`,`clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `mantenimiento`, `montoMantenimiento`, `consepto`, `observaciones`, `clave_estatus`,`fechaTerminoContrato`,`tipoDuracion`) ";
-		$query .= "VALUES (NOW(),".$clavePropiedad.", ".$claveArrendatario.", '".$inicioContrato."', ".$duracionContrato.", ".$montoInicial.", ".$montoInicial.", ".$montoDeposito.", ".$regresaDeposito.", ".$tiempoGracia.", ".$pagaMantenimiento.", ".$montoMantenimiento.", '".$areaConcepto."', '".$areaObservaciones."', 2,'".$finContrato."','".$tipoDuracion."')";
+		$query = "INSERT INTO `propiedades_renta` (`fechaRegistro`,`clave_propiedad`, `clave_arrendatario`, `inicioContrato`, `duracion`, `montoInicial`, `montoActual`, `deposito`, `regresaDeposito`, `gracia`, `mantenimiento`, `montoMantenimiento`, `consepto`, `observaciones`, `clave_estatus`,`fechaTerminoContrato`,`tipoDuracion`,monedaMonto,monedaDep,monedaMant) ";
+		$query .= "VALUES (NOW(),".$clavePropiedad.", ".$claveArrendatario.", '".$inicioContrato."', ".$duracionContrato.", ".$montoInicial.", ".$montoInicial.", ".$montoDeposito.", ".$regresaDeposito.", ".$tiempoGracia.", ".$pagaMantenimiento.", ".$montoMantenimiento.", '".$areaConcepto."', '".$areaObservaciones."', 2,'".$finContrato."','".$tipoDuracion."','".$montoMoneda."','".$depMoneda."','".$mantMoneda."')";
 		$resultado = queryGeneral($query);
 		insertaHistorial($claveID->id,$inicioContrato,$finContrato,$fechaRenovacion);
+		actualizaPropiedad($montoInicial,$clavePropiedad);
 		// return $cadena;
 		return $resultado;
 	}
@@ -68,11 +73,12 @@
 		
 		$query = "UPDATE `propiedades_renta` SET clave_estatus = 5, fechaRenovacion=NULL, fechaTerminoContrato=NOW() WHERE id=".$claveID;
 		$resultado = queryGeneral($query);
+		actualizaPropiedad(0,$clavePropiedad);
 		return $resultado;
 	}
 	function updateContrato($cadena){
 		$campos = explode(').(',$cadena);
-
+		$clavePropiedad = $campos[0];
 		$inicioContrato = $campos[2];
 		$finContrato = $campos[12];
 		$fechaRenovacion = $campos[13];
@@ -84,10 +90,14 @@
 		$claveID = $campos[15];
 		$checkRenovar = $campos[16];
 		$tipoDuracion = $campos[17];
+		$montoMoneda = $campos[18];
+		$mantMoneda = $campos[19];
+		$depMoneda = $campos[20];
 
-		$query = "UPDATE `propiedades_renta` SET fechaTerminoContrato = '".$finContrato."', fechaRenovacion='".$fechaRenovacion."', montoActual = ".$montoActual.", mantenimiento = ".$mantenimiento.", montoMantenimiento = ".$montoMantenimiento.", consepto = '".$consepto."', observaciones = '".$observaciones."',tipoDuracion = '".$tipoDuracion."' WHERE id=".$claveID;
+		$query = "UPDATE `propiedades_renta` SET fechaTerminoContrato = '".$finContrato."', fechaRenovacion='".$fechaRenovacion."', montoActual = ".$montoActual.", mantenimiento = ".$mantenimiento.", montoMantenimiento = ".$montoMantenimiento.", consepto = '".$consepto."', observaciones = '".$observaciones."',tipoDuracion = '".$tipoDuracion."',monedaMonto='".$montoMoneda."' ,monedaDep='".$depMoneda."' ,monedaMant='".$mantMoneda."' WHERE id=".$claveID;
 		$resultado = queryGeneral($query);
 		if($checkRenovar=="1"){insertaHistorial($claveID,$inicioContrato,$finContrato,$fechaRenovacion);}
+		actualizaPropiedad($montoActual,$clavePropiedad);
 		return $query;
 	
 	}
@@ -100,6 +110,11 @@
 	function insertaHistorial($claveID,$inicioContrato,$finContrato,$fechaRenovacion){
 		$query = "INSERT INTO `fechas_contratos` (`clave_renta`, `inicioContrato`, `fechaTerminoContrato`, `fechaRenovacion`)
 				VALUES (".$claveID.", '".$inicioContrato."', '".$finContrato."','".$fechaRenovacion."')";
+		$resultado = queryGeneral($query);
+		return $resultado;	
+	}
+	function actualizaPropiedad($montoActual,$clavePropiedad){
+		$query = "UPDATE propiedades SET monto_inquilino = ".$montoActual." where clave=". $clavePropiedad;
 		$resultado = queryGeneral($query);
 		return $resultado;	
 	}

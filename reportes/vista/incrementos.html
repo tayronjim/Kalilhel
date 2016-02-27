@@ -37,7 +37,10 @@
 		})(jQuery);
 	$(document).ready(function(){
 		$a = $.get('v');
-		if($a == 'completa'){$("#btnCompleta").hide(); $(".datagrid").width($("#tablaReporte").width()); }
+		if($a == 'completa'){
+			$("#btnCompleta").hide(); 
+			// $(".datagrid").width($("#tablaReporte").width()); 
+		}
 		// $(window).scroll(function() {
 		//     var height = $(window).scrollTop();
 		//     $("#txtBuscaXCliente").val(height);
@@ -70,18 +73,32 @@
 
  		});
 	});
-	
+	function addCommas(nStr){
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	}
 	function listaTabla(data){
 		obj = JSON.parse(data);
 			$filas = "";
 			$id = '0';
+			$linea = "";
 			$.each( obj.Reporte, function(key) {
 
 				$terminoContrato = obj.Reporte[key].fechaTerminoContrato;
 				if(obj.Reporte[key].fechaTerminoContrato == null){$terminoContrato = "0000-00-00";}
 
 				$fechaRenovacion = obj.Reporte[key].fechaRenovacion;
-				if(obj.Reporte[key].fechaRenovacion == null){$fechaRenovacion = "0000-00-00";}
+				if(obj.Reporte[key].fechaRenovacion == null){$fechaRenovacion = "";}
+
+				$propiedad = obj.Reporte[key].propiedad;
+				if(obj.Reporte[key].propiedad == null){$propiedad = "";}
 
 				$inicioContrato = obj.Reporte[key].inicioContrato;
 				if(obj.Reporte[key].inicioContrato == null){$inicioContrato = "0000-00-00";}
@@ -92,22 +109,28 @@
 
 				if($id != obj.Reporte[key].clave_renta && $id != '0'){
 					$id = obj.Reporte[key].clave_renta;
-					$filas += "<tr><td colspan='5' style='background-color: #006699;'></td></tr>";
+					$linea += "style='border-top: 1px solid #006699'";
 				}
 
 				if($id != obj.Reporte[key].clave_renta && $id == '0'){
 					$id = obj.Reporte[key].clave_renta;
+					// $linea += "style='border-bottom: 1px solid #006699'";
 				}
 				
-				$filas += "<tr id='renta_"+obj.Reporte[key].clave_renta+"'>";
+				
+				$filas += "<tr "+$linea+" id='renta_"+obj.Reporte[key].clave_renta+"'>";
 				// $filas += "<td>"+obj.Reporte[key].id+"</td>";
 				$filas += "<td>"+obj.Reporte[key].nombre+"</td>";
-				$filas += "<td>"+$inicioContrato+"</td>";
-				$filas += "<td>"+$terminoContrato+"</td>";
-				$filas += "<td>"+$fechaRenovacion+"</td>";
-				$filas += "<td>"+$incrementos+"</td>";
+				$filas += "<td>"+$propiedad+"</td>";
+				$filas += "<td style='text-align:center'>"+$inicioContrato+"</td>";
+				$filas += "<td style='text-align:center'>"+$terminoContrato+"</td>";
+				$filas += "<td style='text-align:center'>"+$fechaRenovacion+"</td>";
+				$filas += "<td><div style='float:left'>$</div><div style='float:right'>"+addCommas($incrementos)+"</div></td>";
+				$filas += "<td style='text-align:center'>"+obj.Reporte[key].monedaMonto+"</td>";
 				$filas += "</tr>";
 				// $id = obj.Reporte[key].id;
+				$linea = "";
+				
 				
 			
 									
@@ -116,14 +139,24 @@
 		});
 		$("#tablaReporte").append($filas);
 	}
+	function sacaPDF(){
+		$txtBuscaXCliente = $("#txtBuscaXCliente").val();
+		
+		
+		
+		var win = window.open('../control/reportes.php?reporte=incrementos&filtroCliente='+$txtBuscaXCliente, '_blank');
+		win.focus();
+  		
+	}
 	function nuevaVentana(){
-		window.open("incrementos.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=850, height=700");
+		window.open("incrementos.html?v=completa", "_blank", "toolbar=yes,  top=10, left=10, width=1100, height=800");
 	}
 	</script>
 	<style type="text/css">
 	#pantallaNueva{
 		float: right;
 		margin-right: 10px;
+		margin-top: -40px;
 	}
 	#filtros{
 		float: left;
@@ -141,18 +174,18 @@
 	<div id="cabecera">
 		<div id="filtros">
 		Clientes: <input type="text" id="txtBuscaXCliente"></div>
-		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="ventana nueva" onclick="nuevaVentana()"> </div>
+		<div id="pantallaNueva"> <input id="btnCompleta" type="button" value="Ventana Nueva" onclick="nuevaVentana()"> <br><input type="button" value="Ver PDF" onclick="sacaPDF()"></div>
 	</div>
 	<br>
 	<div class="datagrid">
 		<table border="0" id="tablaReporte">
 			<thead>
 				<tr>
-					<th style="min-width:155px; max-width:245px; width:245px;">Clientes</th><th style="min-width:85px;">Fecha Inicio Contrato</th><th style="min-width:85px;">Fecha Fin Contrato</th><th style="min-width:85px;">Fecha Renovación</th><th style="min-width:75px;">Renta Actual</th>
+					<th style="min-width:200px; max-width:365px; width:365px;">Clientes</th><th style="min-width:200px; max-width:365px; width:365px;">Propiedad</th><th style="min-width:85px;">Fecha Inicio Contrato</th><th style="min-width:85px;">Fecha Fin Contrato</th><th style="min-width:85px;">Fecha Renovación</th><th style="min-width:75px;">Renta Actual</th><th></th>
 				</tr>
 			</thead>
 			<tfoot>
-				<tr><td colspan="5"><div id="paging">
+				<tr><td colspan="7"><div id="paging">
 					<ul>
 						<!-- <li><a href="#" onclick="pagPrev()"><span>Previous</span></a></li>
 						<li id="paging1"><a onclick="limpiaTabla(0)" class="active"><span>1</span></a></li>
@@ -162,6 +195,8 @@
 			</tfoot>
 				<tbody>
 				<tr>
+					<td></td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
