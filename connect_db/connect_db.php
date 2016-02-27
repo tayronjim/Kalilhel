@@ -23,7 +23,7 @@
 	
 
 	function connectdb(){
-		$connectdb = new mysqli("localhost", "root", "root", "kalilhel");
+		$connectdb = new mysqli("localhost", "root", "", "kalilhel");
 		mysqli_set_charset( $connectdb, 'utf8' );
 		return $connectdb;
 	}
